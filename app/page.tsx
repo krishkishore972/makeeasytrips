@@ -1,69 +1,627 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  BedDouble,
+  Compass,
+  HeartHandshake,
+  Landmark,
+  MapPin,
+  Mountain,
+  Palmtree,
+  Plane,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  UtensilsCrossed,
+  Wallet,
+  Waves,
+  type LucideIcon,
+} from "lucide-react";
+import { HeroSearch } from "@/components/home/hero-search";
+import { RevealGroup, RevealItem, ScrollReveal } from "@/components/shared/scroll-reveal";
+import { SectionHeading } from "@/components/shared/section-heading";
+import { formatCurrency } from "@/lib/utils";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: { absolute: "TripNest — Travel that feels like yours." },
+  description:
+    "Compare flights, find a stay with character, and shape a holiday that feels like yours. An original learning-purpose travel experience.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
+const valueProps = [
+  {
+    icon: ShieldCheck,
+    title: "Clear pricing",
+    detail: "Every demo fare shows the full picture before you decide.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Human support",
+    detail: "Trip designers who answer questions, not just chatbots.",
+  },
+  {
+    icon: Wallet,
+    title: "No hidden fees",
+    detail: "The price you see is the price the demo shows you.",
+  },
+  {
+    icon: Compass,
+    title: "India-first",
+    detail: "Routes, stays, and packages shaped around how India travels.",
+  },
+] as const;
+
+const destinations = [
+  {
+    name: "Udaipur",
+    region: "Rajasthan",
+    blurb: "Lakeside palaces, rooftop dinners, and slow evenings.",
+    price: 14900,
+    nights: 3,
+    rating: 4.8,
+    image: "/images/destination-udaipur.svg",
+    href: "/holidays?destination=udaipur",
+  },
+  {
+    name: "Goa",
+    region: "Konkan coast",
+    blurb: "Susegad mornings, long lunches, and salt in the air.",
+    price: 12400,
+    nights: 4,
+    rating: 4.7,
+    image: "/images/destination-goa.svg",
+    href: "/holidays?destination=goa",
+  },
+  {
+    name: "Ladakh",
+    region: "Himalaya",
+    blurb: "High passes, quiet monasteries, and impossible skies.",
+    price: 24800,
+    nights: 6,
+    rating: 4.9,
+    image: "/images/destination-ladakh.svg",
+    href: "/holidays?destination=ladakh",
+  },
+  {
+    name: "Kerala",
+    region: "Malabar coast",
+    blurb: "Backwater rhythm, spice gardens, and rain on the roof.",
+    price: 18600,
+    nights: 5,
+    rating: 4.8,
+    image: "/images/destination-kerala.svg",
+    href: "/holidays?destination=kerala",
+  },
+] as const;
+
+const themes: { label: string; href: string; icon: LucideIcon }[] = [
+  { label: "Slow beach days", href: "/holidays?theme=beach", icon: Waves },
+  { label: "Mountain air", href: "/holidays?theme=mountain", icon: Mountain },
+  { label: "Heritage walks", href: "/holidays?theme=heritage", icon: Landmark },
+  { label: "Food trails", href: "/holidays?theme=food", icon: UtensilsCrossed },
+];
+
+type OfferTone = "coral" | "teal" | "gold";
+
+const offerTones: Record<OfferTone, { card: string; icon: string; code: string; link: string }> = {
+  coral: {
+    card: "border-accent-100 bg-accent-50",
+    icon: "bg-accent-500 text-white",
+    code: "border-accent-200 text-accent-700",
+    link: "text-accent-700",
+  },
+  teal: {
+    card: "border-brand-100 bg-brand-50",
+    icon: "bg-brand-700 text-white",
+    code: "border-brand-200 text-brand-800",
+    link: "text-brand-700",
+  },
+  gold: {
+    card: "border-gold-100 bg-[#fffaf0]",
+    icon: "bg-gold-500 text-brand-950",
+    code: "border-gold-500/40 text-gold-600",
+    link: "text-gold-600",
+  },
+};
+
+const offers: {
+  eyebrow: string;
+  title: string;
+  detail: string;
+  code: string;
+  href: string;
+  icon: LucideIcon;
+  tone: OfferTone;
+}[] = [
+  {
+    eyebrow: "Flights",
+    title: "First flight, lighter fare",
+    detail: "Up to 12% off your first domestic search in the demo catalogue.",
+    code: "NESTFLY",
+    href: "/offers?category=flights",
+    icon: Plane,
+    tone: "coral",
+  },
+  {
+    eyebrow: "Stays",
+    title: "Stay two nights, slow down",
+    detail: "Up to 18% off character-led stays when you book a longer pause.",
+    code: "NESTSTAY",
+    href: "/offers?category=hotels",
+    icon: BedDouble,
+    tone: "teal",
+  },
+  {
+    eyebrow: "Holidays",
+    title: "The long-weekend edit",
+    detail: "A flat ₹3,000 off handpicked three-night escapes this season.",
+    code: "NESTTRIP",
+    href: "/offers?category=holidays",
+    icon: Palmtree,
+    tone: "gold",
+  },
+];
+
+const steps = [
+  {
+    number: "01",
+    title: "Tell us the feeling",
+    detail: "Start with a mood, a city, or a date. We keep the options focused instead of endless.",
+    icon: Compass,
+  },
+  {
+    number: "02",
+    title: "Compare the honest details",
+    detail:
+      "See the full fare, the cancellation rules, and what is actually included before you choose.",
+    icon: ShieldCheck,
+  },
+  {
+    number: "03",
+    title: "Go with a plan",
+    detail: "Keep the itinerary, the stays, and the small extras together in one calm place.",
+    icon: Sparkles,
+  },
+] as const;
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <section className="hero-mesh relative overflow-hidden text-white">
+        <div
+          aria-hidden="true"
+          className="absolute top-[-8rem] right-[-6rem] size-[26rem] rounded-full bg-accent-500/20 blur-3xl"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <div
+          aria-hidden="true"
+          className="absolute bottom-[-10rem] left-[-8rem] size-[28rem] rounded-full bg-brand-400/20 blur-3xl"
+        />
+
+        <div className="page-container relative pt-10 pb-28 sm:pt-14 lg:pt-20 lg:pb-36">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
+            <ScrollReveal>
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-extrabold tracking-[0.14em] text-brand-100 uppercase backdrop-blur">
+                <Sparkles aria-hidden="true" className="size-3.5 text-gold-500" />
+                India, thoughtfully planned
+              </p>
+
+              <h1 className="mt-5 text-[clamp(2.9rem,6vw,4.9rem)] leading-[0.96] font-semibold tracking-[-0.04em] text-white">
+                Travel that feels <span className="text-gradient-sun italic">like yours.</span>
+              </h1>
+
+              <p className="mt-6 max-w-xl text-base leading-7 text-white/70 sm:text-[1.0625rem] sm:leading-8">
+                Flights, stays, and holiday ideas gathered with a little more care. Compare what
+                matters, skip the noise, and build a trip that sounds like you.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="#plan"
+                  className="inline-flex items-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
+                >
+                  Start planning
+                  <ArrowDown aria-hidden="true" className="size-4" />
+                </Link>
+                <Link
+                  href="/holidays"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15"
+                >
+                  Browse holidays
+                  <ArrowUpRight aria-hidden="true" className="size-4" />
+                </Link>
+              </div>
+
+              <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-white/15 pt-6">
+                {[
+                  { value: "60+", label: "destinations" },
+                  { value: "1,200+", label: "demo stays" },
+                  { value: "4.8/5", label: "traveller rating" },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <dt className="sr-only">{stat.label}</dt>
+                    <dd className="font-display text-2xl font-semibold text-white sm:text-3xl">
+                      {stat.value}
+                    </dd>
+                    <dd className="mt-1 text-[11px] font-semibold tracking-wide text-white/60 uppercase">
+                      {stat.label}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.12} className="relative">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-white/15 shadow-lg">
+                <Image
+                  src="/images/hero-coast.svg"
+                  alt="Abstract illustration of a teal coastline at dusk"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 44vw, 92vw"
+                  className="object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-brand-950/55 via-transparent to-transparent"
+                />
+
+                <div className="absolute top-4 left-4 max-w-[13rem] rounded-xl border border-white/15 bg-brand-950/55 p-3.5 text-white backdrop-blur-md">
+                  <p className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.12em] text-brand-200 uppercase">
+                    <MapPin aria-hidden="true" className="size-3" />
+                    This week’s edit
+                  </p>
+                  <p className="mt-1.5 font-display text-lg leading-tight text-white">
+                    Udaipur, before the crowds
+                  </p>
+                  <p className="mt-1 text-[11px] text-white/60">3 nights · from ₹14,900</p>
+                </div>
+
+                <div className="absolute right-4 bottom-4 w-[12.5rem] rounded-xl border border-line bg-surface p-3.5 shadow-md">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-extrabold tracking-[0.12em] text-muted-soft uppercase">
+                      Stay of the week
+                    </p>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-800">
+                      <Star aria-hidden="true" className="size-2.5 fill-gold-500 text-gold-500" />
+                      4.8
+                    </span>
+                  </div>
+                  <p className="mt-1.5 font-display text-base leading-tight text-ink">
+                    The Salt House
+                  </p>
+                  <p className="mt-1 text-[11px] text-muted">Anjuna, Goa · from ₹6,200/night</p>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+      </section>
+
+      <section id="plan" className="relative z-10 scroll-mt-24">
+        <div className="page-container -mt-20 lg:-mt-24">
+          <ScrollReveal>
+            <HeroSearch />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section aria-label="Why TripNest" className="border-b border-line bg-surface">
+        <div className="page-container grid grid-cols-1 gap-x-6 gap-y-7 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:py-10">
+          {valueProps.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <div key={item.title} className="flex items-start gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                  <Icon aria-hidden="true" className="size-[18px]" />
+                </span>
+                <div>
+                  <p className="text-sm font-extrabold text-ink">{item.title}</p>
+                  <p className="mt-1 text-xs leading-5 text-muted">{item.detail}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="destinations" className="section-padding scroll-mt-24">
+        <div className="page-container">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Handpicked destinations"
+              title="Go where the light is different."
+              description="Four places to start with, each shaped into a short escape with room to breathe. Every package is original demo content."
+              action={{ label: "All holidays", href: "/holidays" }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </ScrollReveal>
+
+          <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.09}>
+            {destinations.map((destination) => (
+              <RevealItem key={destination.name} className="h-full">
+                <Link
+                  href={destination.href}
+                  className="group card-hover relative block h-full overflow-hidden rounded-2xl border border-line bg-brand-950"
+                >
+                  <div className="relative aspect-[4/5]">
+                    <Image
+                      src={destination.image}
+                      alt={`Abstract illustration of ${destination.name}`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-brand-950 via-brand-950/20 to-transparent"
+                    />
+
+                    <span className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-brand-950/50 px-2.5 py-1 text-[10px] font-extrabold text-white backdrop-blur">
+                      <Star aria-hidden="true" className="size-3 fill-gold-500 text-gold-500" />
+                      {destination.rating}
+                    </span>
+
+                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                      <p className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.12em] text-white/60 uppercase">
+                        <MapPin aria-hidden="true" className="size-3" />
+                        {destination.region}
+                      </p>
+                      <h3 className="mt-1 font-display text-2xl font-semibold text-white">
+                        {destination.name}
+                      </h3>
+                      <p className="mt-1 text-xs leading-5 text-white/70">{destination.blurb}</p>
+
+                      <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/15 pt-3">
+                        <div>
+                          <span className="block text-[10px] font-semibold text-white/50">
+                            From
+                          </span>
+                          <span className="text-base font-extrabold text-white">
+                            {formatCurrency(destination.price)}
+                          </span>
+                          <span className="text-[10px] text-white/50"> / person</span>
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-white/80 transition-colors group-hover:text-white">
+                          {destination.nights} nights
+                          <ArrowUpRight
+                            aria-hidden="true"
+                            className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+
+          <ScrollReveal className="mt-8 flex flex-wrap items-center gap-2">
+            <span className="mr-1 text-[10px] font-extrabold tracking-[0.14em] text-muted-soft uppercase">
+              Or plan by feeling
+            </span>
+            {themes.map((theme) => {
+              const Icon = theme.icon;
+
+              return (
+                <Link
+                  key={theme.href}
+                  href={theme.href}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-2 text-xs font-bold text-ink-soft transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
+                >
+                  <Icon aria-hidden="true" className="size-3.5 text-brand-500" />
+                  {theme.label}
+                </Link>
+              );
+            })}
+          </ScrollReveal>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="section-padding border-y border-line bg-brand-50/60">
+        <div className="page-container">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Offers and extras"
+              title="A little extra, on us."
+              description="Small savings for the things you were going to book anyway. Codes are demo-only and never charge a card."
+              action={{ label: "View all offers", href: "/offers" }}
+            />
+          </ScrollReveal>
+
+          <RevealGroup className="mt-10 grid gap-4 md:grid-cols-3" stagger={0.09}>
+            {offers.map((offer) => {
+              const Icon = offer.icon;
+              const tone = offerTones[offer.tone];
+
+              return (
+                <RevealItem key={offer.code} className="h-full">
+                  <Link
+                    href={offer.href}
+                    className={`group flex h-full flex-col rounded-2xl border p-5 transition-shadow hover:shadow-md ${tone.card}`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <span
+                        className={`grid size-11 place-items-center rounded-xl shadow-xs ${tone.icon}`}
+                      >
+                        <Icon aria-hidden="true" className="size-5" />
+                      </span>
+                      <ArrowUpRight
+                        aria-hidden="true"
+                        className={`size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${tone.link}`}
+                      />
+                    </div>
+
+                    <p
+                      className={`mt-5 text-[10px] font-extrabold tracking-[0.14em] uppercase ${tone.link}`}
+                    >
+                      {offer.eyebrow}
+                    </p>
+                    <h3 className="mt-1.5 text-xl leading-tight">{offer.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted">{offer.detail}</p>
+
+                    <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4">
+                      <span
+                        className={`rounded-md border border-dashed px-2 py-1 font-mono text-[11px] font-bold tracking-wider ${tone.code}`}
+                      >
+                        {offer.code}
+                      </span>
+                      <span className={`text-[11px] font-extrabold ${tone.link}`}>View offer</span>
+                    </div>
+                  </Link>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="page-container">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="How it works"
+                title="Less browsing. More going."
+                description="TripNest is built around a simple idea: the best trip planning feels like a conversation, not a spreadsheet."
+              />
+              <Link
+                href="/info/how-it-works"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-700 underline-offset-4 hover:underline"
+              >
+                Read the longer version
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </Link>
+            </ScrollReveal>
+
+            <RevealGroup className="space-y-3" stagger={0.1}>
+              {steps.map((step) => {
+                const Icon = step.icon;
+
+                return (
+                  <RevealItem key={step.number}>
+                    <div className="group flex gap-4 rounded-2xl border border-line bg-surface p-5 shadow-xs transition-colors hover:border-brand-200 sm:gap-5 sm:p-6">
+                      <div className="relative flex flex-col items-center">
+                        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700 transition-colors group-hover:bg-brand-700 group-hover:text-white">
+                          <Icon aria-hidden="true" className="size-5" />
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 text-[10px] font-extrabold tracking-[0.14em] text-muted-soft"
+                        >
+                          {step.number}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="text-xl leading-tight">{step.title}</h3>
+                        <p className="mt-1.5 text-sm leading-6 text-muted">{step.detail}</p>
+                      </div>
+                    </div>
+                  </RevealItem>
+                );
+              })}
+            </RevealGroup>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-16 lg:pb-24">
+        <div className="page-container">
+          <ScrollReveal>
+            <div className="hero-mesh relative overflow-hidden rounded-[2rem] px-6 py-12 text-white sm:px-10 lg:px-16 lg:py-16">
+              <div
+                aria-hidden="true"
+                className="absolute top-[-7rem] right-[-4rem] size-72 rounded-full bg-accent-500/25 blur-3xl"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute right-12 bottom-[-5rem] size-56 rounded-full bg-gold-500/15 blur-3xl"
+              />
+
+              <div className="relative grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+                <div>
+                  <p className="eyebrow text-brand-200">Your next trip</p>
+                  <h2 className="mt-3 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] leading-[1.04] text-white">
+                    The best trips start with a feeling.
+                  </h2>
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-white/70 sm:text-base">
+                    Tell us whether you need salt air, mountain quiet, or a long table with friends.
+                    We will help you find the shape of it.
+                  </p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <Link
+                      href="/holidays"
+                      className="inline-flex items-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
+                    >
+                      Find your holiday
+                      <ArrowRight aria-hidden="true" className="size-4" />
+                    </Link>
+                    <Link
+                      href="/info/contact"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15"
+                    >
+                      Talk to a trip designer
+                      <ArrowUpRight aria-hidden="true" className="size-4" />
+                    </Link>
+                  </div>
+                  <p className="mt-5 text-[11px] leading-5 text-white/50">
+                    Demo experience. No real bookings, payments, or personal data.
+                  </p>
+                </div>
+
+                <div className="relative hidden lg:block" aria-hidden="true">
+                  <div className="mx-auto grid aspect-square max-w-[18rem] place-items-center rounded-full border border-white/15 bg-white/5">
+                    <div className="grid size-48 place-items-center rounded-full border border-white/15 bg-white/5">
+                      <div className="relative grid size-28 place-items-center rounded-full bg-accent-500 shadow-glow">
+                        <SunMark />
+                      </div>
+                    </div>
+                  </div>
+                  <span className="absolute top-6 right-0 rounded-full border border-white/15 bg-brand-950/50 px-3 py-1.5 text-[11px] font-bold text-white/80 backdrop-blur">
+                    beach
+                  </span>
+                  <span className="absolute bottom-10 left-0 rounded-full border border-white/15 bg-brand-950/50 px-3 py-1.5 text-[11px] font-bold text-white/80 backdrop-blur">
+                    mountain
+                  </span>
+                  <span className="absolute top-1/2 -right-2 rounded-full border border-white/15 bg-brand-950/50 px-3 py-1.5 text-[11px] font-bold text-white/80 backdrop-blur">
+                    heritage
+                  </span>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function SunMark() {
+  return (
+    <svg viewBox="0 0 48 48" className="size-14 text-white" aria-hidden="true">
+      <circle cx="24" cy="17" r="5" fill="currentColor" opacity="0.95" />
+      <path
+        d="M9 32c4.5-8.8 10.5-13.2 15-13.2S34.5 23.2 39 32"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M14 38c3.6-5.8 7.2-8.7 10-8.7s6.4 2.9 10 8.7"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeOpacity="0.65"
+        strokeWidth="2.5"
+      />
+    </svg>
   );
 }

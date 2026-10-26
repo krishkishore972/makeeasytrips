@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="400" y1="0" x2="400" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CC8BF"/>
+      <stop offset="0.5" stop-color="#2F7C78"/>
+      <stop offset="1" stop-color="#063B38"/>
+    </linearGradient>
+    <linearGradient id="mountain" x1="0" y1="400" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D9EFEA"/>
+      <stop offset="0.45" stop-color="#6FA9A2"/>
+      <stop offset="1" stop-color="#0A4B47"/>
+    </linearGradient>
+    <linearGradient id="road" x1="400" y1="700" x2="400" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D9EFEA" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#04211F"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#sky)"/>
+  <circle cx="190" cy="220" r="74" fill="#FFE9B8" fill-opacity="0.72"/>
+  <path d="M0 640L120 420L210 540L330 280L470 540L580 390L800 660V1000H0V640Z" fill="url(#mountain)"/>
+  <path d="M330 280L372 380L330 370L298 390L330 280Z" fill="#FFFFFF" fill-opacity="0.75"/>
+  <path d="M120 420L160 500L128 492L104 506L120 420Z" fill="#FFFFFF" fill-opacity="0.58"/>
+  <path d="M0 760C120 716 232 724 354 764C482 806 622 806 800 758V1000H0V760Z" fill="#0A4B47"/>
+  <path d="M330 1000C360 860 382 760 400 700C418 760 440 860 470 1000H330Z" fill="url(#road)"/>
+  <g stroke="#FFE9B8" stroke-opacity="0.34" stroke-width="1.2">
+    <path d="M0 850C160 818 290 826 430 860C560 892 690 890 800 866"/>
+    <path d="M0 910C170 884 320 892 470 922C610 950 720 946 800 930"/>
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="400" y1="0" x2="400" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8D7B8"/>
+      <stop offset="0.52" stop-color="#E8A77C"/>
+      <stop offset="1" stop-color="#9D5C4A"/>
+    </linearGradient>
+    <linearGradient id="water" x1="400" y1="610" x2="400" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2F7C78"/>
+      <stop offset="1" stop-color="#0B3C3A"/>
+    </linearGradient>
+    <linearGradient id="palace" x1="180" y1="330" x2="620" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF2DE"/>
+      <stop offset="1" stop-color="#D9A878"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#sky)"/>
+  <circle cx="620" cy="210" r="92" fill="#FFE6B8" fill-opacity="0.9"/>
+  <path d="M0 590C120 550 220 566 330 604C450 646 560 644 680 608C724 594 764 592 800 600V1000H0V590Z" fill="#7C4A43" fill-opacity="0.42"/>
+  <path d="M0 646C128 620 258 632 386 664C526 700 650 696 800 664V1000H0V646Z" fill="url(#water)"/>
+  <g>
+    <rect x="214" y="430" width="372" height="222" rx="8" fill="url(#palace)"/>
+    <rect x="252" y="366" width="66" height="286" rx="6" fill="#F4D8B5"/>
+    <rect x="482" y="366" width="66" height="286" rx="6" fill="#F4D8B5"/>
+    <path d="M252 366C252 330 285 304 285 304C285 304 318 330 318 366H252Z" fill="#FFF2DE"/>
+    <path d="M482 366C482 330 515 304 515 304C515 304 548 330 548 366H482Z" fill="#FFF2DE"/>
+    <path d="M400 430C400 430 354 470 354 520V652H446V520C446 470 400 430 400 430Z" fill="#7C4A43" fill-opacity="0.55"/>
+    <g fill="#7C4A43" fill-opacity="0.4">
+      <rect x="276" y="430" width="18" height="34" rx="9"/>
+      <rect x="506" y="430" width="18" height="34" rx="9"/>
+      <rect x="276" y="492" width="18" height="34" rx="9"/>
+      <rect x="506" y="492" width="18" height="34" rx="9"/>
+    </g>
+  </g>
+  <g stroke="#FFE6B8" stroke-opacity="0.34" stroke-width="1.2">
+    <path d="M80 730C210 708 334 712 470 740C594 766 704 762 800 744"/>
+    <path d="M50 800C200 774 356 780 512 812C636 838 726 834 800 820"/>
+  </g>
+  <g fill="#0B3C3A" fill-opacity="0.72">
+    <path d="M94 650C94 586 128 548 128 548C128 548 162 586 162 650H94Z"/>
+    <rect x="124" y="650" width="8" height="82" rx="4"/>
+    <path d="M654 680C654 622 684 588 684 588C684 588 714 622 714 680H654Z"/>
+    <rect x="680" y="680" width="8" height="72" rx="4"/>
+  </g>
+</svg>

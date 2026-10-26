@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="120" y1="40" x2="1420" y2="980" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#04211F"/>
+      <stop offset="0.48" stop-color="#063B38"/>
+      <stop offset="1" stop-color="#0B5C57"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(1190 250) rotate(90) scale(430)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B4A" stop-opacity="0.62"/>
+      <stop offset="1" stop-color="#FF6B4A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sun" x1="1110" y1="150" x2="1270" y2="370" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD9A1"/>
+      <stop offset="0.55" stop-color="#FF8A70"/>
+      <stop offset="1" stop-color="#FF6B4A"/>
+    </linearGradient>
+    <linearGradient id="ridgeA" x1="0" y1="600" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A4B47"/>
+      <stop offset="1" stop-color="#127A70"/>
+    </linearGradient>
+    <linearGradient id="ridgeB" x1="0" y1="700" x2="1600" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#063B38"/>
+      <stop offset="1" stop-color="#04211F"/>
+    </linearGradient>
+    <linearGradient id="water" x1="800" y1="760" x2="800" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E6E68"/>
+      <stop offset="1" stop-color="#04211F"/>
+    </linearGradient>
+    <pattern id="grain" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FFFFFF" fill-opacity="0.055"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <rect width="1600" height="1000" fill="url(#grain)"/>
+
+  <circle cx="1188" cy="258" r="92" fill="url(#sun)"/>
+  <circle cx="1188" cy="258" r="126" stroke="#FFD9A1" stroke-opacity="0.18" stroke-width="1.5"/>
+  <circle cx="1188" cy="258" r="164" stroke="#FFD9A1" stroke-opacity="0.1" stroke-width="1.5"/>
+
+  <path d="M0 658C160 610 272 634 404 676C548 722 654 696 798 628C946 558 1082 570 1228 638C1352 696 1478 688 1600 640V1000H0V658Z" fill="url(#ridgeA)" fill-opacity="0.82"/>
+  <path d="M0 744C132 706 260 722 386 764C544 816 676 802 818 748C962 694 1114 702 1242 758C1372 814 1488 812 1600 774V1000H0V744Z" fill="url(#ridgeB)"/>
+  <path d="M0 842C172 812 330 830 492 866C674 906 810 900 972 860C1148 816 1310 826 1600 890V1000H0V842Z" fill="url(#water)"/>
+
+  <g stroke="#FFD9A1" stroke-opacity="0.24" stroke-width="1.2">
+    <path d="M1040 850C1140 836 1236 838 1338 858"/>
+    <path d="M984 890C1104 870 1234 874 1360 900"/>
+    <path d="M1090 930C1196 916 1300 920 1408 940"/>
+  </g>
+
+  <g stroke="#FFFFFF" stroke-opacity="0.36" stroke-linecap="round" stroke-width="2">
+    <path d="M300 280c14-14 28-14 42 0"/>
+    <path d="M336 306c10-10 20-10 30 0"/>
+    <path d="M420 232c12-12 24-12 36 0"/>
+  </g>
+
+  <g fill="#FFD9A1" fill-opacity="0.65">
+    <circle cx="220" cy="390" r="2"/>
+    <circle cx="270" cy="350" r="1.4"/>
+    <circle cx="332" cy="404" r="1.8"/>
+    <circle cx="1440" cy="400" r="1.6"/>
+    <circle cx="1370" cy="340" r="2"/>
+    <circle cx="1300" cy="430" r="1.3"/>
+  </g>
+
+  <path d="M0 1000L0 936C220 900 420 912 640 944C880 980 1080 984 1320 950C1420 936 1510 934 1600 946V1000H0Z" fill="#04211F"/>
+</svg>

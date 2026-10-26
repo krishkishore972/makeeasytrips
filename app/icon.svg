@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TripNest">
+  <rect width="64" height="64" rx="16" fill="#0B5C57"/>
+  <circle cx="32" cy="20.5" r="4.8" fill="#FF6B4A"/>
+  <path d="M12 41c5.8-11.6 13.5-17.4 20-17.4S46.2 29.4 52 41" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-width="3.8"/>
+  <path d="M18.5 48c4.6-7.4 9.1-11 13.5-11s8.9 3.6 13.5 11" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-opacity="0.68" stroke-width="3.2"/>
+</svg>
