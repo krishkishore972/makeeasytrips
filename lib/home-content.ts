@@ -23,7 +23,7 @@ export const HOME_FAQS: HomeFaq[] = [
   {
     question: "Can I change or cancel something I found?",
     answer:
-      "There is nothing to change yet. Cancellation rules are shown on flight, stay, and holiday pages so you can compare them, but the booking flow itself arrives in a later phase. No real reservation or payment is created.",
+      "The demo now has a mock review and confirmation step for flights, stays, and holidays. Confirming creates a reference from the URL only; nothing is saved, charged, or held. Cancellation rules are shown on detail pages so you can compare them, but they are illustrative and no real reservation exists.",
   },
   {
     question: "Why are the airlines, hotels, and packages unfamiliar?",

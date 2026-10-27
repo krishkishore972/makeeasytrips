@@ -77,7 +77,7 @@ Quick Links (route pages), About the Site, Important Links.
 ```
 /                         Home
 /flights                  Flight search + results (query-string driven)
-/flights/[id]             Flight review shell (booking opens in Phase 5)
+/flights/[id]             Flight detail with fare breakdown and review hand-off
 /hotels                   Hotel landing + results (query-string driven)
 /hotels/[id]              Hotel detail: gallery, amenities, rate plans, policies
 /holidays                 Holiday packages listing
@@ -701,7 +701,7 @@ with a reset link; it never throws.
 - `/flights`: search form, popular routes when no route is chosen, results with filter sidebar,
   sort, active-filter chips, mobile filter drawer, empty states, and loading skeletons.
 - `/flights/[id]`: itinerary, fare breakdown per traveller and in total, baggage and policy
-  details, same-route alternatives, and a Phase 5 booking notice.
+  details, same-route alternatives, and a hand-off to the Phase 5 review flow.
 - `/hotels`: search form, featured stays and city cards when no city is chosen, results with
   filters, sort, chips, drawer, empty states, and skeletons.
 - `/hotels/[id]`: Embla gallery, amenities, two clearly labelled demo rate plans (Saver and
@@ -742,8 +742,8 @@ Server responses were also checked with `curl` for `/flights`, filtered flight U
 
 - No map/list toggle, pagination, or fare calendar yet; the catalogue is small enough to render
   in one list, and paging would add state without adding learning value at this size.
-- Detail pages are shells: “Choose this rate” and “Reserve this stay” open an honest Phase 5
-  notice rather than a fake payment flow.
+- Detail pages hand off to the shared review flow: “Choose this rate” and “Reserve this stay”
+  open `/booking/review` rather than a fake payment step.
 - Filters are applied on the server after a URL change, so results update in one round trip
   instead of client-side filtering.
 - Hotel galleries use six original SVG scenes rotated per property; real photography remains out
@@ -817,7 +817,7 @@ destination is selected. Theme filters use OR within the theme group and AND acr
   theme/length/budget filters, sort, active chips, mobile drawer, empty states, and skeletons.
 - `/holidays/[slug]`: illustrated gallery, trip overview, highlights, day-by-day itinerary,
   inclusions/exclusions, plain-language notes, departure picker, traveller stepper, live price
-  breakdown, Phase 5 booking notice, and similar packages scored by shared city and themes.
+  breakdown, review hand-off, and similar packages scored by shared city and themes.
 - `/offers`: category tabs with counts, featured offer banner, copyable codes with `aria-live`
   feedback, validity, expandable terms, CTA links, invalid-category warning, and skeletons.
 - `/api/holidays`, `/api/holidays/[slug]`, `/api/offers`: JSON responses with `{ data, meta }`,
@@ -834,24 +834,24 @@ modelled.
 
 Verified against the production build with a headless Chromium driven over CDP (41 checks):
 
-| Check                  | Result                                                                  |
-| ---------------------- | ----------------------------------------------------------------------- |
-| Holiday catalogue      | 12 cards, featured strip, and 10 destination cards render               |
-| Theme filter           | `theme=beach` narrows 12 → 3; an active chip appears                    |
-| Combined filters       | `theme=beach&price=under-20k` narrows to 1 package                      |
-| Sort                   | `sort=price-asc` persists in the URL and reorders results               |
-| Reset                  | Clears theme/price and restores 12 cards                                |
-| Mobile filter drawer   | Opens, applies `theme=heritage` (5 results), closes via “Show results”  |
-| Holiday detail         | Itinerary, gallery, similar packages, and their own city names render   |
-| Traveller stepper      | Total moves ₹51,450 → ₹77,175 as travellers go 2 → 3                    |
-| Departure picker       | Selecting 5 Dec 2026 updates the summary and `aria-pressed` state       |
-| Booking notice         | Opens from “Reserve this holiday” with the Phase 5 message, then closes |
-| Offer board            | 12 offers render; featured banner and category counts are correct       |
-| Offer category tab     | `category=flights` narrows to 3 offers and marks the active tab         |
-| Invalid offer category | Warning appears and the board falls back to all 12 offers               |
-| Copy code              | Clipboard feedback announces “Offer code copied”                        |
-| Mobile offers          | No horizontal overflow at 390px; all six category tabs remain usable    |
-| Console / network      | No console errors and no failed requests during the run                 |
+| Check                  | Result                                                                 |
+| ---------------------- | ---------------------------------------------------------------------- |
+| Holiday catalogue      | 12 cards, featured strip, and 10 destination cards render              |
+| Theme filter           | `theme=beach` narrows 12 → 3; an active chip appears                   |
+| Combined filters       | `theme=beach&price=under-20k` narrows to 1 package                     |
+| Sort                   | `sort=price-asc` persists in the URL and reorders results              |
+| Reset                  | Clears theme/price and restores 12 cards                               |
+| Mobile filter drawer   | Opens, applies `theme=heritage` (5 results), closes via “Show results” |
+| Holiday detail         | Itinerary, gallery, similar packages, and their own city names render  |
+| Traveller stepper      | Total moves ₹51,450 → ₹77,175 as travellers go 2 → 3                   |
+| Departure picker       | Selecting 5 Dec 2026 updates the summary and `aria-pressed` state      |
+| Booking hand-off       | Opens the shared review step from “Reserve this holiday”               |
+| Offer board            | 12 offers render; featured banner and category counts are correct      |
+| Offer category tab     | `category=flights` narrows to 3 offers and marks the active tab        |
+| Invalid offer category | Warning appears and the board falls back to all 12 offers              |
+| Copy code              | Clipboard feedback announces “Offer code copied”                       |
+| Mobile offers          | No horizontal overflow at 390px; all six category tabs remain usable   |
+| Console / network      | No console errors and no failed requests during the run                |
 
 Server responses were checked with `curl` for `/holidays`, filtered holiday URLs,
 `/holidays/[slug]`, `/offers`, `/offers?category=flights`, and all three new API routes, including
@@ -869,7 +869,8 @@ Server responses were checked with `curl` for `/holidays`, filtered holiday URLs
 - Because detail content streams inside `<Suspense>`, an unknown slug renders the custom
   not-found UI with HTTP `200` after the shell has flushed (the same behaviour as the Phase 2
   flight and hotel details). The JSON APIs still return `404`.
-- Booking remains a Phase 5 notice; no payment, account, inventory hold, or persistence exists.
+- Booking is a mock review and confirmation flow only; no payment, account, inventory hold, or
+  persistence exists.
 
 ### 12.7 Next.js 16 notes
 
@@ -1002,3 +1003,131 @@ filters actually return the expected package (`UDR` → Lake City in Three Acts,
   effect body tripped the React hooks lint rule and caused an unnecessary render.
 - `data-carousel-status` is a small test hook on the visible counter; it does not change the
   accessible announcement.
+
+---
+
+## 14. Phase 5 implementation record (mock booking review and confirmation)
+
+Phase 5 adds the shared review and confirmation flow for flights, stays, and holidays. The scope
+is deliberately narrow: no payment, no account, no inventory hold, and no stored personal data.
+A booking is a **linkable selection**, not a record. Both routes rebuild everything from the URL
+and the cached CSV catalogue, so refreshing, bookmarking, or sharing a link produces the same
+result without a database.
+
+### 14.1 Routes and query contract
+
+| Route                   | Purpose                                                       |
+| ----------------------- | ------------------------------------------------------------- |
+| `/booking/review`       | Shared review step for a flight, stay, or holiday selection   |
+| `/booking/confirmation` | Demo reference, summary, and next steps after acknowledgement |
+
+Both routes are `noindex, nofollow` and render a friendly recovery state instead of a `404` when
+a link is incomplete, unknown, or stale.
+
+| Type      | Required params                                                                              |
+| --------- | -------------------------------------------------------------------------------------------- |
+| `flight`  | `type`, `id`, `depart`, `pax` (1–9), `cabin`                                                 |
+| `hotel`   | `type`, `id`, `checkin`, `checkout`, `rooms` (1–4), `guests` (1–12), `plan` (`saver`/`flex`) |
+| `holiday` | `type`, `slug`, `depart`, `travellers` (1–9)                                                 |
+
+`confirmed=1` is required on the confirmation route. The review form adds `acknowledge=1` as a
+required checkbox. Without `confirmed=1`, a confirmation link shows “Confirm your demo booking
+first.” and links back to the review step, so the confirmation cannot be reached by editing a URL
+alone.
+
+### 14.2 Validation, resolution, and pricing
+
+| File                        | Purpose                                                                     |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `lib/validation/booking.ts` | Zod discriminated union, friendly per-field messages, date-order refinement |
+| `lib/booking.ts`            | Selection resolver, summary model, deterministic reference, review links    |
+
+`parseBookingParams` never throws. It returns `{ selection, error }`, and the error text is
+written for a traveller rather than a developer (“Check-out needs to be after check-in.”). The
+hotel branch uses `superRefine` to reject a check-out that is not after check-in; the holiday
+branch re-checks the date against the package's `departure_dates` during resolution.
+
+`resolveBooking` loads the product through the existing cached helpers and reuses the Phase 2–3
+pricing functions, so the review total always matches the detail page:
+
+- Flights: `flightFareBreakdown(fare, pax)`
+- Stays: `hotelStayBreakdown(perNight, nights, rooms, tax)`, where Flex adds ₹900 per night
+- Holidays: `holidayPriceBreakdown(pricePerPerson, travellers)` with 5% demo tax
+
+References are derived, not stored: an FNV-1a hash of the canonical (sorted) selection params,
+rendered as `TN-FL-…`, `TN-ST-…`, or `TN-HL-…`. The same URL always produces the same reference.
+Verified examples: `TN-FL-WIB38P`, `TN-ST-D2OUQS`, `TN-HL-NOEMDR`.
+
+### 14.3 Components and interaction
+
+| Component                                    | Role                                                              |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| `components/booking/booking-progress.tsx`    | Three-step indicator with `aria-current="step"`                   |
+| `components/booking/booking-summary.tsx`     | Shared selection card and price panel                             |
+| `components/booking/booking-confirm.tsx`     | Native GET form with hidden params and a required acknowledgement |
+| `components/booking/booking-empty-state.tsx` | Recovery state with browse links                                  |
+| `components/booking/booking-skeletons.tsx`   | Streaming fallback for both routes                                |
+
+The acknowledgement form is a plain HTML `GET` form, not a Server Action. That keeps the flow
+stateless, makes the confirmation link shareable, and means the app needs no mutation endpoint.
+It collects only hidden selection params plus the checkbox; there are no name, email, phone, or
+payment fields anywhere in the flow.
+
+Hand-offs were added at the three product surfaces and the old `BookingNoticeDialog` was removed:
+
+- Flight detail: “Continue with this fare” → `/booking/review?type=flight…`
+- Hotel rate plans and price aside: “Choose this rate” / “Reserve this stay” → `type=hotel…`
+- Holiday booking panel: “Reserve this holiday” → `type=holiday…` (disabled until a departure is chosen)
+
+### 14.4 Copy and documentation corrections
+
+Phase 5 made the earlier “arrives in Phase 5” copy inaccurate, so it was updated across the app:
+the home FAQ, help centre, cancellation guide, payment page, my-trips page, wishlist links,
+flight return-leg note, holiday FAQ, and the README. Trains and cabs remain static shells and say
+so. The README now documents the booking params, example URLs, and verification commands.
+
+### 14.5 Verification
+
+Verified against the production build with headless Chromium over CDP (41 checks, all passing):
+
+| Check                | Result                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| Hand-off links       | All three product types carry the correct selection params   |
+| Review content       | Route, dates, plan, inclusions, and totals render correctly  |
+| Personal-data inputs | Only `hidden` and `checkbox` inputs exist in the review form |
+| Acknowledgement      | Checkbox is `required`; submitting reaches confirmation      |
+| References           | `TN-FL-…`, `TN-ST-…`, `TN-HL-…`; stable across reloads       |
+| Totals               | ₹7,400 flight, ₹91,568 hotel Flex, ₹77,175 holiday           |
+| Guard                | Unconfirmed confirmation link shows the review prompt        |
+| Invalid states       | Bad dates, unknown type, and missing product recover cleanly |
+| Metadata             | Both routes are `noindex, nofollow`                          |
+| Mobile               | No horizontal overflow at 390px on either route              |
+| Console / network    | No console errors and no failed requests                     |
+
+`curl` checks confirmed `200` responses and the expected copy for all three types, the unconfirmed
+guard, reversed hotel dates, an unknown booking type, and a missing flight id. The booking SVG was
+parsed to confirm it is well-formed and served with a `200`.
+
+### 14.6 Deliberate gaps
+
+- Nothing is persisted. The reference is a hash of the URL, not a reservation, and there is no
+  “my trips” record to return to.
+- No traveller details are collected, so the confirmation cannot show passenger or guest names.
+- No payment, cancellation, refund, or inventory hold exists, and the confirmation page says so.
+- Return-leg flight selection and combined fares are still not modelled; the flight flow books a
+  single outbound fare.
+- Holiday departures must match the package's published demo dates; arbitrary dates are rejected.
+- Offers are not applied to booking totals; they remain a browsable board.
+
+### 14.7 Next.js 16 notes
+
+- Both booking routes build as partial prerenders (`◐`): a static shell plus a streamed
+  search-param-dependent section.
+- Reading `searchParams` happens after `await connection()` inside `<Suspense>`, which is required
+  with `cacheComponents` and keeps the static shell cacheable.
+- The native `GET` form avoids a Server Action and keeps the confirmation URL reproducible; no
+  route handler or mutation layer was added.
+- `robots: { index: false, follow: false }` is set per route because these pages are meaningless
+  without a selection.
+- `bookingConfirmationHref` exists as a helper for future links but is intentionally unused while
+  confirmation requires the acknowledgement form.

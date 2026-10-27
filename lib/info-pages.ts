@@ -130,7 +130,7 @@ export const infoPages = {
       {
         heading: "Using the demo",
         body: [
-          "Search fields on the home page submit a query to the flights route. In Phase 1 that route confirms the query is in the URL; the result list, filters, and booking flow arrive in later phases.",
+          "Search fields submit a query to the flights, stays, or holidays route, and the filters and results all live in the URL. Choosing a fare, rate, or package opens a mock review step. Confirming creates a reference from the URL only; there is no account, payment, or saved trip.",
           "The sign-in and newsletter forms are intentionally non-functional. They show the interaction pattern and then explain that nothing was sent or stored.",
         ],
       },
@@ -146,7 +146,7 @@ export const infoPages = {
     title: "Cancellation guide",
     eyebrow: "Before you book",
     description:
-      "How cancellation information is meant to be shown once real booking flows exist. No live bookings are handled in this demo.",
+      "How cancellation information is shown in the demo, and what a real booking flow would need. No live bookings are handled.",
     sections: [
       {
         heading: "What the product should show",
@@ -158,7 +158,7 @@ export const infoPages = {
       {
         heading: "In this demo",
         body: [
-          "There are no bookings to cancel. The cancellation content is a design placeholder for the review and confirmation steps.",
+          "The review step repeats the selected fare or rate rules before confirmation. Confirming creates a demo reference from the URL only, so there is still nothing to cancel and no refund to process.",
         ],
       },
     ],
@@ -172,8 +172,8 @@ export const infoPages = {
       {
         heading: "The demo boundary",
         body: [
-          "The review step collects traveller details only to demonstrate form structure and validation. It does not send them to a server, store them in a database, or pass them to a payment provider.",
-          "The confirmation page is generated from local demo data. No card number, UPI ID, or bank detail is ever requested.",
+          "The review step deliberately collects no traveller details. It asks only for a demo acknowledgement, then generates a reference from the URL params.",
+          "The confirmation page is generated from the same local demo data. No card number, UPI ID, or bank detail is ever requested.",
         ],
       },
       {

@@ -40,8 +40,8 @@ export default function MyTripsPage() {
           <p className="eyebrow mt-6">Your journeys</p>
           <h1 className="mt-2 text-[clamp(2rem,4vw,2.75rem)]">No trips yet.</h1>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-muted">
-            When the booking flow arrives, completed demo trips will appear here. TripNest does not
-            create accounts or keep personal details, so there is nothing to sign in to.
+            The demo confirmation is a shareable URL, not a saved account record. TripNest does not
+            create accounts or keep personal details, so completed trips will not appear here.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

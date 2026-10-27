@@ -332,9 +332,9 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
                     </span>
                   </summary>
                   <p className="mt-2 pr-8 text-xs leading-6 text-muted">
-                    The departure buttons update the demo summary and total. Nothing is held, no
-                    account is created, and no payment is taken. The review and confirmation screens
-                    arrive in Phase 5.
+                    The departure buttons update the demo summary and total. Choosing one opens a
+                    mock review, and confirming creates a demo reference only. Nothing is held, no
+                    account is created, and no payment is taken.
                   </p>
                 </details>
               </div>
@@ -373,6 +373,7 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
 
           <aside className="space-y-4 lg:sticky lg:top-28">
             <HolidayBookingPanel
+              slug={holiday.slug}
               title={holiday.title}
               pricePerPerson={holiday.price_per_person}
               departures={holiday.departure_dates}

@@ -15,17 +15,17 @@ const ideas = [
   {
     name: "Udaipur",
     note: "Lakeside heritage · 3 nights",
-    href: "/holidays?destination=udaipur",
+    href: "/holidays?destination=UDR",
   },
   {
     name: "Goa",
     note: "Slow coast · 4 nights",
-    href: "/holidays?destination=goa",
+    href: "/holidays?destination=GOI",
   },
   {
     name: "Ladakh",
     note: "High Himalaya · 6 nights",
-    href: "/holidays?destination=ladakh",
+    href: "/holidays?destination=IXL",
   },
 ] as const;
 

@@ -6,8 +6,8 @@ connected to any travel brand. There are no real bookings, payments, accounts, o
 personal details.
 
 The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), 3
-(holidays, offers, and APIs), and 4 (home and editorial polish) are complete.** The mock checkout
-arrives in Phase 5.
+(holidays, offers, and APIs), 4 (home and editorial polish), and 5 (mock booking review and
+confirmation) are complete.** The quality and accessibility pass arrives in Phase 6.
 
 ## What is in this build
 
@@ -23,12 +23,14 @@ arrives in Phase 5.
   newsletter, FAQ, and a final call to action
 - A typed, cached CSV data layer with 16 cities, 540 flights, 32 stays, 12 holidays, and 12 offers
 - Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
-  result cards, and a review shell per flight
+  result cards, and a detail page with fare breakdown and review hand-off
 - Hotel search and results: city/date/room form, filters, sorting, result cards, a landing page
   with featured stays, and a detail page with gallery, amenities, rate plans, and policies
 - Holiday catalogue: destination-led browsing, theme/length/budget filters, sorting, featured and
   destination strips, and package detail pages with gallery, day-by-day itinerary, inclusions,
   departure picker, live demo totals, and similar packages
+- Shared mock booking flow: a URL-driven review step for flights, stays, and holidays, a native
+  acknowledgement form, deterministic demo references, and a confirmation page with next steps
 - Offer board: category tabs with counts, a featured banner, copyable demo codes, validity dates,
   and expandable terms
 - JSON APIs at `/api/flights`, `/api/hotels`, `/api/holidays`, `/api/offers`, and `/api/cities`,
@@ -62,11 +64,13 @@ npm run start
 | ------------------------ | --------------------------------------------------------------------------------------- |
 | `/`                      | Full home composition with data-driven carousels, destinations, stays, and FAQ          |
 | `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states                   |
-| `/flights/[id]`          | Flight review shell with fare breakdown and a Phase 5 booking notice                    |
+| `/flights/[id]`          | Flight detail with fare breakdown and a review hand-off                                 |
 | `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
 | `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box             |
 | `/holidays`              | Holiday catalogue: destination strip, theme/length/budget filters, sort, featured trips |
 | `/holidays/[slug]`       | Package detail: gallery, itinerary, inclusions, departure picker, live total, similar   |
+| `/booking/review`        | Shared mock review for a flight, stay, or holiday selection                             |
+| `/booking/confirmation`  | Mock confirmation with a deterministic reference and next steps                         |
 | `/trains`, `/cabs`       | Static shells, intentionally out of the current roadmap                                 |
 | `/offers`                | Offer board with category tabs, featured offer, copyable codes, and terms               |
 | `/my-trips`, `/wishlist` | Static empty-state demos                                                                |
@@ -89,6 +93,9 @@ and the server renders the matching set:
   `amenities`, `breakfast`, `cancel`
 - Holidays: `destination`, `theme`, `duration`, `price`, `sort`, `travellers`, `depart`
 - Offers: `category` (`all`, `flights`, `hotels`, `holidays`, `trains`, `cabs`)
+- Booking review: `type` (`flight`, `hotel`, `holiday`) plus the selected product params
+  (`id`/`slug`, dates, `pax`/`travellers`, `cabin`, `rooms`, `guests`, `plan`)
+- Booking confirmation: the same params plus `confirmed=1`
 
 Example:
 
@@ -97,6 +104,9 @@ Example:
 /hotels?city=GOI&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&stars=5
 /holidays?destination=GOI&theme=beach,food&duration=short&price=under-20k&travellers=3
 /offers?category=holidays
+/booking/review?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy
+/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&plan=flex
+/booking/review?type=holiday&slug=susegad-by-the-sea&depart=2026-11-14&travellers=3
 ```
 
 ## Structure
@@ -104,12 +114,13 @@ Example:
 ```text
 app/                  Routes, layouts, loading/error/not-found, APIs, global styles
   api/                JSON route handlers for flights, hotels, holidays, offers, and cities
-  flights/            Search/results page, detail shell, loading skeletons
+  booking/            Shared review and confirmation routes with loading skeletons
+  flights/            Search/results page, detail page, loading skeletons
   holidays/           Catalogue page, package detail, loading skeletons
   hotels/             Landing/results page, detail page, loading skeletons
   offers/             Offer board and loading skeleton
 components/
-  booking/            Mock booking notice dialog (Phase 5 hand-off)
+  booking/            Summary, price panel, acknowledgement form, progress, empty states
   flights/            Search form, filters, cards, popular routes, skeletons
   holidays/           Search form, filters, cards, gallery, itinerary, booking panel, skeletons
   home/               Home search widget, destination/stay cards, FAQ, field notes
@@ -124,8 +135,9 @@ data/                 CSV catalogue: cities, flights, hotels, holidays, offers
 docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 hooks/                Small client hooks (scroll state, media query)
 lib/
+  booking.ts          Selection resolver, price summary, links, demo reference
   data/               Cached CSV loader, Zod schemas, query and facet helpers
-  validation/         URL search-param parsing and defaults
+  validation/         URL search-param and booking parsing with Zod
   pricing.ts          Fare, stay, and holiday totals with tax bands
   search-options.ts   Filter, sort, cabin, amenity, holiday, and offer option tables
   dates.ts            Date parsing, labels, and night counts
@@ -175,6 +187,17 @@ curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/flights?from
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/offers?category=nope" # 400
 ```
 
+Booking hand-offs are URL-driven, so they can be checked directly:
+
+```bash
+curl -s "http://localhost:3000/booking/review?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy" | grep -o "Review your demo trip"
+curl -s "http://localhost:3000/booking/confirmation?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy&confirmed=1" | grep -o "TN-FL-[A-Z0-9]*"
+curl -s "http://localhost:3000/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&plan=flex" | grep -o "Stay total"
+curl -s "http://localhost:3000/booking/review?type=holiday&slug=susegad-by-the-sea&depart=2026-11-14&travellers=3" | grep -o "Package total"
+curl -s "http://localhost:3000/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-17&checkout=2026-11-13&rooms=1&guests=2&plan=flex" | grep -o "Check-out needs to be after check-in"
+curl -s "http://localhost:3000/booking/confirmation?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy" | grep -o "Confirm your demo booking first"
+```
+
 On the home page, the offer and holiday carousels use previous/next controls with a polite slide
 counter, the FAQ uses native disclosures, and the newsletter confirms that nothing was stored.
 Destination and theme links point at real catalogue query params:
@@ -210,7 +233,7 @@ keeps one typed source of truth. Trains and cabs remain static shells by design.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2–4 implementation records: observed
+`docs/REA.md` records the Step 0 analysis and the Phase 2–5 implementation records: observed
 sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions,
 verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
 analysis relies on archived snapshots and public page structure. No proprietary code, logos,
@@ -226,7 +249,8 @@ photography, or marketing copy was reused.
    board, route handlers, Zod query validation.
 4. **Phase 4 — Home and editorial polish (done):** full home composition, accessible carousels,
    curated destinations and stays, field notes, newsletter, and FAQ.
-5. **Phase 5 — Booking:** mock review, confirmation, no payment or persistence.
+5. **Phase 5 — Booking (done):** URL-driven review and confirmation for flights, stays, and
+   holidays, deterministic demo references, and no payment or persistence.
 6. **Phase 6 — Quality:** accessibility audit, performance pass, tests, documentation.
 
 ## Disclaimer

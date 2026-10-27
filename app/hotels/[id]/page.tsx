@@ -17,7 +17,6 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
-import { BookingNoticeDialog } from "@/components/booking/booking-notice-dialog";
 import { HotelCard } from "@/components/hotels/hotel-card";
 import { HotelGallery } from "@/components/hotels/hotel-gallery";
 import { HotelDetailSkeleton } from "@/components/hotels/hotel-skeletons";
@@ -360,30 +359,21 @@ async function HotelDetailContent({ params, searchParams }: HotelDetailProps) {
                         <p className="text-[10px] leading-4 text-muted-soft">
                           {formatCurrency(plan.total)} total incl. taxes
                         </p>
-                        <BookingNoticeDialog
-                          title={`${hotel.name} · ${plan.name} · ${staySummary}`}
-                          summary={
-                            <div className="space-y-1.5">
-                              <div className="flex items-center justify-between gap-3">
-                                <span>{plan.name}</span>
-                                <span className="font-extrabold">{formatCurrency(plan.total)}</span>
-                              </div>
-                              <p className="text-[11px] text-muted">
-                                {formatNightLabel(stay.nights)} ·{" "}
-                                {formatGuestLabel(stay.rooms, stay.guests)}
-                              </p>
-                            </div>
-                          }
-                          trigger={
-                            <button
-                              type="button"
-                              className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 px-4 py-2.5 text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-brand-800"
-                            >
-                              Choose this rate
-                              <ArrowRight aria-hidden="true" className="size-3.5" />
-                            </button>
-                          }
-                        />
+                        <Link
+                          href={`/booking/review${toQueryString({
+                            type: "hotel",
+                            id: hotel.id,
+                            checkin: stay.checkIn,
+                            checkout: stay.checkOut,
+                            rooms: stay.rooms,
+                            guests: stay.guests,
+                            plan: plan.id,
+                          })}`}
+                          className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 px-4 py-2.5 text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-brand-800"
+                        >
+                          Choose this rate
+                          <ArrowRight aria-hidden="true" className="size-3.5" />
+                        </Link>
                       </div>
                     </div>
                   </li>
@@ -554,31 +544,21 @@ async function HotelDetailContent({ params, searchParams }: HotelDetailProps) {
                 {formatDateLong(stay.checkIn)} → {formatDateLong(stay.checkOut)}
               </p>
 
-              <BookingNoticeDialog
-                title={`${hotel.name} · ${staySummary}`}
-                summary={
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-3">
-                      <span>
-                        {hotel.room_type} · {hotel.breakfast ? "Breakfast included" : "Room only"}
-                      </span>
-                      <span className="font-extrabold">{formatCurrency(price.total)}</span>
-                    </div>
-                    <p className="text-[11px] text-muted">
-                      {formatNightLabel(stay.nights)} · {formatGuestLabel(stay.rooms, stay.guests)}
-                    </p>
-                  </div>
-                }
-                trigger={
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
-                  >
-                    Reserve this stay
-                    <ArrowRight aria-hidden="true" className="size-4" />
-                  </button>
-                }
-              />
+              <Link
+                href={`/booking/review${toQueryString({
+                  type: "hotel",
+                  id: hotel.id,
+                  checkin: stay.checkIn,
+                  checkout: stay.checkOut,
+                  rooms: stay.rooms,
+                  guests: stay.guests,
+                  plan: "saver",
+                })}`}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
+              >
+                Reserve this stay
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </Link>
 
               <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-4 text-muted-soft">
                 <ShieldCheck

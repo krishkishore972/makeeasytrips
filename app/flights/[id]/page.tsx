@@ -19,7 +19,6 @@ import {
 import { AirlineMark } from "@/components/flights/airline-mark";
 import { FlightCard } from "@/components/flights/flight-card";
 import { FlightDetailSkeleton } from "@/components/flights/flight-skeletons";
-import { BookingNoticeDialog } from "@/components/booking/booking-notice-dialog";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { formatDateLong, formatDuration } from "@/lib/dates";
 import { getCityMap } from "@/lib/data/cities";
@@ -390,26 +389,19 @@ async function FlightDetailContent({ params, searchParams }: FlightDetailProps) 
                 </div>
               </dl>
 
-              <BookingNoticeDialog
-                title={`${flight.airline} ${flight.flight_number} · ${flight.from_code} → ${flight.to_code} on ${formatDateLong(departDate)}`}
-                summary={
-                  <div className="flex items-center justify-between gap-3">
-                    <span>
-                      {cabinLabel} · {pax} {pax === 1 ? "traveller" : "travellers"}
-                    </span>
-                    <span className="font-extrabold">{formatCurrency(breakdown.total)}</span>
-                  </div>
-                }
-                trigger={
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
-                  >
-                    Continue with this fare
-                    <ArrowRight aria-hidden="true" className="size-4" />
-                  </button>
-                }
-              />
+              <Link
+                href={`/booking/review${toQueryString({
+                  type: "flight",
+                  id: flight.id,
+                  depart: departDate,
+                  pax,
+                  cabin,
+                })}`}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
+              >
+                Continue with this fare
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </Link>
 
               <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-4 text-muted-soft">
                 <ShieldCheck

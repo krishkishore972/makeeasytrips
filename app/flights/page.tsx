@@ -213,8 +213,8 @@ async function FlightsExperience({ searchParams }: FlightsPageProps) {
           </div>
           {parsed.query.returnDate ? (
             <p className="mt-2 border-t border-brand-100 pt-2 text-[11px] leading-5 text-muted">
-              Showing outbound options. Return-leg selection and combined fares arrive with the
-              booking flow.
+              Showing outbound options. Return-leg selection and combined fares are not modelled in
+              this demo.
             </p>
           ) : null}
         </div>
