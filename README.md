@@ -5,9 +5,9 @@ flows of modern travel-booking products. It is **not** affiliated with, endorsed
 connected to any travel brand. There are no real bookings, payments, accounts, or stored
 personal details.
 
-The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), and 3
-(holidays, offers, and APIs) are complete.** The full home composition and the mock checkout
-arrive in later phases.
+The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), 3
+(holidays, offers, and APIs), and 4 (home and editorial polish) are complete.** The mock checkout
+arrives in Phase 5.
 
 ## What is in this build
 
@@ -18,7 +18,9 @@ arrive in later phases.
 - Lenis smooth scrolling with `prefers-reduced-motion` support
 - Motion (Framer Motion) shared variants, scroll reveals, and reduced-motion handling
 - Responsive two-tier navbar, mobile navigation sheet, demo login dialog, and footer
-- Foundation home page: hero, static GET search widget, destinations, offers, and how-it-works
+- Full home composition: hero with catalogue counts, tabbed GET search widget, trust strip,
+  offer and holiday carousels, curated destinations, trending stays, how-it-works, field notes,
+  newsletter, FAQ, and a final call to action
 - A typed, cached CSV data layer with 16 cities, 540 flights, 32 stays, 12 holidays, and 12 offers
 - Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
   result cards, and a review shell per flight
@@ -58,7 +60,7 @@ npm run start
 
 | Route                    | State                                                                                   |
 | ------------------------ | --------------------------------------------------------------------------------------- |
-| `/`                      | Foundation home preview (full composition lands in Phase 4)                             |
+| `/`                      | Full home composition with data-driven carousels, destinations, stays, and FAQ          |
 | `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states                   |
 | `/flights/[id]`          | Flight review shell with fare breakdown and a Phase 5 booking notice                    |
 | `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
@@ -110,13 +112,13 @@ components/
   booking/            Mock booking notice dialog (Phase 5 hand-off)
   flights/            Search form, filters, cards, popular routes, skeletons
   holidays/           Search form, filters, cards, gallery, itinerary, booking panel, skeletons
-  home/               Home-specific search widget
+  home/               Home search widget, destination/stay cards, FAQ, field notes
   hotels/             Search form, filters, cards, gallery, skeletons
   layout/             Navbar, mobile nav, login dialog, footer, newsletter
   offers/             Offer card, category tabs, copy-code button, icon mapper, skeletons
   providers/          Motion and Lenis providers
   search/             Shared filter group, flag, sort, drawer, chips, URL hook
-  shared/             Logo, breadcrumbs, rating, amenities, empty state, reveals
+  shared/             Logo, breadcrumbs, rating, amenities, empty state, reveals, carousel
   ui/                 Small primitives (buttons, dialogs, popovers, selects)
 data/                 CSV catalogue: cities, flights, hotels, holidays, offers
 docs/REA.md           Reverse-engineering notes, evidence, and design decisions
@@ -127,6 +129,7 @@ lib/
   pricing.ts          Fare, stay, and holiday totals with tax bands
   search-options.ts   Filter, sort, cabin, amenity, holiday, and offer option tables
   dates.ts            Date parsing, labels, and night counts
+  home-content.ts     Original home FAQ and field-note copy
 public/images/        Original abstract SVG placeholders
 types/                Shared TypeScript types
 ```
@@ -172,6 +175,15 @@ curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/flights?from
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/offers?category=nope" # 400
 ```
 
+On the home page, the offer and holiday carousels use previous/next controls with a polite slide
+counter, the FAQ uses native disclosures, and the newsletter confirms that nothing was stored.
+Destination and theme links point at real catalogue query params:
+
+```bash
+curl -s "http://localhost:3000/holidays?destination=UDR" | grep -o "Lake City in Three Acts"
+curl -s "http://localhost:3000/holidays?theme=mountains" | grep -o "High Desert"
+```
+
 In the UI, changing a filter or sort order should update the URL and re-render the server-driven
 result list. Filters use one shared client hook (`useSearchParamsUpdater`) so the back button and
 shared links behave as expected.
@@ -198,10 +210,10 @@ keeps one typed source of truth. Trains and cabs remain static shells by design.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2 and Phase 3 implementation records:
-observed sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design
-decisions, verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so
-the analysis relies on archived snapshots and public page structure. No proprietary code, logos,
+`docs/REA.md` records the Step 0 analysis and the Phase 2–4 implementation records: observed
+sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions,
+verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
+analysis relies on archived snapshots and public page structure. No proprietary code, logos,
 photography, or marketing copy was reused.
 
 ## Roadmap
@@ -212,7 +224,8 @@ photography, or marketing copy was reused.
    filters, sorting, result cards, detail shells.
 3. **Phase 3 — Holidays, offers, and APIs (done):** holiday catalogue and detail pages, offer
    board, route handlers, Zod query validation.
-4. **Phase 4 — Home and editorial polish:** full home composition, carousels, FAQ, richer content.
+4. **Phase 4 — Home and editorial polish (done):** full home composition, accessible carousels,
+   curated destinations and stays, field notes, newsletter, and FAQ.
 5. **Phase 5 — Booking:** mock review, confirmation, no payment or persistence.
 6. **Phase 6 — Quality:** accessibility audit, performance pass, tests, documentation.
 

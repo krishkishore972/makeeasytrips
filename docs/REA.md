@@ -582,7 +582,7 @@ Key adaptations:
 
 ---
 
-## 8. Observed content architecture (for Phase 4)
+## 8. Observed content architecture (Phase 4 input)
 
 The archived homepage JSON exposes this card order:
 
@@ -606,17 +606,18 @@ Departure/Return, Travellers & Class, “Book round trip for great savings”,
 trending searches, recent searches, fare calendar, super offers, web check-in,
 travel guidelines, and a long FAQ.
 
-**TripNest Phase 4 order (decision):**
+**TripNest Phase 4 order (implemented in §13):**
 
 1. Hero + tabbed search
 2. Trust strip
 3. Offers carousel
 4. Popular destinations
-5. Trending hotels
-6. Holiday ideas
+5. Trending stays
+6. Holiday ideas carousel
 7. “Why TripNest” / how it works
-8. FAQ
-9. Newsletter / app-style CTA
+8. Field notes + newsletter
+9. FAQ
+10. Final call to action
 
 ---
 
@@ -877,3 +878,127 @@ Server responses were checked with `curl` for `/holidays`, filtered holiday URLs
 - New loading routes (`/holidays`, `/holidays/[slug]`, `/offers`) reuse the skeleton components.
 - `generateMetadata` for holiday details runs independently of the streamed page and returns a
   safe fallback title for unknown slugs.
+
+---
+
+## 13. Phase 4 implementation record (home and editorial polish)
+
+Phase 4 replaces the foundation home preview with a catalogue-driven composition. The page keeps
+the Phase 1 hero and search widget, then adds an editorial sequence built from the same cached CSV
+data as the search pages. All copy, package names, offer codes, and imagery remain original demo
+content.
+
+### 13.1 Composition order
+
+1. Hero with catalogue counts and links into the current edit
+2. Tabbed GET search widget
+3. Trust strip
+4. Offers carousel (six offers, one from each travel line where possible)
+5. Curated destination cards (five city codes)
+6. Trending stays (four guest-favourite stays)
+7. Holiday ideas carousel (four featured packages)
+8. How it works
+9. Field notes and newsletter
+10. FAQ
+11. Final call to action
+
+The home page is a static Server Component at build time. It reads the cached CSV layer through
+`getHomePageData()` and needs no `connection()` because it does not depend on search params or
+the current date.
+
+### 13.2 Data composition
+
+| File                  | Purpose                                                                   |
+| --------------------- | ------------------------------------------------------------------------- |
+| `lib/data/home.ts`    | `getHomePageData`, curated destination codes, stays, holidays, and offers |
+| `lib/home-content.ts` | Original FAQ answers and three field notes                                |
+
+`getHomePageData()` returns destinations, stays, holidays, offers, and catalogue counts. The
+destination list is deliberately curated (`UDR`, `GOI`, `IXL`, `COK`, `JAI`) rather than sorted
+alphabetically, so the opening screen mixes lakes, coast, mountains, backwaters, and heritage.
+Each destination uses its most relevant featured package, city stats, and an original SVG scene.
+
+Offers are selected with a category-first pass, then filled from the remaining list. That keeps
+the home carousel from being all flights simply because the CSV is ordered that way. Stays and
+holidays use the existing featured helpers and sort by rating.
+
+Hero counts are derived from the catalogue (`16` cities, `32` stays, `12` holidays) instead of the
+earlier hardcoded `60+` and `1,200+` claims.
+
+### 13.3 Components and interaction
+
+| Component                               | Role                                                              |
+| --------------------------------------- | ----------------------------------------------------------------- |
+| `components/shared/carousel.tsx`        | Embla carousel with prev/next controls and a polite slide counter |
+| `components/home/destination-card.tsx`  | Image-led destination card with count and starting price          |
+| `components/home/stay-card.tsx`         | Compact featured-stay card with rating and nightly price          |
+| `components/home/faq.tsx`               | Native `<details>` disclosures for the home FAQ                   |
+| `components/home/travel-notes.tsx`      | Three field-note cards linking to valid holiday themes            |
+| `components/home/hero-search.tsx`       | Existing tabbed search widget, unchanged                          |
+| `components/offers/offer-card.tsx`      | Reused inside the home offers carousel                            |
+| `components/holidays/holiday-card.tsx`  | Reused inside the home holiday carousel                           |
+| `components/layout/newsletter-form.tsx` | Existing demo newsletter form, reused in the field-notes panel    |
+
+The carousel renders every slide in the server HTML, so links and prices are readable without
+JavaScript. Controls are 44px targets, the selected slide is announced through
+`aria-live="polite"`, and `useReducedMotion()` sets the Embla duration to zero. Embla's initial
+state is synced after `requestAnimationFrame` so the effect does not trigger a cascading render.
+
+The FAQ uses native disclosures rather than a custom accordion: keyboard behaviour, focus, and
+`open` state come from the browser. The newsletter form stays a client leaf and confirms that no
+email was stored or sent.
+
+### 13.4 Link and content corrections
+
+The foundation home linked destinations with display names (`?destination=udaipur`) and used
+`theme=mountain`. Phase 4 replaces those with catalogue codes and enum values:
+
+- Destinations: `/holidays?destination=UDR`, `GOI`, `IXL`, `COK`, `JAI`
+- Themes: `beach`, `mountains`, `heritage`, `food`, plus field-note links to `wellness` and `city`
+
+All 33 internal links rendered on the home page were fetched during verification and returned a
+status below `400`.
+
+### 13.5 Interaction verification
+
+Verified against the production build with headless Chromium over CDP (27 checks):
+
+| Check                       | Result                                                                      |
+| --------------------------- | --------------------------------------------------------------------------- |
+| Hero heading and counts     | Correct heading; derived counts render as `16`, `32`, and `12`              |
+| Section order               | Eleven sections appear in the planned order                                 |
+| Destination and theme links | City codes and valid theme values only                                      |
+| Carousels                   | Two carousels, 10 slides server-rendered, counters start at 1 / 6 and 1 / 4 |
+| Carousel controls           | Previous disabled at start; next advances to 2 / 6                          |
+| FAQ                         | Opens on click and shows the demo answer                                    |
+| Newsletter                  | Submits to the demo confirmation state                                      |
+| Internal links              | All 33 home links respond below 400                                         |
+| Mobile layout               | No horizontal overflow at 390px; one full slide visible and scrollable      |
+| Reduced motion              | Reveals are visible; carousel advances without a tween                      |
+| Console / network           | No console errors and no failed requests                                    |
+
+`curl` checks confirmed `200` for each destination and theme link, and confirmed the destination
+filters actually return the expected package (`UDR` → Lake City in Three Acts, `IXL` → High Desert,
+`COK` → Backwater Houseboat Drift, `JAI` → Fort and Courtyard Loop). Theme checks confirmed
+`mountains`, `wellness`, and `city` return matching packages.
+
+### 13.6 Deliberate gaps
+
+- The home edit is curated in code, not managed by a CMS. Changing the five destination cards
+  means editing `HOME_DESTINATION_CODES`.
+- Carousels do not autoplay. Explicit controls are easier to understand, kinder to reduced-motion
+  users, and keep the page calm.
+- The FAQ is static editorial content, not searchable and not connected to the support pages.
+- Field notes are short teasers; there is no article route behind them. They link into filtered
+  holiday results instead.
+- Offers are still a board, not an applied discount, and the newsletter remains a demo form.
+
+### 13.7 Next.js 16 notes
+
+- The home route stays static (`○ /`) because all data comes from cached CSVs at build time.
+- Server-rendered carousel slides avoid a client-only empty state; hydration only adds the Embla
+  behaviour and control state.
+- The carousel's initial sync runs in `requestAnimationFrame`; calling `setState` directly in the
+  effect body tripped the React hooks lint rule and caused an unnecessary render.
+- `data-carousel-status` is a small test hook on the visible counter; it does not change the
+  accessible announcement.

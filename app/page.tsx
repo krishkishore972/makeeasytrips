@@ -5,14 +5,11 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  BedDouble,
   Compass,
   HeartHandshake,
   Landmark,
   MapPin,
   Mountain,
-  Palmtree,
-  Plane,
   ShieldCheck,
   Sparkles,
   Star,
@@ -21,10 +18,20 @@ import {
   Waves,
   type LucideIcon,
 } from "lucide-react";
+import { HolidayCard } from "@/components/holidays/holiday-card";
+import { DestinationCard } from "@/components/home/destination-card";
+import { Faq } from "@/components/home/faq";
 import { HeroSearch } from "@/components/home/hero-search";
+import { StayCard } from "@/components/home/stay-card";
+import { TravelNotes } from "@/components/home/travel-notes";
+import { NewsletterForm } from "@/components/layout/newsletter-form";
+import { OfferCard } from "@/components/offers/offer-card";
+import { Carousel } from "@/components/shared/carousel";
 import { RevealGroup, RevealItem, ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { formatCurrency } from "@/lib/utils";
+import { getHomePageData } from "@/lib/data/home";
+import { HOME_FAQS, TRAVEL_NOTES } from "@/lib/home-content";
+import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: { absolute: "TripNest — Travel that feels like yours." },
@@ -58,115 +65,11 @@ const valueProps = [
   },
 ] as const;
 
-const destinations = [
-  {
-    name: "Udaipur",
-    region: "Rajasthan",
-    blurb: "Lakeside palaces, rooftop dinners, and slow evenings.",
-    price: 14900,
-    nights: 3,
-    rating: 4.8,
-    image: "/images/destination-udaipur.svg",
-    href: "/holidays?destination=udaipur",
-  },
-  {
-    name: "Goa",
-    region: "Konkan coast",
-    blurb: "Susegad mornings, long lunches, and salt in the air.",
-    price: 12400,
-    nights: 4,
-    rating: 4.7,
-    image: "/images/destination-goa.svg",
-    href: "/holidays?destination=goa",
-  },
-  {
-    name: "Ladakh",
-    region: "Himalaya",
-    blurb: "High passes, quiet monasteries, and impossible skies.",
-    price: 24800,
-    nights: 6,
-    rating: 4.9,
-    image: "/images/destination-ladakh.svg",
-    href: "/holidays?destination=ladakh",
-  },
-  {
-    name: "Kerala",
-    region: "Malabar coast",
-    blurb: "Backwater rhythm, spice gardens, and rain on the roof.",
-    price: 18600,
-    nights: 5,
-    rating: 4.8,
-    image: "/images/destination-kerala.svg",
-    href: "/holidays?destination=kerala",
-  },
-] as const;
-
 const themes: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Slow beach days", href: "/holidays?theme=beach", icon: Waves },
-  { label: "Mountain air", href: "/holidays?theme=mountain", icon: Mountain },
+  { label: "Mountain air", href: "/holidays?theme=mountains", icon: Mountain },
   { label: "Heritage walks", href: "/holidays?theme=heritage", icon: Landmark },
   { label: "Food trails", href: "/holidays?theme=food", icon: UtensilsCrossed },
-];
-
-type OfferTone = "coral" | "teal" | "gold";
-
-const offerTones: Record<OfferTone, { card: string; icon: string; code: string; link: string }> = {
-  coral: {
-    card: "border-accent-100 bg-accent-50",
-    icon: "bg-accent-500 text-white",
-    code: "border-accent-200 text-accent-700",
-    link: "text-accent-700",
-  },
-  teal: {
-    card: "border-brand-100 bg-brand-50",
-    icon: "bg-brand-700 text-white",
-    code: "border-brand-200 text-brand-800",
-    link: "text-brand-700",
-  },
-  gold: {
-    card: "border-gold-100 bg-[#fffaf0]",
-    icon: "bg-gold-500 text-brand-950",
-    code: "border-gold-500/40 text-gold-600",
-    link: "text-gold-600",
-  },
-};
-
-const offers: {
-  eyebrow: string;
-  title: string;
-  detail: string;
-  code: string;
-  href: string;
-  icon: LucideIcon;
-  tone: OfferTone;
-}[] = [
-  {
-    eyebrow: "Flights",
-    title: "First flight, lighter fare",
-    detail: "Up to 12% off your first domestic search in the demo catalogue.",
-    code: "NESTFLY",
-    href: "/offers?category=flights",
-    icon: Plane,
-    tone: "coral",
-  },
-  {
-    eyebrow: "Stays",
-    title: "Stay two nights, slow down",
-    detail: "Up to 18% off character-led stays when you book a longer pause.",
-    code: "NESTSTAY",
-    href: "/offers?category=hotels",
-    icon: BedDouble,
-    tone: "teal",
-  },
-  {
-    eyebrow: "Holidays",
-    title: "The long-weekend edit",
-    detail: "A flat ₹3,000 off handpicked three-night escapes this season.",
-    code: "NESTTRIP",
-    href: "/offers?category=holidays",
-    icon: Palmtree,
-    tone: "gold",
-  },
 ];
 
 const steps = [
@@ -191,7 +94,11 @@ const steps = [
   },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { destinations, stays, holidays, offers, counts } = await getHomePageData();
+  const featuredDestination = destinations[0];
+  const featuredStay = stays[0];
+
   return (
     <>
       <section className="hero-mesh relative overflow-hidden text-white">
@@ -240,9 +147,9 @@ export default function HomePage() {
 
               <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-white/15 pt-6">
                 {[
-                  { value: "60+", label: "destinations" },
-                  { value: "1,200+", label: "demo stays" },
-                  { value: "4.8/5", label: "traveller rating" },
+                  { value: formatCompactNumber(counts.cities), label: "cities on the map" },
+                  { value: formatCompactNumber(counts.hotels), label: "demo stays" },
+                  { value: formatCompactNumber(counts.holidays), label: "holiday ideas" },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <dt className="sr-only">{stat.label}</dt>
@@ -272,32 +179,48 @@ export default function HomePage() {
                   className="absolute inset-0 bg-gradient-to-t from-brand-950/55 via-transparent to-transparent"
                 />
 
-                <div className="absolute top-4 left-4 max-w-[13rem] rounded-xl border border-white/15 bg-brand-950/55 p-3.5 text-white backdrop-blur-md">
-                  <p className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.12em] text-brand-200 uppercase">
-                    <MapPin aria-hidden="true" className="size-3" />
-                    This week’s edit
-                  </p>
-                  <p className="mt-1.5 font-display text-lg leading-tight text-white">
-                    Udaipur, before the crowds
-                  </p>
-                  <p className="mt-1 text-[11px] text-white/60">3 nights · from ₹14,900</p>
-                </div>
-
-                <div className="absolute right-4 bottom-4 w-[12.5rem] rounded-xl border border-line bg-surface p-3.5 shadow-md">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[10px] font-extrabold tracking-[0.12em] text-muted-soft uppercase">
-                      Stay of the week
+                {featuredDestination ? (
+                  <Link
+                    href={`/holidays/${featuredDestination.holiday.slug}`}
+                    className="absolute top-4 left-4 max-w-[14rem] rounded-xl border border-white/15 bg-brand-950/55 p-3.5 text-white backdrop-blur-md transition-colors hover:bg-brand-950/75"
+                  >
+                    <p className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.12em] text-brand-200 uppercase">
+                      <MapPin aria-hidden="true" className="size-3" />
+                      This week&apos;s edit
                     </p>
-                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-800">
-                      <Star aria-hidden="true" className="size-2.5 fill-gold-500 text-gold-500" />
-                      4.8
-                    </span>
-                  </div>
-                  <p className="mt-1.5 font-display text-base leading-tight text-ink">
-                    The Salt House
-                  </p>
-                  <p className="mt-1 text-[11px] text-muted">Anjuna, Goa · from ₹6,200/night</p>
-                </div>
+                    <p className="mt-1.5 font-display text-lg leading-tight text-white">
+                      {featuredDestination.holiday.title}
+                    </p>
+                    <p className="mt-1 text-[11px] text-white/60">
+                      {featuredDestination.city.name} · {featuredDestination.holiday.nights} nights
+                      · from {formatCurrency(featuredDestination.minPrice)}
+                    </p>
+                  </Link>
+                ) : null}
+
+                {featuredStay ? (
+                  <Link
+                    href={`/hotels/${featuredStay.hotel.id}`}
+                    className="absolute right-4 bottom-4 w-[12.5rem] rounded-xl border border-line bg-surface p-3.5 shadow-md transition-colors hover:border-brand-200"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[10px] font-extrabold tracking-[0.12em] text-muted-soft uppercase">
+                        Stay of the week
+                      </p>
+                      <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-50 px-1.5 py-0.5 text-[10px] font-extrabold text-brand-800">
+                        <Star aria-hidden="true" className="size-2.5 fill-gold-500 text-gold-500" />
+                        {featuredStay.hotel.guest_rating.toFixed(1)}
+                      </span>
+                    </div>
+                    <p className="mt-1.5 font-display text-base leading-tight text-ink">
+                      {featuredStay.hotel.name}
+                    </p>
+                    <p className="mt-1 text-[11px] text-muted">
+                      {featuredStay.hotel.area}, {featuredStay.cityName} · from{" "}
+                      {formatCurrency(featuredStay.hotel.price_per_night)}/night
+                    </p>
+                  </Link>
+                ) : null}
               </div>
             </ScrollReveal>
           </div>
@@ -332,73 +255,42 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section-padding border-y border-line bg-brand-50/60">
+        <div className="page-container">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Offers and extras"
+              title="A little extra, on us."
+              description="Small savings for the things you were going to book anyway. Codes are demo-only and never charge a card."
+              action={{ label: "View all offers", href: "/offers" }}
+            />
+          </ScrollReveal>
+
+          <ScrollReveal className="mt-10" delay={0.06}>
+            <Carousel label="Featured offers">
+              {offers.map((offer) => (
+                <OfferCard key={offer.id} offer={offer} className="h-full" />
+              ))}
+            </Carousel>
+          </ScrollReveal>
+        </div>
+      </section>
+
       <section id="destinations" className="section-padding scroll-mt-24">
         <div className="page-container">
           <ScrollReveal>
             <SectionHeading
               eyebrow="Handpicked destinations"
               title="Go where the light is different."
-              description="Four places to start with, each shaped into a short escape with room to breathe. Every package is original demo content."
+              description="Five places to start with, each shaped into a short escape with room to breathe. Every package is original demo content."
               action={{ label: "All holidays", href: "/holidays" }}
             />
           </ScrollReveal>
 
-          <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.09}>
-            {destinations.map((destination) => (
-              <RevealItem key={destination.name} className="h-full">
-                <Link
-                  href={destination.href}
-                  className="group card-hover relative block h-full overflow-hidden rounded-2xl border border-line bg-brand-950"
-                >
-                  <div className="relative aspect-[4/5]">
-                    <Image
-                      src={destination.image}
-                      alt={`Abstract illustration of ${destination.name}`}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    />
-                    <div
-                      aria-hidden="true"
-                      className="absolute inset-0 bg-gradient-to-t from-brand-950 via-brand-950/20 to-transparent"
-                    />
-
-                    <span className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-brand-950/50 px-2.5 py-1 text-[10px] font-extrabold text-white backdrop-blur">
-                      <Star aria-hidden="true" className="size-3 fill-gold-500 text-gold-500" />
-                      {destination.rating}
-                    </span>
-
-                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                      <p className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.12em] text-white/60 uppercase">
-                        <MapPin aria-hidden="true" className="size-3" />
-                        {destination.region}
-                      </p>
-                      <h3 className="mt-1 font-display text-2xl font-semibold text-white">
-                        {destination.name}
-                      </h3>
-                      <p className="mt-1 text-xs leading-5 text-white/70">{destination.blurb}</p>
-
-                      <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/15 pt-3">
-                        <div>
-                          <span className="block text-[10px] font-semibold text-white/50">
-                            From
-                          </span>
-                          <span className="text-base font-extrabold text-white">
-                            {formatCurrency(destination.price)}
-                          </span>
-                          <span className="text-[10px] text-white/50"> / person</span>
-                        </div>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-white/80 transition-colors group-hover:text-white">
-                          {destination.nights} nights
-                          <ArrowUpRight
-                            aria-hidden="true"
-                            className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+          <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" stagger={0.09}>
+            {destinations.map((destination, index) => (
+              <RevealItem key={destination.city.code} className="h-full">
+                <DestinationCard destination={destination} priority={index === 0} />
               </RevealItem>
             ))}
           </RevealGroup>
@@ -425,65 +317,54 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding border-y border-line bg-brand-50/60">
+      <section className="section-padding border-y border-line bg-surface">
         <div className="page-container">
           <ScrollReveal>
             <SectionHeading
-              eyebrow="Offers and extras"
-              title="A little extra, on us."
-              description="Small savings for the things you were going to book anyway. Codes are demo-only and never charge a card."
-              action={{ label: "View all offers", href: "/offers" }}
+              eyebrow="Trending stays"
+              title="Rooms with a point of view."
+              description="A small edit of guest-favourite stays from the demo catalogue, chosen for character rather than a chain logo."
+              action={{ label: "Browse stays", href: "/hotels" }}
             />
           </ScrollReveal>
 
-          <RevealGroup className="mt-10 grid gap-4 md:grid-cols-3" stagger={0.09}>
-            {offers.map((offer) => {
-              const Icon = offer.icon;
-              const tone = offerTones[offer.tone];
-
-              return (
-                <RevealItem key={offer.code} className="h-full">
-                  <Link
-                    href={offer.href}
-                    className={`group flex h-full flex-col rounded-2xl border p-5 transition-shadow hover:shadow-md ${tone.card}`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <span
-                        className={`grid size-11 place-items-center rounded-xl shadow-xs ${tone.icon}`}
-                      >
-                        <Icon aria-hidden="true" className="size-5" />
-                      </span>
-                      <ArrowUpRight
-                        aria-hidden="true"
-                        className={`size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${tone.link}`}
-                      />
-                    </div>
-
-                    <p
-                      className={`mt-5 text-[10px] font-extrabold tracking-[0.14em] uppercase ${tone.link}`}
-                    >
-                      {offer.eyebrow}
-                    </p>
-                    <h3 className="mt-1.5 text-xl leading-tight">{offer.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted">{offer.detail}</p>
-
-                    <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4">
-                      <span
-                        className={`rounded-md border border-dashed px-2 py-1 font-mono text-[11px] font-bold tracking-wider ${tone.code}`}
-                      >
-                        {offer.code}
-                      </span>
-                      <span className={`text-[11px] font-extrabold ${tone.link}`}>View offer</span>
-                    </div>
-                  </Link>
-                </RevealItem>
-              );
-            })}
+          <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.09}>
+            {stays.map((stay, index) => (
+              <RevealItem key={stay.hotel.id} className="h-full">
+                <StayCard stay={stay} priority={index === 0} />
+              </RevealItem>
+            ))}
           </RevealGroup>
         </div>
       </section>
 
       <section className="section-padding">
+        <div className="page-container">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Holiday ideas"
+              title="Packages with room to breathe."
+              description="Short escapes and slower weeks, with the itinerary, transfers, and a few meals already thought through."
+              action={{ label: "All holiday ideas", href: "/holidays" }}
+            />
+          </ScrollReveal>
+
+          <ScrollReveal className="mt-10" delay={0.06}>
+            <Carousel label="Holiday ideas">
+              {holidays.map((entry) => (
+                <HolidayCard
+                  key={entry.holiday.id}
+                  holiday={entry.holiday}
+                  cityName={entry.cityName}
+                  travellers={2}
+                />
+              ))}
+            </Carousel>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="section-padding border-y border-line bg-brand-50/60">
         <div className="page-container">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <ScrollReveal>
@@ -532,7 +413,67 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="pb-16 lg:pb-24">
+      <section className="section-padding">
+        <div className="page-container grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+          <div>
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="Field notes"
+                title="Small ideas for better trips."
+                description="Short, practical notes from the catalogue — no listicles, no urgency, just a few things worth knowing before you go."
+              />
+            </ScrollReveal>
+
+            <ScrollReveal className="mt-8" delay={0.06}>
+              <TravelNotes notes={TRAVEL_NOTES} />
+            </ScrollReveal>
+          </div>
+
+          <ScrollReveal delay={0.1}>
+            <aside className="rounded-2xl border border-brand-100 bg-surface p-6 shadow-xs sm:p-8">
+              <p className="eyebrow">Postcards, occasionally</p>
+              <h2 className="mt-3 text-[clamp(1.5rem,2.6vw,2rem)] leading-tight">
+                One useful note, every other Thursday.
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-muted">
+                A short read on where to go, when to go, and what to leave behind. No countdown
+                timers, no daily noise.
+              </p>
+              <div className="mt-6">
+                <NewsletterForm />
+              </div>
+              <p className="mt-4 text-[11px] leading-5 text-muted-soft">
+                Demo only — no email is stored, sent, or shared.
+              </p>
+            </aside>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section id="faq" className="section-padding border-t border-line bg-surface">
+        <div className="page-container grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Questions"
+              title="The things people ask before they go."
+              description="Straight answers about the demo, the prices, and what happens after you find something you like."
+            />
+            <Link
+              href="/info/help"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-700 underline-offset-4 hover:underline"
+            >
+              More help
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Link>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.08}>
+            <Faq items={HOME_FAQS} />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="py-16 lg:py-24">
         <div className="page-container">
           <ScrollReveal>
             <div className="hero-mesh relative overflow-hidden rounded-[2rem] px-6 py-12 text-white sm:px-10 lg:px-16 lg:py-16">
@@ -588,7 +529,7 @@ export default function HomePage() {
                     beach
                   </span>
                   <span className="absolute bottom-10 left-0 rounded-full border border-white/15 bg-brand-950/50 px-3 py-1.5 text-[11px] font-bold text-white/80 backdrop-blur">
-                    mountain
+                    mountains
                   </span>
                   <span className="absolute top-1/2 -right-2 rounded-full border border-white/15 bg-brand-950/50 px-3 py-1.5 text-[11px] font-bold text-white/80 backdrop-blur">
                     heritage
