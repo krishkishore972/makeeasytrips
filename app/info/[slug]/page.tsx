@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ArrowRight, ChevronRight, Info, ShieldCheck } from "lucide-react";
 import {
   infoPages,
@@ -38,7 +39,15 @@ export async function generateMetadata({ params }: InfoPageProps): Promise<Metad
   };
 }
 
-export default async function InfoPage({ params }: InfoPageProps) {
+export default function InfoPage({ params }: InfoPageProps) {
+  return (
+    <Suspense fallback={<InfoPageFallback />}>
+      <InfoContent params={params} />
+    </Suspense>
+  );
+}
+
+async function InfoContent({ params }: InfoPageProps) {
   const { slug } = await params;
 
   if (!isInfoPageSlug(slug)) {
@@ -148,6 +157,21 @@ export default async function InfoPage({ params }: InfoPageProps) {
             </Link>
           </div>
         </aside>
+      </div>
+    </div>
+  );
+}
+
+function InfoPageFallback() {
+  return (
+    <div className="page-container py-10 sm:py-14">
+      <div aria-hidden="true" className="shimmer-surface h-4 w-40 rounded" />
+      <div aria-hidden="true" className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="shimmer-surface h-[30rem] rounded-2xl border border-line" />
+        <div className="space-y-4">
+          <div className="shimmer-surface h-56 rounded-2xl border border-line" />
+          <div className="shimmer-surface h-36 rounded-2xl border border-line" />
+        </div>
       </div>
     </div>
   );
