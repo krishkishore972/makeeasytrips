@@ -1131,3 +1131,171 @@ parsed to confirm it is well-formed and served with a `200`.
   without a selection.
 - `bookingConfirmationHref` exists as a helper for future links but is intentionally unused while
   confirmation requires the acknowledgement form.
+
+## 15. Phase 6 implementation record (quality pass)
+
+Phase 6 adds no product features. It makes the existing build testable, accessible, and
+measurable: a unit/integration suite, an axe-core audit with token-level fixes, a keyboard pass,
+a lab performance budget, and reproducible audit scripts.
+
+### 15.1 Test stack
+
+- Vitest 5 with the Node environment, configured in `vitest.config.ts`; the `@` alias mirrors
+  `tsconfig.json`.
+- `npm test` runs once; `npm run test:watch` stays interactive.
+- 86 tests in 7 files, roughly 300 ms, with no browser, server, or database.
+- `@types/node` moved from `^20` to `^24` to satisfy Vitest 5's peer range; the runtime is
+  Node 24.21.0.
+
+| File                               | What it pins down                                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `tests/dates.test.ts`              | ISO shape and real-calendar checks, leap days, month/year rollover, night clamping, India-time labels                          |
+| `tests/pricing.test.ts`            | Flight base/tax split, stay nights × rooms, holiday per-person totals, custom tax rates                                        |
+| `tests/utils.test.ts`              | INR formatting, compact numbers, pluralisation, query-string skipping/encoding, class merge                                    |
+| `tests/validation-search.test.ts`  | Flight/hotel/holiday/offer URL parsing, defaults, clamps, invalid codes, reversed dates                                        |
+| `tests/validation-booking.test.ts` | All three selection types, repeated params, bounds, and every user-facing error string                                         |
+| `tests/booking.test.ts`            | Selection serialisation, deterministic references, review/confirmation links, totals, missing products, unpublished departures |
+| `tests/data.test.ts`               | CSV row counts, lookups, filters, sorts, facets, popular routes, similar packages                                              |
+
+Two expectations were corrected after the first run, not the implementation:
+
+- `Intl.NumberFormat` with `en-IN` and `INR` keeps two fraction digits when a maximum of two is
+  allowed, so `₹1,234.50` is correct.
+- The hotel parser validates the three-letter _shape_ of `city`, not membership in the catalogue.
+  `GOA` is well-formed and yields an empty result set; only malformed codes such as `GO` produce
+  “That city code is not valid.”
+
+### 15.2 Accessibility audit and fixes
+
+The first axe run (14 routes, WCAG 2.2 AA tags) reported 286 contrast nodes plus:
+
+- `aria-prohibited-attr` on 11 star-rating spans,
+- `label-content-name-mismatch` on the region/currency button and the date-picker trigger,
+- `definition-list` / `dlitem` on the flight-detail facts,
+- `target-size` on the hotel gallery dots.
+
+Fixes were made at the cause, not the call site:
+
+| Area                | Change                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| Star ratings        | `role="img"` so `aria-label="5-star property"` is allowed and the stars stay decorative |
+| Region / currency   | Removed the redundant `aria-label`; the visible “India · INR” is the accessible name    |
+| Date picker trigger | Removed the label that omitted the visible date, which caused a name mismatch           |
+| Holiday reserve     | `Reserve this holiday: {title}` contains the visible text                               |
+| Flight facts        | `dt`/`dd` are direct children of the wrapper `div`; the icon lives inside the `dt`      |
+| Gallery dots        | 24×24 hit area with an inner visual bar; the dot itself is no longer the target         |
+| Contrast            | Semantic tokens darkened (below) instead of per-component overrides                     |
+| Dark surfaces       | White text at 45–55% opacity raised to 60–75%                                           |
+
+Token changes, with the ratio on white:
+
+| Token        | Before    | After     | Before → after |
+| ------------ | --------- | --------- | -------------- |
+| `muted`      | `#5b6b67` | `#4a5a56` | 5.61 → 7.27    |
+| `muted-soft` | `#7c8b87` | `#5f6e6a` | 3.56 → 5.35    |
+| `accent-500` | `#ff6b4a` | `#c2410c` | 2.82 → 5.18    |
+| `accent-600` | `#e25536` | `#9a3412` | 3.76 → 7.31    |
+| `accent-700` | `#b73c24` | `#7f2d18` | 5.70 → 9.17    |
+| `gold-600`   | `#c98a18` | `#8a5a0a` | 2.94 → 5.92    |
+| `success`    | `#178a6b` | `#0f6b52` | 4.30 → 6.47    |
+| `warning`    | `#b7791f` | `#8a5a0a` | 3.64 → 5.92    |
+
+`accent-500` is now the interactive coral; the brighter `#ff6b4a` survives only in decorative
+gradients and fills. `gold-600` and `warning` converge on `#8a5a0a` because they sit on the same
+warm tinted surfaces.
+
+After the fixes, the audit is clean on all 14 routes under WCAG 2.2 AA, and the broader
+`best-practice` rule set is also clean on all 14.
+
+### 15.3 Keyboard verification
+
+A scripted Chromium pass covered 13 behaviours, all passing:
+
+1. First <kbd>Tab</kbd> reaches “Skip to content”.
+2. Activating the skip link moves focus to `<main id="main-content">`.
+3. Focused controls render a 2px solid outline.
+4. The date trigger receives focus deterministically.
+5. <kbd>Enter</kbd> opens the date picker.
+6. <kbd>Escape</kbd> closes it.
+7. Focus returns to the date trigger.
+8. <kbd>Enter</kbd> opens the mobile navigation.
+9. Focus moves inside the dialog.
+10. <kbd>Escape</kbd> closes it.
+11. Focus returns to the menu button.
+12. The featured-offers next control advances the carousel.
+13. <kbd>Space</kbd> toggles the review acknowledgement.
+
+Two harness details mattered. CDP only triggers native button activation when `Enter`/`Space`
+carry `text`/`unmodifiedText` (`"\r"` / `" "`), and the press must happen after the page has
+loaded and hydrated. A server-rendered button is visible before React attaches, so pressing too
+early looks like an app failure. The app itself needed no keyboard changes.
+
+### 15.4 Performance
+
+Measured with `scripts/audit-perf.mjs`: headless Chromium, 390×844 at DPR 2, 2× CPU throttling,
+cache disabled, production build. Budgets: LCP ≤ 2.5 s, CLS ≤ 0.1, JS ≤ 350 kB, transfer ≤ 600 kB.
+
+| Route          | FCP | LCP | CLS | JS  | Transfer | Nodes |
+| -------------- | --- | --- | --- | --- | -------- | ----- |
+| Home           | 220 | 544 | 0   | 294 | 410      | 1,625 |
+| Flights        | 104 | 104 | 0   | 283 | 394      | 915   |
+| Flight detail  | 84  | 84  | 0   | 272 | 383      | 680   |
+| Hotels         | 116 | 116 | 0   | 283 | 396      | 997   |
+| Hotel detail   | 112 | 112 | 0   | 278 | 393      | 867   |
+| Holidays       | 140 | 140 | 0   | 245 | 360      | 1,578 |
+| Holiday detail | 124 | 124 | 0   | 253 | 369      | 791   |
+| Offers         | 108 | 108 | 0   | 233 | 345      | 795   |
+| Booking review | 76  | 100 | 0   | 277 | 392      | 505   |
+
+Times are milliseconds, sizes are kB. An earlier cold run on the same build put the home LCP at
+1,152 ms, so the honest range across runs is roughly 0.1–1.2 s; both are inside budget. CLS stayed
+at zero on every route, and no image exceeded 2.5× its rendered width.
+
+Why it stays light:
+
+- Server Components render the catalogue; only filters, carousels, dialogs, and forms ship
+  client code.
+- The CSV loader caches a validated promise per file, so repeated requests do not re-parse.
+- `next/image` receives `sizes` on every instance; `priority` is reserved for above-the-fold art.
+- Fraunces and Manrope use `display: swap` with `next/font` self-hosting.
+- Search-param work sits behind `<Suspense>`, so the shell streams first.
+- Motion is limited to `transform`/`opacity` with reduced-motion fallbacks.
+
+### 15.5 Reproducing the audits
+
+`scripts/audit-a11y.mjs` and `scripts/audit-perf.mjs` share `scripts/lib/cdp.mjs`, a small CDP
+client. Both need a running app and a local Chrome:
+
+```bash
+npm run build && npm run start
+npm run audit:a11y
+npm run audit:a11y -- --best-practice
+npm run audit:perf
+```
+
+`BASE_URL` changes the origin, `CHROME_PATH` overrides browser discovery, and `AUDIT_PORT` avoids
+port clashes. Both scripts exit non-zero on failure, so they can be wired into CI later.
+
+### 15.6 Deliberate gaps
+
+- No jsdom component tests and no Playwright/Cypress suite. The interactive checks above are
+  scripted CDP runs against the production build, not a committed end-to-end harness.
+- The audits are not part of `npm run verify` because they need Chrome and a live server; they
+  remain opt-in.
+- axe catches a subset of accessibility problems. No screen-reader (NVDA/VoiceOver) session or
+  zoom/reflow audit has been recorded.
+- Performance is lab-only. There is no field data, RUM, or Lighthouse CI budget.
+- No visual regression snapshots.
+- Trains and cabs are still intentional static shells.
+
+### 15.7 Next.js 16 notes
+
+- `cacheComponents` and `partialPrefetching` are on. Search-param pages call `await connection()`
+  inside `<Suspense>` so the static shell stays cacheable while the results stream.
+- Because the shell paints before hydration, automation must wait for load and hydration before
+  dispatching activation keys; the visible button is not yet interactive.
+- `next build` type-checks the app, but Vitest uses its own alias config rather than the Next
+  tsconfig paths.
+- `next dev` regenerates the `AGENTS.md` blocks; they are committed so the tree stays clean.
+- The audit scripts are plain `.mjs` files and are excluded from the app build; they use
+  `axe-core` as a direct dev dependency rather than relying on the ESLint transitive copy.

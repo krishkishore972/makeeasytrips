@@ -6,8 +6,8 @@ connected to any travel brand. There are no real bookings, payments, accounts, o
 personal details.
 
 The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), 3
-(holidays, offers, and APIs), 4 (home and editorial polish), and 5 (mock booking review and
-confirmation) are complete.** The quality and accessibility pass arrives in Phase 6.
+(holidays, offers, and APIs), 4 (home and editorial polish), 5 (mock booking review and
+confirmation), and 6 (quality pass: tests, accessibility, and performance) are complete.**
 
 ## What is in this build
 
@@ -53,10 +53,13 @@ Production check:
 ```bash
 npm run typecheck
 npm run lint
+npm test
 npm run format:check
 npm run build
 npm run start
 ```
+
+`npm run verify` runs the first five in order.
 
 ## Routes
 
@@ -143,7 +146,10 @@ lib/
   dates.ts            Date parsing, labels, and night counts
   home-content.ts     Original home FAQ and field-note copy
 public/images/        Original abstract SVG placeholders
+scripts/              axe-core accessibility and lab performance audits
+tests/                Vitest suites for dates, pricing, validation, booking, and data
 types/                Shared TypeScript types
+vitest.config.ts      Vitest config with the @ alias
 ```
 
 ## Data layer
@@ -211,6 +217,94 @@ In the UI, changing a filter or sort order should update the URL and re-render t
 result list. Filters use one shared client hook (`useSearchParamsUpdater`) so the back button and
 shared links behave as expected.
 
+## Quality
+
+### Tests
+
+`npm test` runs Vitest in a Node environment with the `@` alias. The suite targets the logic that
+is easy to get quietly wrong and hard to see in the UI:
+
+| File                               | Coverage                                                                                 |
+| ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| `tests/dates.test.ts`              | ISO validation, leap years, rollover, night clamping, India-time labels                  |
+| `tests/pricing.test.ts`            | Flight, stay, and holiday breakdowns, tax rounding, per-room and per-traveller scaling   |
+| `tests/utils.test.ts`              | INR formatting, compaction, pluralisation, query strings, class merging                  |
+| `tests/validation-search.test.ts`  | Flight, hotel, holiday, and offer URL parsing, defaults, clamping, error copy            |
+| `tests/validation-booking.test.ts` | All three booking types, bounds, repeated params, plain-language errors                  |
+| `tests/booking.test.ts`            | Selection serialisation, references, review/confirmation links, totals, missing products |
+| `tests/data.test.ts`               | CSV counts, lookup, filters, sorts, facets, popular routes, similar packages             |
+
+86 tests across 7 files. They run in about 300 ms and need no browser, server, or database.
+
+### Accessibility
+
+The app targets WCAG 2.2 AA. Automated checks use axe-core over 14 routes:
+
+```bash
+npm run build && npm run start   # in one terminal
+npm run audit:a11y               # WCAG 2.2 AA
+npm run audit:a11y -- --best-practice
+```
+
+Both audits currently report **14/14 pages clean**. They need a running app and a local Chrome;
+set `CHROME_PATH` if Chrome is not in a standard location, and `BASE_URL` to point at another
+origin.
+
+The route set covers home, flight search and detail, hotel search and detail, the holiday
+catalogue and detail, offers, booking review, booking confirmation, about, my trips, trains, and
+the not-found page.
+
+Keyboard behaviour verified in the browser:
+
+- The first <kbd>Tab</kbd> reveals “Skip to content”; activating it moves focus to `<main>`.
+- Every interactive control shows a 2px focus outline.
+- The date picker opens with <kbd>Enter</kbd>, closes with <kbd>Escape</kbd>, and returns focus to
+  its trigger.
+- The mobile navigation traps focus inside the sheet and returns it to the menu button.
+- Carousel controls advance with <kbd>Enter</kbd> and announce the new slide.
+- The review acknowledgement toggles with <kbd>Space</kbd>.
+
+Semantics: one `<h1>` per page, landmark regions, labelled inputs and groups, `aria-current` on
+the active gallery image, `role="img"` with a text label for star ratings, native `<details>` for
+FAQs and offer terms, and no `aria-label` that contradicts visible text.
+
+Contrast is fixed in the token layer rather than per component:
+
+| Token        | Before    | After     | Ratio on white |
+| ------------ | --------- | --------- | -------------- |
+| `muted`      | `#5b6b67` | `#4a5a56` | 5.61 → 7.27    |
+| `muted-soft` | `#7c8b87` | `#5f6e6a` | 3.56 → 5.35    |
+| `accent-500` | `#ff6b4a` | `#c2410c` | 2.82 → 5.18    |
+| `accent-600` | `#e25536` | `#9a3412` | 3.76 → 7.31    |
+| `accent-700` | `#b73c24` | `#7f2d18` | 5.70 → 9.17    |
+| `gold-600`   | `#c98a18` | `#8a5a0a` | 2.94 → 5.92    |
+| `success`    | `#178a6b` | `#0f6b52` | 4.30 → 6.47    |
+| `warning`    | `#b7791f` | `#8a5a0a` | 3.64 → 5.92    |
+
+Bright coral (`#ff6b4a`) and gold (`#f2b544`) remain in decorative gradients and fills where no
+text sits on top. White text on the dark header moved from 45–55% opacity to 60–75%, taking it from
+4.38:1 to at least 6.75:1 on `brand-950`.
+
+### Performance
+
+`npm run audit:perf` measures nine routes in headless Chromium at 390×844, with 2× CPU throttling
+and a cold cache. It fails if LCP exceeds 2.5 s, CLS exceeds 0.1, JS exceeds 350 kB, or total
+transfer exceeds 600 kB.
+
+Latest run on the production build:
+
+| Metric         | Range            |
+| -------------- | ---------------- |
+| LCP            | 0.08–1.15 s      |
+| CLS            | 0 on every route |
+| JavaScript     | 233–294 kB       |
+| Total transfer | 345–410 kB       |
+| DOM nodes      | 505–1,625        |
+
+The main levers: Server Components by default, the cached CSV loader, `next/image` with explicit
+`sizes`, `priority` only on above-the-fold art, `display: swap` fonts, Suspense boundaries around
+search-param work, and animations limited to `transform`/`opacity`.
+
 ## Design system
 
 Tokens live in `app/globals.css` under `@theme`. Components use semantic names such as
@@ -233,7 +327,7 @@ keeps one typed source of truth. Trains and cabs remain static shells by design.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2–5 implementation records: observed
+`docs/REA.md` records the Step 0 analysis and the Phase 2–6 implementation records: observed
 sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions,
 verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
 analysis relies on archived snapshots and public page structure. No proprietary code, logos,

@@ -237,16 +237,16 @@ async function FlightDetailContent({ params, searchParams }: FlightDetailProps) 
                 {facts.map((fact) => {
                   const Icon = fact.icon;
                   return (
-                    <div key={fact.label} className="flex items-start gap-2.5">
-                      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-                        <Icon aria-hidden="true" className="size-4" />
-                      </span>
-                      <div>
-                        <dt className="text-[10px] font-extrabold tracking-[0.1em] text-muted-soft uppercase">
-                          {fact.label}
-                        </dt>
-                        <dd className="mt-0.5 text-xs font-bold text-ink">{fact.value}</dd>
-                      </div>
+                    <div key={fact.label}>
+                      <dt className="flex items-center gap-2.5 text-[10px] font-extrabold tracking-[0.1em] text-muted-soft uppercase">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
+                          <Icon aria-hidden="true" className="size-4" />
+                        </span>
+                        {fact.label}
+                      </dt>
+                      <dd className="mt-1 pl-[2.625rem] text-xs font-bold text-ink">
+                        {fact.value}
+                      </dd>
                     </div>
                   );
                 })}

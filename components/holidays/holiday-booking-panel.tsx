@@ -147,7 +147,7 @@ export function HolidayBookingPanel({
             depart: departure,
             travellers,
           })}`}
-          aria-label={`Reserve ${title}`}
+          aria-label={`Reserve this holiday: ${title}`}
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
         >
           Reserve this holiday

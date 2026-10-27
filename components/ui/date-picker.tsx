@@ -53,7 +53,6 @@ export function DatePicker({
           type="button"
           id={inputId}
           disabled={disabled}
-          aria-label={`${label}: ${value ? formatDateLong(value) : "not selected"}`}
           className={cn(
             "flex h-full w-full min-w-0 flex-col items-start justify-center gap-1 rounded-xl border border-line bg-canvas px-3 py-2 text-left transition-colors hover:border-brand-200 focus-visible:border-brand-400 disabled:cursor-not-allowed disabled:opacity-60",
             className,

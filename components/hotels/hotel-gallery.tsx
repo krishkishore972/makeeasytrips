@@ -91,11 +91,15 @@ export function HotelGallery({ images, name, area }: HotelGalleryProps) {
                 onClick={() => emblaApi?.scrollTo(dotIndex)}
                 aria-label={`Go to image ${dotIndex + 1}`}
                 aria-current={dotIndex === index ? "true" : undefined}
-                className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  dotIndex === index ? "w-5 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80",
-                )}
-              />
+                className="grid size-6 place-items-center rounded-full"
+              >
+                <span
+                  className={cn(
+                    "block h-1.5 rounded-full transition-all",
+                    dotIndex === index ? "w-5 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80",
+                  )}
+                />
+              </button>
             ))}
           </div>
 

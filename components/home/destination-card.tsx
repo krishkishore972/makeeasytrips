@@ -47,11 +47,11 @@ export function DestinationCard({ destination, priority }: DestinationCardProps)
 
           <div className="mt-4 flex items-end justify-between gap-3 border-t border-white/15 pt-3">
             <div>
-              <span className="block text-[10px] font-semibold text-white/50">From</span>
+              <span className="block text-[10px] font-semibold text-white/75">From</span>
               <span className="text-base font-extrabold text-white">
                 {formatCurrency(minPrice)}
               </span>
-              <span className="text-[10px] text-white/50"> / person</span>
+              <span className="text-[10px] text-white/75"> / person</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-white/80 transition-colors group-hover:text-white">
               {packageCount} {packageCount === 1 ? "trip" : "trips"}

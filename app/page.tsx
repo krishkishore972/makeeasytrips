@@ -512,7 +512,7 @@ export default async function HomePage() {
                       <ArrowUpRight aria-hidden="true" className="size-4" />
                     </Link>
                   </div>
-                  <p className="mt-5 text-[11px] leading-5 text-white/50">
+                  <p className="mt-5 text-[11px] leading-5 text-white/65">
                     Demo experience. No real bookings, payments, or personal data.
                   </p>
                 </div>

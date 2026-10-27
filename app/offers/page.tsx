@@ -169,12 +169,12 @@ async function OffersExperience({ searchParams }: OffersPageProps) {
                   {featured.cta_label}
                   <ArrowRight aria-hidden="true" className="size-3.5" />
                 </Link>
-                <span className="text-[10px] font-semibold text-white/55">
+                <span className="text-[10px] font-semibold text-white/65">
                   Valid until {formatDateLong(featured.valid_until)}
                 </span>
               </div>
 
-              <p className="mt-4 max-w-2xl text-[10px] leading-4 text-white/45">{featured.terms}</p>
+              <p className="mt-4 max-w-2xl text-[10px] leading-4 text-white/65">{featured.terms}</p>
             </div>
 
             <div className="hidden justify-center lg:flex" aria-hidden="true">

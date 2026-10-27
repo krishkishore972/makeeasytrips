@@ -49,6 +49,7 @@ type StarRatingProps = {
 export function StarRating({ rating, className }: StarRatingProps) {
   return (
     <span
+      role="img"
       className={cn("inline-flex items-center gap-0.5", className)}
       aria-label={`${rating}-star property`}
     >

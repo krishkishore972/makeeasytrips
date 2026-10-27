@@ -65,7 +65,6 @@ export function Navbar() {
             <button
               type="button"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
-              aria-label="Region and currency: India, Indian Rupee"
             >
               <Globe2 aria-hidden="true" className="size-3.5" />
               India · INR
