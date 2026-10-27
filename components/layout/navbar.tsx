@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 import {
   BedDouble,
   CarFront,
@@ -34,7 +35,6 @@ const navIcons: Record<string, LucideIcon> = {
 };
 
 export function Navbar() {
-  const pathname = usePathname();
   const scrolled = useScrolled(10);
 
   return (
@@ -79,44 +79,9 @@ export function Navbar() {
         <div className="page-container flex h-[72px] items-center justify-between gap-3 sm:h-[76px]">
           <Logo className="shrink-0" />
 
-          <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-0.5">
-              {siteConfig.navigation.map((item) => {
-                const Icon = navIcons[item.icon] ?? MapPin;
-                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "group relative inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-[13px] font-bold transition-colors",
-                        active
-                          ? "bg-brand-50 text-brand-800"
-                          : "text-ink-soft hover:bg-brand-50/70 hover:text-brand-800",
-                      )}
-                    >
-                      <Icon
-                        aria-hidden="true"
-                        className={cn(
-                          "size-[17px] transition-colors",
-                          active ? "text-brand-600" : "text-muted-soft group-hover:text-brand-600",
-                        )}
-                      />
-                      {item.label}
-                      {item.icon === "tag" ? (
-                        <span
-                          aria-hidden="true"
-                          className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-accent-500"
-                        />
-                      ) : null}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+          <Suspense fallback={<DesktopNavList pathname={null} />}>
+            <DesktopNavActive />
+          </Suspense>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
             <span
@@ -164,4 +129,56 @@ export function Navbar() {
       </div>
     </header>
   );
+}
+
+/**
+ * Presentational nav list. The active item needs `usePathname`, which is URL
+ * data and must live inside a Suspense boundary so the shell can prerender.
+ */
+function DesktopNavList({ pathname }: { pathname: string | null }) {
+  return (
+    <nav aria-label="Primary" className="hidden lg:block">
+      <ul className="flex items-center gap-0.5">
+        {siteConfig.navigation.map((item) => {
+          const Icon = navIcons[item.icon] ?? MapPin;
+          const active = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "group relative inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-[13px] font-bold transition-colors",
+                  active
+                    ? "bg-brand-50 text-brand-800"
+                    : "text-ink-soft hover:bg-brand-50/70 hover:text-brand-800",
+                )}
+              >
+                <Icon
+                  aria-hidden="true"
+                  className={cn(
+                    "size-[17px] transition-colors",
+                    active ? "text-brand-600" : "text-muted-soft group-hover:text-brand-600",
+                  )}
+                />
+                {item.label}
+                {item.icon === "tag" ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-accent-500"
+                  />
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+function DesktopNavActive() {
+  const pathname = usePathname();
+  return <DesktopNavList pathname={pathname} />;
 }

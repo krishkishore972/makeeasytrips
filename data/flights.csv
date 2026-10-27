@@ -1,0 +1,541 @@
+id,airline,airline_code,flight_number,from_code,to_code,depart_time,arrive_time,arrive_day_offset,duration_minutes,stops,via,aircraft,fare_economy,fare_premium,fare_business,refundable,fare_brand,baggage_checkin,baggage_cabin,meal_included,on_time,seats_left,carbon_kg
+fl-blr-bom-03,Coastal Wings,CW,CW 831,BLR,BOM,07:15,09:15,0,120,0,,ATR 72,3700,5750,10550,false,Saver,15,7,true,79,17,108
+fl-blr-bom-06,Coastal Wings,CW,CW 942,BLR,BOM,09:30,11:35,0,125,0,,ATR 72,3550,5500,10100,true,Flex,15,7,true,82,9,108
+fl-blr-bom-01,Himalaya Jet,HJ,HJ 757,BLR,BOM,12:10,14:10,0,120,0,,B737 MAX,4250,6600,12100,true,Flex,15,7,true,94,7,108
+fl-blr-bom-04,Himalaya Jet,HJ,HJ 868,BLR,BOM,14:45,16:35,0,110,0,,B737 MAX,4100,6350,11700,true,Flex,15,7,false,90,22,108
+fl-blr-bom-02,Monsoon Air,MN,MN 794,BLR,BOM,19:05,21:00,0,115,0,,A320neo,3650,5650,10400,true,Flex,15,7,false,75,12,108
+fl-blr-bom-05,Monsoon Air,MN,MN 905,BLR,BOM,21:40,23:40,0,120,0,,A320neo,3350,5200,9550,false,Saver,15,7,true,78,4,108
+fl-blr-ccu-01,Aravalli Air,AV,AV 464,BLR,CCU,05:40,10:10,0,270,1,MAA,A320neo,4850,7500,13800,true,Flex,15,7,true,84,6,224
+fl-blr-ccu-04,Aravalli Air,AV,AV 575,BLR,CCU,07:15,11:50,0,275,1,MAA,A320neo,5000,7750,14250,false,Saver,15,7,true,87,21,224
+fl-blr-ccu-02,Deccan Sky,DS,DS 501,BLR,CCU,12:10,15:15,0,185,0,,A321neo,6150,9550,17550,false,Saver,15,7,true,88,11,201
+fl-blr-ccu-05,Deccan Sky,DS,DS 612,BLR,CCU,14:45,17:55,0,190,0,,A321neo,5850,9050,16650,true,Flex,15,7,true,91,3,201
+fl-blr-ccu-03,Kaveri Air,KV,KV 538,BLR,CCU,19:05,22:15,0,190,0,,E190,5450,8450,15550,false,Saver,15,7,true,84,16,201
+fl-blr-ccu-06,Kaveri Air,KV,KV 649,BLR,CCU,21:40,00:40,1,180,0,,E190,5400,8350,15400,false,Saver,15,7,true,87,8,201
+fl-blr-cok-03,Aravalli Air,AV,AV 900,BLR,COK,05:40,06:55,0,75,0,,A320neo,2700,4200,7700,true,Flex,15,7,true,84,10,48
+fl-blr-cok-06,Aravalli Air,AV,AV 121,BLR,COK,07:15,08:35,0,80,0,,A320neo,2750,4250,7850,false,Saver,15,7,false,87,2,48
+fl-blr-cok-01,Deccan Sky,DS,DS 826,BLR,COK,09:30,10:50,0,80,0,,A321neo,2900,4500,8250,false,Saver,15,7,true,92,23,48
+fl-blr-cok-04,Deccan Sky,DS,DS 937,BLR,COK,12:10,13:35,0,85,0,,A321neo,2900,4500,8250,false,Saver,15,7,false,88,15,48
+fl-blr-cok-02,Kaveri Air,KV,KV 863,BLR,COK,17:20,18:30,0,70,0,,E190,2800,4350,8000,false,Saver,15,7,false,81,5,48
+fl-blr-cok-05,Kaveri Air,KV,KV 974,BLR,COK,19:05,20:20,0,75,0,,E190,2700,4200,7700,false,Saver,15,7,true,84,20,48
+fl-blr-del-02,Deccan Sky,DS,DS 625,BLR,DEL,07:15,10:40,0,205,0,,A321neo,6100,9450,17400,false,Saver,15,7,true,87,13,222
+fl-blr-del-05,Deccan Sky,DS,DS 736,BLR,DEL,09:30,12:40,0,190,0,,A321neo,6500,10100,18550,false,Saver,15,7,true,90,5,222
+fl-blr-del-03,Kaveri Air,KV,KV 662,BLR,DEL,14:45,18:00,0,195,0,,E190,6450,10000,18400,true,Flex,15,7,true,83,18,222
+fl-blr-del-06,Kaveri Air,KV,KV 773,BLR,DEL,17:20,20:40,0,200,0,,E190,5950,9200,16950,false,Saver,15,7,true,86,10,222
+fl-blr-del-01,Aravalli Air,AV,AV 588,BLR,DEL,19:05,23:55,0,290,1,HYD,A320neo,5350,8300,15250,false,Saver,15,7,true,83,8,246
+fl-blr-del-04,Aravalli Air,AV,AV 699,BLR,DEL,21:40,02:40,1,300,1,HYD,A320neo,5300,8200,15100,false,Saver,15,7,true,86,23,246
+fl-blr-goi-05,Aravalli Air,AV,AV 366,BLR,GOI,05:40,07:05,0,85,0,,A320neo,2950,4550,8400,true,Flex,15,7,true,85,21,63
+fl-blr-goi-03,Deccan Sky,DS,DS 292,BLR,GOI,09:30,11:00,0,90,0,,A321neo,3200,4950,9100,false,Saver,15,7,true,86,11,63
+fl-blr-goi-06,Deccan Sky,DS,DS 403,BLR,GOI,12:10,13:45,0,95,0,,A321neo,3200,4950,9100,false,Saver,15,7,false,89,3,63
+fl-blr-goi-01,Kaveri Air,KV,KV 218,BLR,GOI,14:45,16:15,0,90,0,,E190,3200,4950,9100,true,Flex,15,7,true,86,24,63
+fl-blr-goi-04,Kaveri Air,KV,KV 329,BLR,GOI,17:20,18:40,0,80,0,,E190,3050,4750,8700,false,Saver,15,7,false,82,16,63
+fl-blr-goi-02,Aravalli Air,AV,AV 255,BLR,GOI,21:40,23:00,0,80,0,,A320neo,3050,4750,8700,false,Saver,15,7,false,89,6,63
+fl-blr-hyd-02,Aravalli Air,AV,AV 631,BLR,HYD,07:15,08:35,0,80,0,,A320neo,3000,4650,8550,false,Saver,15,7,false,88,7,59
+fl-blr-hyd-05,Aravalli Air,AV,AV 742,BLR,HYD,09:30,10:55,0,85,0,,A320neo,3100,4800,8850,false,Saver,15,7,true,84,22,59
+fl-blr-hyd-03,Deccan Sky,DS,DS 668,BLR,HYD,14:45,16:15,0,90,0,,A321neo,3100,4800,8850,true,Flex,15,7,true,92,12,59
+fl-blr-hyd-06,Deccan Sky,DS,DS 779,BLR,HYD,17:20,18:35,0,75,0,,A321neo,3150,4900,9000,false,Saver,15,7,false,88,4,59
+fl-blr-hyd-01,Kaveri Air,KV,KV 594,BLR,HYD,19:05,20:35,0,90,0,,E190,2950,4550,8400,false,Saver,15,7,true,85,2,59
+fl-blr-hyd-04,Kaveri Air,KV,KV 705,BLR,HYD,21:40,23:00,0,80,0,,E190,2950,4550,8400,false,Saver,15,7,false,81,17,59
+fl-blr-jai-02,Coastal Wings,CW,CW 924,BLR,JAI,05:40,10:00,0,260,1,HYD,ATR 72,4350,6750,12400,false,Saver,15,7,true,83,17,222
+fl-blr-jai-05,Coastal Wings,CW,CW 145,BLR,JAI,07:15,11:40,0,265,1,HYD,ATR 72,4900,7600,13950,false,Saver,15,7,true,79,9,222
+fl-blr-jai-03,Himalaya Jet,HJ,HJ 961,BLR,JAI,12:10,15:15,0,185,0,,B737 MAX,6500,10100,18550,true,Flex,15,7,true,94,22,199
+fl-blr-jai-06,Himalaya Jet,HJ,HJ 182,BLR,JAI,14:45,17:40,0,175,0,,B737 MAX,6250,9700,17800,true,Flex,15,7,true,90,14,199
+fl-blr-jai-01,Monsoon Air,MN,MN 887,BLR,JAI,17:20,20:25,0,185,0,,A320neo,5050,7850,14400,false,Saver,15,7,true,79,12,199
+fl-blr-jai-04,Monsoon Air,MN,MN 108,BLR,JAI,19:05,22:00,0,175,0,,A320neo,5350,8300,15250,true,Flex,15,7,true,75,4,199
+fl-blr-maa-01,Aravalli Air,AV,AV 202,BLR,MAA,05:40,06:45,0,65,0,,A320neo,2500,3900,7150,true,Flex,15,7,true,85,12,35
+fl-blr-maa-04,Aravalli Air,AV,AV 313,BLR,MAA,07:15,08:25,0,70,0,,A320neo,2500,3900,7150,false,Saver,15,7,false,88,4,35
+fl-blr-maa-02,Deccan Sky,DS,DS 239,BLR,MAA,12:10,13:25,0,75,0,,A321neo,2650,4100,7550,false,Saver,15,7,false,89,17,35
+fl-blr-maa-05,Deccan Sky,DS,DS 350,BLR,MAA,14:45,15:50,0,65,0,,A321neo,2600,4050,7400,true,Flex,15,7,true,92,9,35
+fl-blr-maa-03,Kaveri Air,KV,KV 276,BLR,MAA,19:05,20:10,0,65,0,,E190,2500,3900,7150,false,Saver,15,7,true,85,22,35
+fl-blr-maa-06,Kaveri Air,KV,KV 387,BLR,MAA,21:40,22:50,0,70,0,,E190,2400,3700,6850,false,Saver,15,7,false,81,14,35
+fl-blr-udr-02,Aravalli Air,AV,AV 917,BLR,UDR,07:15,09:55,0,160,0,,A320neo,5050,7850,14400,false,Saver,15,7,true,86,18,173
+fl-blr-udr-05,Aravalli Air,AV,AV 138,BLR,UDR,09:30,12:15,0,165,0,,A320neo,4850,7500,13800,false,Saver,15,7,true,89,10,173
+fl-blr-udr-03,Deccan Sky,DS,DS 954,BLR,UDR,14:45,18:55,0,250,1,HYD,A321neo,4850,7500,13800,true,Flex,15,7,true,90,23,196
+fl-blr-udr-06,Deccan Sky,DS,DS 175,BLR,UDR,17:20,21:25,0,245,1,HYD,A321neo,4550,7050,12950,false,Saver,15,7,true,86,15,196
+fl-blr-udr-01,Kaveri Air,KV,KV 880,BLR,UDR,19:05,21:55,0,170,0,,E190,5000,7750,14250,false,Saver,15,7,true,83,13,173
+fl-blr-udr-04,Kaveri Air,KV,KV 101,BLR,UDR,21:40,00:20,1,160,0,,E190,4500,7000,12850,false,Saver,15,7,true,86,5,173
+fl-bom-blr-03,Coastal Wings,CW,CW 241,BOM,BLR,07:15,09:15,0,120,0,,ATR 72,3700,5750,10550,false,Saver,15,7,true,84,13,108
+fl-bom-blr-06,Coastal Wings,CW,CW 352,BOM,BLR,09:30,11:35,0,125,0,,ATR 72,3550,5500,10100,true,Flex,15,7,true,80,5,108
+fl-bom-blr-01,Himalaya Jet,HJ,HJ 167,BOM,BLR,12:10,14:10,0,120,0,,B737 MAX,4250,6600,12100,true,Flex,15,7,true,92,3,108
+fl-bom-blr-04,Himalaya Jet,HJ,HJ 278,BOM,BLR,14:45,16:35,0,110,0,,B737 MAX,4100,6350,11700,true,Flex,15,7,false,88,18,108
+fl-bom-blr-02,Monsoon Air,MN,MN 204,BOM,BLR,19:05,21:00,0,115,0,,A320neo,3650,5650,10400,true,Flex,15,7,false,80,8,108
+fl-bom-blr-05,Monsoon Air,MN,MN 315,BOM,BLR,21:40,23:40,0,120,0,,A320neo,3350,5200,9550,false,Saver,15,7,true,76,23,108
+fl-bom-ccu-01,Kaveri Air,KV,KV 852,BOM,CCU,05:40,08:55,0,195,0,,E190,5450,8450,15550,true,Flex,15,7,true,84,21,217
+fl-bom-ccu-04,Kaveri Air,KV,KV 963,BOM,CCU,07:15,10:35,0,200,0,,E190,5600,8700,15950,false,Saver,15,7,true,87,13,217
+fl-bom-ccu-02,Aravalli Air,AV,AV 889,BOM,CCU,12:10,15:30,0,200,0,,A320neo,6100,9450,17400,false,Saver,15,7,true,87,3,217
+fl-bom-ccu-05,Aravalli Air,AV,AV 110,BOM,CCU,14:45,17:55,0,190,0,,A320neo,6500,10100,18550,true,Flex,15,7,true,83,18,217
+fl-bom-ccu-03,Deccan Sky,DS,DS 926,BOM,CCU,19:05,23:50,0,285,1,HYD,A321neo,5450,8450,15550,false,Saver,15,7,true,91,8,240
+fl-bom-ccu-06,Deccan Sky,DS,DS 147,BOM,CCU,21:40,02:35,1,295,1,HYD,A321neo,5400,8350,15400,false,Saver,15,7,true,87,23,240
+fl-bom-cok-03,Kaveri Air,KV,KV 398,BOM,COK,05:40,07:50,0,130,0,,E190,4000,6200,11400,true,Flex,15,7,true,84,2,138
+fl-bom-cok-06,Kaveri Air,KV,KV 509,BOM,COK,07:15,09:30,0,135,0,,E190,4450,6900,12700,false,Saver,15,7,true,87,17,138
+fl-bom-cok-01,Aravalli Air,AV,AV 324,BOM,COK,09:30,13:05,0,215,1,GOI,A320neo,4050,6300,11550,false,Saver,15,7,true,84,15,162
+fl-bom-cok-04,Aravalli Air,AV,AV 435,BOM,COK,12:10,15:50,0,220,1,GOI,A320neo,4050,6300,11550,false,Saver,15,7,true,87,7,162
+fl-bom-cok-02,Deccan Sky,DS,DS 361,BOM,COK,17:20,19:40,0,140,0,,A321neo,4550,7050,12950,false,Saver,15,7,true,88,20,138
+fl-bom-cok-05,Deccan Sky,DS,DS 472,BOM,COK,19:05,21:30,0,145,0,,A321neo,4350,6750,12400,false,Saver,15,7,true,91,12,138
+fl-bom-del-02,Aravalli Air,AV,AV 123,BOM,DEL,07:15,09:40,0,145,0,,A320neo,4750,7350,13550,false,Saver,15,7,true,86,5,148
+fl-bom-del-05,Aravalli Air,AV,AV 234,BOM,DEL,09:30,12:00,0,150,0,,A320neo,4600,7150,13100,false,Saver,15,7,true,89,20,148
+fl-bom-del-03,Deccan Sky,DS,DS 160,BOM,DEL,14:45,18:50,0,245,1,JAI,A321neo,4550,7050,12950,true,Flex,15,7,true,90,10,171
+fl-bom-del-06,Deccan Sky,DS,DS 271,BOM,DEL,17:20,21:20,0,240,1,JAI,A321neo,4300,6650,12250,false,Saver,15,7,true,86,2,171
+fl-bom-del-01,Kaveri Air,KV,KV 976,BOM,DEL,19:05,21:35,0,150,0,,E190,4300,6650,12250,false,Saver,15,7,true,83,23,148
+fl-bom-del-04,Kaveri Air,KV,KV 197,BOM,DEL,21:40,00:00,1,140,0,,E190,4250,6600,12100,false,Saver,15,7,true,86,15,148
+fl-bom-goi-05,Kaveri Air,KV,KV 754,BOM,GOI,05:40,06:55,0,75,0,,E190,2750,4250,7850,true,Flex,15,7,true,85,13,55
+fl-bom-goi-03,Aravalli Air,AV,AV 680,BOM,GOI,09:30,10:45,0,75,0,,A320neo,2950,4550,8400,false,Saver,15,7,true,85,3,55
+fl-bom-goi-06,Aravalli Air,AV,AV 791,BOM,GOI,12:10,13:30,0,80,0,,A320neo,2950,4550,8400,false,Saver,15,7,false,88,18,55
+fl-bom-goi-01,Deccan Sky,DS,DS 606,BOM,GOI,14:45,16:05,0,80,0,,A321neo,3150,4900,9000,true,Flex,15,7,true,86,16,55
+fl-bom-goi-04,Deccan Sky,DS,DS 717,BOM,GOI,17:20,18:45,0,85,0,,A321neo,3000,4650,8550,false,Saver,15,7,false,89,8,55
+fl-bom-goi-02,Kaveri Air,KV,KV 643,BOM,GOI,21:40,23:05,0,85,0,,E190,2800,4350,8000,false,Saver,15,7,false,82,21,55
+fl-bom-hyd-02,Kaveri Air,KV,KV 129,BOM,HYD,07:15,09:00,0,105,0,,E190,3150,4900,9000,false,Saver,15,7,false,81,22,81
+fl-bom-hyd-05,Kaveri Air,KV,KV 240,BOM,HYD,09:30,11:05,0,95,0,,E190,3300,5100,9400,false,Saver,15,7,true,84,14,81
+fl-bom-hyd-03,Aravalli Air,AV,AV 166,BOM,HYD,14:45,16:20,0,95,0,,A320neo,3500,5450,10000,true,Flex,15,7,true,84,4,81
+fl-bom-hyd-06,Aravalli Air,AV,AV 277,BOM,HYD,17:20,19:00,0,100,0,,A320neo,3300,5100,9400,false,Saver,15,7,false,87,19,81
+fl-bom-hyd-01,Deccan Sky,DS,DS 982,BOM,HYD,19:05,20:45,0,100,0,,A321neo,3300,5100,9400,false,Saver,15,7,true,92,17,81
+fl-bom-hyd-04,Deccan Sky,DS,DS 203,BOM,HYD,21:40,23:25,0,105,0,,A321neo,3300,5100,9400,false,Saver,15,7,false,88,9,81
+fl-bom-jai-02,Monsoon Air,MN,MN 422,BOM,JAI,05:40,07:50,0,130,0,,A320neo,3700,5750,10550,false,Saver,15,7,true,75,9,118
+fl-bom-jai-05,Monsoon Air,MN,MN 533,BOM,JAI,07:15,09:15,0,120,0,,A320neo,3750,5800,10700,false,Saver,15,7,true,78,24,118
+fl-bom-jai-03,Coastal Wings,CW,CW 459,BOM,JAI,12:10,14:10,0,120,0,,ATR 72,4000,6200,11400,false,Saver,15,7,true,79,14,118
+fl-bom-jai-06,Coastal Wings,CW,CW 570,BOM,JAI,14:45,16:50,0,125,0,,ATR 72,3900,6050,11100,false,Saver,15,7,true,82,6,118
+fl-bom-jai-01,Himalaya Jet,HJ,HJ 385,BOM,JAI,17:20,19:25,0,125,0,,B737 MAX,4050,6300,11550,true,Flex,15,7,true,94,4,118
+fl-bom-jai-04,Himalaya Jet,HJ,HJ 496,BOM,JAI,19:05,21:15,0,130,0,,B737 MAX,4250,6600,12100,true,Flex,15,7,true,90,19,118
+fl-bom-maa-01,Kaveri Air,KV,KV 590,BOM,MAA,05:40,07:50,0,130,0,,E190,4050,6300,11550,true,Flex,15,7,true,85,4,134
+fl-bom-maa-04,Kaveri Air,KV,KV 701,BOM,MAA,07:15,09:30,0,135,0,,E190,4150,6450,11850,false,Saver,15,7,true,81,19,134
+fl-bom-maa-02,Aravalli Air,AV,AV 627,BOM,MAA,12:10,14:25,0,135,0,,A320neo,4450,6900,12700,false,Saver,15,7,true,88,9,134
+fl-bom-maa-05,Aravalli Air,AV,AV 738,BOM,MAA,14:45,17:05,0,140,0,,A320neo,4300,6650,12250,true,Flex,15,7,true,84,24,134
+fl-bom-maa-03,Deccan Sky,DS,DS 664,BOM,MAA,19:05,23:05,0,240,1,BLR,A321neo,4050,6300,11550,false,Saver,15,7,true,92,14,158
+fl-bom-maa-06,Deccan Sky,DS,DS 775,BOM,MAA,21:40,01:30,1,230,1,BLR,A321neo,3700,5750,10550,false,Saver,15,7,true,88,6,158
+fl-bom-udr-02,Kaveri Air,KV,KV 415,BOM,UDR,07:15,09:00,0,105,0,,E190,3250,5050,9250,false,Saver,15,7,false,86,10,81
+fl-bom-udr-05,Kaveri Air,KV,KV 526,BOM,UDR,09:30,11:05,0,95,0,,E190,3150,4900,9000,false,Saver,15,7,true,82,2,81
+fl-bom-udr-03,Aravalli Air,AV,AV 452,BOM,UDR,14:45,16:20,0,95,0,,A320neo,3350,5200,9550,true,Flex,15,7,true,89,15,81
+fl-bom-udr-06,Aravalli Air,AV,AV 563,BOM,UDR,17:20,19:00,0,100,0,,A320neo,3400,5250,9700,false,Saver,15,7,false,85,7,81
+fl-bom-udr-01,Deccan Sky,DS,DS 378,BOM,UDR,19:05,20:45,0,100,0,,A321neo,3400,5250,9700,false,Saver,15,7,true,90,5,81
+fl-bom-udr-04,Deccan Sky,DS,DS 489,BOM,UDR,21:40,23:25,0,105,0,,A321neo,3150,4900,9000,false,Saver,15,7,false,86,20,81
+fl-ccu-blr-01,Aravalli Air,AV,AV 554,CCU,BLR,05:40,10:00,0,260,1,MAA,A320neo,4850,7500,13800,true,Flex,15,7,true,88,24,224
+fl-ccu-blr-04,Aravalli Air,AV,AV 665,CCU,BLR,07:15,11:40,0,265,1,MAA,A320neo,5000,7750,14250,false,Saver,15,7,true,84,16,224
+fl-ccu-blr-02,Deccan Sky,DS,DS 591,CCU,BLR,12:10,15:15,0,185,0,,A321neo,6150,9550,17550,false,Saver,15,7,true,92,6,201
+fl-ccu-blr-05,Deccan Sky,DS,DS 702,CCU,BLR,14:45,17:55,0,190,0,,A321neo,5850,9050,16650,true,Flex,15,7,true,88,21,201
+fl-ccu-blr-03,Kaveri Air,KV,KV 628,CCU,BLR,19:05,22:15,0,190,0,,E190,5450,8450,15550,false,Saver,15,7,true,81,11,201
+fl-ccu-blr-06,Kaveri Air,KV,KV 739,CCU,BLR,21:40,00:40,1,180,0,,E190,5400,8350,15400,false,Saver,15,7,true,84,3,201
+fl-ccu-bom-01,Kaveri Air,KV,KV 642,CCU,BOM,05:40,08:55,0,195,0,,E190,5450,8450,15550,true,Flex,15,7,true,83,20,217
+fl-ccu-bom-04,Kaveri Air,KV,KV 753,CCU,BOM,07:15,10:35,0,200,0,,E190,5600,8700,15950,false,Saver,15,7,true,86,12,217
+fl-ccu-bom-02,Aravalli Air,AV,AV 679,CCU,BOM,12:10,15:30,0,200,0,,A320neo,6100,9450,17400,false,Saver,15,7,true,86,2,217
+fl-ccu-bom-05,Aravalli Air,AV,AV 790,CCU,BOM,14:45,17:55,0,190,0,,A320neo,6500,10100,18550,true,Flex,15,7,true,89,17,217
+fl-ccu-bom-03,Deccan Sky,DS,DS 716,CCU,BOM,19:05,23:40,0,275,1,HYD,A321neo,5450,8450,15550,false,Saver,15,7,true,90,7,240
+fl-ccu-bom-06,Deccan Sky,DS,DS 827,CCU,BOM,21:40,02:25,1,285,1,HYD,A321neo,5400,8350,15400,false,Saver,15,7,true,86,22,240
+fl-ccu-cok-04,Himalaya Jet,HJ,HJ 822,CCU,COK,05:40,10:55,0,315,1,MAA,B737 MAX,5550,8600,15800,true,Flex,15,7,true,93,5,269
+fl-ccu-cok-02,Monsoon Air,MN,MN 748,CCU,COK,09:30,13:10,0,220,0,,A320neo,5900,9150,16800,true,Flex,15,7,true,78,18,246
+fl-ccu-cok-05,Monsoon Air,MN,MN 859,CCU,COK,12:10,15:40,0,210,0,,A320neo,6500,10100,18550,false,Saver,15,7,true,81,10,246
+fl-ccu-cok-03,Coastal Wings,CW,CW 785,CCU,COK,17:20,20:50,0,210,0,,ATR 72,5950,9200,16950,false,Saver,15,7,true,82,23,246
+fl-ccu-cok-06,Coastal Wings,CW,CW 896,CCU,COK,19:05,22:40,0,215,0,,ATR 72,6350,9850,18100,true,Flex,15,7,true,78,15,246
+fl-ccu-cok-01,Himalaya Jet,HJ,HJ 711,CCU,COK,21:40,02:50,1,310,1,MAA,B737 MAX,5800,9000,16550,true,Flex,15,7,true,90,13,269
+fl-ccu-del-03,Monsoon Air,MN,MN 547,CCU,DEL,07:15,11:20,0,245,1,JAI,A320neo,4300,6650,12250,false,Saver,15,7,true,80,8,194
+fl-ccu-del-06,Monsoon Air,MN,MN 658,CCU,DEL,09:30,13:40,0,250,1,JAI,A320neo,4150,6450,11850,true,Flex,15,7,true,76,23,194
+fl-ccu-del-01,Coastal Wings,CW,CW 473,CCU,DEL,12:10,14:45,0,155,0,,ATR 72,5050,7850,14400,false,Saver,15,7,true,81,21,171
+fl-ccu-del-04,Coastal Wings,CW,CW 584,CCU,DEL,14:45,17:25,0,160,0,,ATR 72,4850,7500,13800,false,Saver,15,7,true,84,13,171
+fl-ccu-del-02,Himalaya Jet,HJ,HJ 510,CCU,DEL,19:05,21:50,0,165,0,,B737 MAX,5450,8450,15550,true,Flex,15,7,true,92,3,171
+fl-ccu-del-05,Himalaya Jet,HJ,HJ 621,CCU,DEL,21:40,00:30,1,170,0,,B737 MAX,4900,7600,13950,true,Flex,15,7,true,88,18,171
+fl-ccu-goi-06,Himalaya Jet,HJ,HJ 288,CCU,GOI,05:40,09:05,0,205,0,,B737 MAX,6350,9850,18100,true,Flex,15,7,true,94,16,226
+fl-ccu-goi-01,Monsoon Air,MN,MN 103,CCU,GOI,07:15,10:35,0,200,0,,A320neo,5750,8900,16400,false,Saver,15,7,true,76,14,226
+fl-ccu-goi-04,Monsoon Air,MN,MN 214,CCU,GOI,09:30,12:55,0,205,0,,A320neo,5500,8550,15700,true,Flex,15,7,true,79,6,226
+fl-ccu-goi-02,Coastal Wings,CW,CW 140,CCU,GOI,14:45,19:25,0,280,1,HYD,ATR 72,5400,8350,15400,false,Saver,15,7,true,80,19,249
+fl-ccu-goi-05,Coastal Wings,CW,CW 251,CCU,GOI,17:20,22:10,0,290,1,HYD,ATR 72,5000,7750,14250,false,Saver,15,7,true,83,11,249
+fl-ccu-goi-03,Himalaya Jet,HJ,HJ 177,CCU,GOI,21:40,01:00,1,200,0,,B737 MAX,6000,9300,17100,true,Flex,15,7,true,91,24,226
+fl-ccu-hyd-03,Himalaya Jet,HJ,HJ 553,CCU,HYD,07:15,09:50,0,155,0,,B737 MAX,5100,7900,14550,true,Flex,15,7,true,90,2,157
+fl-ccu-hyd-06,Himalaya Jet,HJ,HJ 664,CCU,HYD,09:30,12:10,0,160,0,,B737 MAX,4900,7600,13950,true,Flex,15,7,true,93,17,157
+fl-ccu-hyd-01,Monsoon Air,MN,MN 479,CCU,HYD,12:10,14:45,0,155,0,,A320neo,4750,7350,13550,false,Saver,15,7,true,75,15,157
+fl-ccu-hyd-04,Monsoon Air,MN,MN 590,CCU,HYD,14:45,17:10,0,145,0,,A320neo,4550,7050,12950,false,Saver,15,7,true,78,7,157
+fl-ccu-hyd-02,Coastal Wings,CW,CW 516,CCU,HYD,19:05,22:50,0,225,1,MAA,ATR 72,4250,6600,12100,true,Flex,15,7,true,79,20,180
+fl-ccu-hyd-05,Coastal Wings,CW,CW 627,CCU,HYD,21:40,01:35,1,235,1,MAA,ATR 72,3850,5950,10950,false,Saver,15,7,true,82,12,180
+fl-ccu-jai-03,Kaveri Air,KV,KV 846,CCU,JAI,05:40,08:25,0,165,0,,E190,4650,7200,13250,true,Flex,15,7,true,83,12,176
+fl-ccu-jai-06,Kaveri Air,KV,KV 957,CCU,JAI,07:15,10:05,0,170,0,,E190,4800,7450,13700,false,Saver,15,7,true,86,4,176
+fl-ccu-jai-01,Aravalli Air,AV,AV 772,CCU,JAI,09:30,13:50,0,260,1,DEL,A320neo,4750,7350,13550,false,Saver,15,7,true,83,2,200
+fl-ccu-jai-04,Aravalli Air,AV,AV 883,CCU,JAI,12:10,16:40,0,270,1,DEL,A320neo,4750,7350,13550,false,Saver,15,7,true,86,17,200
+fl-ccu-jai-02,Deccan Sky,DS,DS 809,CCU,JAI,17:20,20:00,0,160,0,,A321neo,5400,8350,15400,false,Saver,15,7,true,87,7,176
+fl-ccu-jai-05,Deccan Sky,DS,DS 920,CCU,JAI,19:05,21:50,0,165,0,,A321neo,5150,8000,14700,false,Saver,15,7,true,90,22,176
+fl-ccu-maa-02,Himalaya Jet,HJ,HJ 124,CCU,MAA,05:40,08:35,0,175,0,,B737 MAX,5050,7850,14400,true,Flex,15,7,true,94,7,180
+fl-ccu-maa-05,Himalaya Jet,HJ,HJ 235,CCU,MAA,07:15,09:55,0,160,0,,B737 MAX,5750,8900,16400,true,Flex,15,7,true,90,22,180
+fl-ccu-maa-03,Monsoon Air,MN,MN 161,CCU,MAA,12:10,16:25,0,255,1,HYD,A320neo,4400,6800,12550,false,Saver,15,7,true,75,12,203
+fl-ccu-maa-06,Monsoon Air,MN,MN 272,CCU,MAA,14:45,19:05,0,260,1,HYD,A320neo,4650,7200,13250,false,Saver,15,7,true,78,4,203
+fl-ccu-maa-01,Coastal Wings,CW,CW 977,CCU,MAA,17:20,20:05,0,165,0,,ATR 72,4900,7600,13950,false,Saver,15,7,true,83,2,180
+fl-ccu-maa-04,Coastal Wings,CW,CW 198,CCU,MAA,19:05,21:55,0,170,0,,ATR 72,4700,7300,13400,true,Flex,15,7,true,79,17,180
+fl-ccu-udr-03,Himalaya Jet,HJ,HJ 839,CCU,UDR,07:15,10:15,0,180,0,,B737 MAX,5700,8850,16250,true,Flex,15,7,true,88,13,195
+fl-ccu-udr-06,Himalaya Jet,HJ,HJ 950,CCU,UDR,09:30,12:35,0,185,0,,B737 MAX,6050,9400,17250,true,Flex,15,7,true,91,5,195
+fl-ccu-udr-01,Monsoon Air,MN,MN 765,CCU,UDR,12:10,15:10,0,180,0,,A320neo,5250,8150,14950,false,Saver,15,7,true,80,3,195
+fl-ccu-udr-04,Monsoon Air,MN,MN 876,CCU,UDR,14:45,17:35,0,170,0,,A320neo,5600,8700,15950,false,Saver,15,7,true,76,18,195
+fl-ccu-udr-02,Coastal Wings,CW,CW 802,CCU,UDR,19:05,23:35,0,270,1,JAI,ATR 72,4650,7200,13250,true,Flex,15,7,true,84,8,218
+fl-ccu-udr-05,Coastal Wings,CW,CW 913,CCU,UDR,21:40,01:55,1,255,1,JAI,ATR 72,4600,7150,13100,false,Saver,15,7,true,80,23,218
+fl-cok-blr-03,Aravalli Air,AV,AV 970,COK,BLR,05:40,06:55,0,75,0,,A320neo,2700,4200,7700,true,Flex,15,7,true,89,22,48
+fl-cok-blr-06,Aravalli Air,AV,AV 191,COK,BLR,07:15,08:35,0,80,0,,A320neo,2750,4250,7850,false,Saver,15,7,false,85,14,48
+fl-cok-blr-01,Deccan Sky,DS,DS 896,COK,BLR,09:30,10:50,0,80,0,,A321neo,2900,4500,8250,false,Saver,15,7,true,90,12,48
+fl-cok-blr-04,Deccan Sky,DS,DS 117,COK,BLR,12:10,13:35,0,85,0,,A321neo,2900,4500,8250,false,Saver,15,7,false,86,4,48
+fl-cok-blr-02,Kaveri Air,KV,KV 933,COK,BLR,17:20,18:30,0,70,0,,E190,2800,4350,8000,false,Saver,15,7,false,86,17,48
+fl-cok-blr-05,Kaveri Air,KV,KV 154,COK,BLR,19:05,20:20,0,75,0,,E190,2700,4200,7700,false,Saver,15,7,true,82,9,48
+fl-cok-bom-03,Kaveri Air,KV,KV 168,COK,BOM,05:40,07:50,0,130,0,,E190,4000,6200,11400,true,Flex,15,7,true,84,18,138
+fl-cok-bom-06,Kaveri Air,KV,KV 279,COK,BOM,07:15,09:30,0,135,0,,E190,4450,6900,12700,false,Saver,15,7,true,87,10,138
+fl-cok-bom-01,Aravalli Air,AV,AV 984,COK,BOM,09:30,13:10,0,220,1,GOI,A320neo,4050,6300,11550,false,Saver,15,7,true,84,8,162
+fl-cok-bom-04,Aravalli Air,AV,AV 205,COK,BOM,12:10,16:00,0,230,1,GOI,A320neo,4050,6300,11550,false,Saver,15,7,true,87,23,162
+fl-cok-bom-02,Deccan Sky,DS,DS 131,COK,BOM,17:20,19:40,0,140,0,,A321neo,4550,7050,12950,false,Saver,15,7,true,88,13,138
+fl-cok-bom-05,Deccan Sky,DS,DS 242,COK,BOM,19:05,21:30,0,145,0,,A321neo,4350,6750,12400,false,Saver,15,7,true,91,5,138
+fl-cok-ccu-04,Himalaya Jet,HJ,HJ 802,COK,CCU,05:40,10:55,0,315,1,MAA,B737 MAX,5550,8600,15800,true,Flex,15,7,true,94,22,269
+fl-cok-ccu-02,Monsoon Air,MN,MN 728,COK,CCU,09:30,13:10,0,220,0,,A320neo,5900,9150,16800,true,Flex,15,7,true,79,12,246
+fl-cok-ccu-05,Monsoon Air,MN,MN 839,COK,CCU,12:10,15:40,0,210,0,,A320neo,6500,10100,18550,false,Saver,15,7,true,75,4,246
+fl-cok-ccu-03,Coastal Wings,CW,CW 765,COK,CCU,17:20,20:50,0,210,0,,ATR 72,5950,9200,16950,false,Saver,15,7,true,83,17,246
+fl-cok-ccu-06,Coastal Wings,CW,CW 876,COK,CCU,19:05,22:40,0,215,0,,ATR 72,6350,9850,18100,true,Flex,15,7,true,79,9,246
+fl-cok-ccu-01,Himalaya Jet,HJ,HJ 691,COK,CCU,21:40,02:45,1,305,1,MAA,B737 MAX,5800,9000,16550,true,Flex,15,7,true,91,7,269
+fl-cok-del-02,Monsoon Air,MN,MN 852,COK,DEL,05:40,09:25,0,225,0,,A320neo,6200,9600,17650,false,Saver,15,7,true,78,14,266
+fl-cok-del-05,Monsoon Air,MN,MN 963,COK,DEL,07:15,11:05,0,230,0,,A320neo,6400,9900,18250,false,Saver,15,7,true,81,6,266
+fl-cok-del-03,Coastal Wings,CW,CW 889,COK,DEL,12:10,16:00,0,230,0,,ATR 72,7000,10850,19950,false,Saver,15,7,true,82,19,266
+fl-cok-del-06,Coastal Wings,CW,CW 110,COK,DEL,14:45,18:25,0,220,0,,ATR 72,6700,10400,19100,false,Saver,15,7,true,78,11,266
+fl-cok-del-01,Himalaya Jet,HJ,HJ 815,COK,DEL,17:20,22:45,0,325,1,BLR,B737 MAX,6350,9850,18100,true,Flex,15,7,true,90,9,290
+fl-cok-del-04,Himalaya Jet,HJ,HJ 926,COK,DEL,19:05,00:25,1,320,1,BLR,B737 MAX,6750,10450,19250,true,Flex,15,7,true,93,24,290
+fl-cok-goi-03,Monsoon Air,MN,MN 519,COK,GOI,07:15,08:50,0,95,0,,A320neo,3200,4950,9100,false,Saver,15,7,true,77,12,84
+fl-cok-goi-06,Monsoon Air,MN,MN 630,COK,GOI,09:30,11:10,0,100,0,,A320neo,3100,4800,8850,true,Flex,15,7,false,80,4,84
+fl-cok-goi-01,Coastal Wings,CW,CW 445,COK,GOI,12:10,13:45,0,95,0,,ATR 72,3350,5200,9550,false,Saver,15,7,true,78,2,84
+fl-cok-goi-04,Coastal Wings,CW,CW 556,COK,GOI,14:45,16:25,0,100,0,,ATR 72,3250,5050,9250,false,Saver,15,7,false,81,17,84
+fl-cok-goi-02,Himalaya Jet,HJ,HJ 482,COK,GOI,19:05,20:50,0,105,0,,B737 MAX,3550,5500,10100,true,Flex,15,7,false,89,7,84
+fl-cok-goi-05,Himalaya Jet,HJ,HJ 593,COK,GOI,21:40,23:30,0,110,0,,B737 MAX,3250,5050,9250,true,Flex,15,7,true,92,22,84
+fl-cok-hyd-02,Himalaya Jet,HJ,HJ 858,COK,HYD,05:40,07:40,0,120,0,,B737 MAX,3900,6050,11100,true,Flex,15,7,true,88,8,106
+fl-cok-hyd-05,Himalaya Jet,HJ,HJ 969,COK,HYD,07:15,09:05,0,110,0,,B737 MAX,4000,6200,11400,true,Flex,15,7,true,91,23,106
+fl-cok-hyd-03,Monsoon Air,MN,MN 895,COK,HYD,12:10,14:00,0,110,0,,A320neo,3750,5800,10700,false,Saver,15,7,true,76,13,106
+fl-cok-hyd-06,Monsoon Air,MN,MN 116,COK,HYD,14:45,16:40,0,115,0,,A320neo,3650,5650,10400,false,Saver,15,7,false,79,5,106
+fl-cok-hyd-01,Coastal Wings,CW,CW 821,COK,HYD,17:20,19:15,0,115,0,,ATR 72,3500,5450,10000,false,Saver,15,7,true,84,3,106
+fl-cok-hyd-04,Coastal Wings,CW,CW 932,COK,HYD,19:05,21:05,0,120,0,,ATR 72,3700,5750,10550,true,Flex,15,7,true,80,18,106
+fl-cok-jai-05,Kaveri Air,KV,KV 372,COK,JAI,05:40,10:25,0,285,1,BLR,E190,5250,8150,14950,true,Flex,15,7,true,84,10,265
+fl-cok-jai-03,Aravalli Air,AV,AV 298,COK,JAI,09:30,12:55,0,205,0,,A320neo,6600,10250,18800,false,Saver,15,7,true,84,23,241
+fl-cok-jai-06,Aravalli Air,AV,AV 409,COK,JAI,12:10,15:40,0,210,0,,A320neo,6550,10150,18650,false,Saver,15,7,true,87,15,241
+fl-cok-jai-01,Deccan Sky,DS,DS 224,COK,JAI,14:45,18:15,0,210,0,,A321neo,7350,11400,20950,true,Flex,15,7,true,92,13,241
+fl-cok-jai-04,Deccan Sky,DS,DS 335,COK,JAI,17:20,20:55,0,215,0,,A321neo,6800,10550,19400,false,Saver,15,7,true,88,5,241
+fl-cok-jai-02,Kaveri Air,KV,KV 261,COK,JAI,21:40,02:35,1,295,1,BLR,E190,5450,8450,15550,false,Saver,15,7,true,81,18,265
+fl-cok-maa-04,Himalaya Jet,HJ,HJ 540,COK,MAA,05:40,07:05,0,85,0,,B737 MAX,3000,4650,8550,true,Flex,15,7,false,88,5,67
+fl-cok-maa-02,Monsoon Air,MN,MN 466,COK,MAA,09:30,11:00,0,90,0,,A320neo,2900,4500,8250,true,Flex,15,7,false,80,18,67
+fl-cok-maa-05,Monsoon Air,MN,MN 577,COK,MAA,12:10,13:45,0,95,0,,A320neo,2900,4500,8250,false,Saver,15,7,true,76,10,67
+fl-cok-maa-03,Coastal Wings,CW,CW 503,COK,MAA,17:20,18:55,0,95,0,,ATR 72,2950,4550,8400,false,Saver,15,7,true,84,23,67
+fl-cok-maa-06,Coastal Wings,CW,CW 614,COK,MAA,19:05,20:30,0,85,0,,ATR 72,3050,4750,8700,true,Flex,15,7,false,80,15,67
+fl-cok-maa-01,Himalaya Jet,HJ,HJ 429,COK,MAA,21:40,23:15,0,95,0,,B737 MAX,3050,4750,8700,true,Flex,15,7,true,92,13,67
+fl-cok-udr-02,Himalaya Jet,HJ,HJ 254,COK,UDR,05:40,08:55,0,195,0,,B737 MAX,5800,9000,16550,true,Flex,15,7,true,93,19,212
+fl-cok-udr-05,Himalaya Jet,HJ,HJ 365,COK,UDR,07:15,10:20,0,185,0,,B737 MAX,6600,10250,18800,true,Flex,15,7,true,89,11,212
+fl-cok-udr-03,Monsoon Air,MN,MN 291,COK,UDR,12:10,16:40,0,270,1,GOI,A320neo,5000,7750,14250,false,Saver,15,7,true,81,24,235
+fl-cok-udr-06,Monsoon Air,MN,MN 402,COK,UDR,14:45,19:20,0,275,1,GOI,A320neo,5250,8150,14950,false,Saver,15,7,true,77,16,235
+fl-cok-udr-01,Coastal Wings,CW,CW 217,COK,UDR,17:20,20:30,0,190,0,,ATR 72,5600,8700,15950,false,Saver,15,7,true,82,14,212
+fl-cok-udr-04,Coastal Wings,CW,CW 328,COK,UDR,19:05,22:20,0,195,0,,ATR 72,5350,8300,15250,true,Flex,15,7,true,78,6,212
+fl-del-blr-02,Deccan Sky,DS,DS 895,DEL,BLR,07:15,10:40,0,205,0,,A321neo,6100,9450,17400,false,Saver,15,7,true,88,10,222
+fl-del-blr-05,Deccan Sky,DS,DS 116,DEL,BLR,09:30,12:40,0,190,0,,A321neo,6500,10100,18550,false,Saver,15,7,true,91,2,222
+fl-del-blr-03,Kaveri Air,KV,KV 932,DEL,BLR,14:45,18:00,0,195,0,,E190,6450,10000,18400,true,Flex,15,7,true,84,15,222
+fl-del-blr-06,Kaveri Air,KV,KV 153,DEL,BLR,17:20,20:40,0,200,0,,E190,5950,9200,16950,false,Saver,15,7,true,87,7,222
+fl-del-blr-01,Aravalli Air,AV,AV 858,DEL,BLR,19:05,23:55,0,290,1,HYD,A320neo,5350,8300,15250,false,Saver,15,7,true,84,5,246
+fl-del-blr-04,Aravalli Air,AV,AV 969,DEL,BLR,21:40,02:35,1,295,1,HYD,A320neo,5300,8200,15100,false,Saver,15,7,true,87,20,246
+fl-del-bom-02,Aravalli Air,AV,AV 983,DEL,BOM,07:15,09:40,0,145,0,,A320neo,4750,7350,13550,false,Saver,15,7,true,89,6,148
+fl-del-bom-05,Aravalli Air,AV,AV 204,DEL,BOM,09:30,12:00,0,150,0,,A320neo,4600,7150,13100,false,Saver,15,7,true,85,21,148
+fl-del-bom-03,Deccan Sky,DS,DS 130,DEL,BOM,14:45,18:50,0,245,1,JAI,A321neo,4550,7050,12950,true,Flex,15,7,true,86,11,171
+fl-del-bom-06,Deccan Sky,DS,DS 241,DEL,BOM,17:20,21:15,0,235,1,JAI,A321neo,4300,6650,12250,false,Saver,15,7,true,89,3,171
+fl-del-bom-01,Kaveri Air,KV,KV 946,DEL,BOM,19:05,21:35,0,150,0,,E190,4300,6650,12250,false,Saver,15,7,true,86,24,148
+fl-del-bom-04,Kaveri Air,KV,KV 167,DEL,BOM,21:40,00:00,1,140,0,,E190,4250,6600,12100,false,Saver,15,7,true,82,16,148
+fl-del-ccu-03,Monsoon Air,MN,MN 727,DEL,CCU,07:15,11:25,0,250,1,JAI,A320neo,4300,6650,12250,false,Saver,15,7,true,77,10,194
+fl-del-ccu-06,Monsoon Air,MN,MN 838,DEL,CCU,09:30,13:30,0,240,1,JAI,A320neo,4150,6450,11850,true,Flex,15,7,true,80,2,194
+fl-del-ccu-01,Coastal Wings,CW,CW 653,DEL,CCU,12:10,14:45,0,155,0,,ATR 72,5050,7850,14400,false,Saver,15,7,true,78,23,171
+fl-del-ccu-04,Coastal Wings,CW,CW 764,DEL,CCU,14:45,17:25,0,160,0,,ATR 72,4850,7500,13800,false,Saver,15,7,true,81,15,171
+fl-del-ccu-02,Himalaya Jet,HJ,HJ 690,DEL,CCU,19:05,21:50,0,165,0,,B737 MAX,5450,8450,15550,true,Flex,15,7,true,89,5,171
+fl-del-ccu-05,Himalaya Jet,HJ,HJ 801,DEL,CCU,21:40,00:30,1,170,0,,B737 MAX,4900,7600,13950,true,Flex,15,7,true,92,20,171
+fl-del-cok-02,Monsoon Air,MN,MN 162,DEL,COK,05:40,09:25,0,225,0,,A320neo,6200,9600,17650,false,Saver,15,7,true,81,22,266
+fl-del-cok-05,Monsoon Air,MN,MN 273,DEL,COK,07:15,11:05,0,230,0,,A320neo,6400,9900,18250,false,Saver,15,7,true,77,14,266
+fl-del-cok-03,Coastal Wings,CW,CW 199,DEL,COK,12:10,16:00,0,230,0,,ATR 72,7000,10850,19950,false,Saver,15,7,true,78,4,266
+fl-del-cok-06,Coastal Wings,CW,CW 310,DEL,COK,14:45,18:25,0,220,0,,ATR 72,6700,10400,19100,false,Saver,15,7,true,81,19,266
+fl-del-cok-01,Himalaya Jet,HJ,HJ 125,DEL,COK,17:20,22:35,0,315,1,BLR,B737 MAX,6350,9850,18100,true,Flex,15,7,true,93,17,290
+fl-del-cok-04,Himalaya Jet,HJ,HJ 236,DEL,COK,19:05,00:15,1,310,1,BLR,B737 MAX,6750,10450,19250,true,Flex,15,7,true,89,9,290
+fl-del-goi-04,Monsoon Air,MN,MN 518,DEL,GOI,05:40,08:35,0,175,0,,A320neo,4950,7650,14100,false,Saver,15,7,true,75,10,195
+fl-del-goi-02,Coastal Wings,CW,CW 444,DEL,GOI,09:30,14:05,0,275,1,JAI,ATR 72,4600,7150,13100,true,Flex,15,7,true,83,23,219
+fl-del-goi-05,Coastal Wings,CW,CW 555,DEL,GOI,12:10,16:30,0,260,1,JAI,ATR 72,5000,7750,14250,false,Saver,15,7,true,79,15,219
+fl-del-goi-03,Himalaya Jet,HJ,HJ 481,DEL,GOI,17:20,20:25,0,185,0,,B737 MAX,6200,9600,17650,true,Flex,15,7,true,94,5,195
+fl-del-goi-06,Himalaya Jet,HJ,HJ 592,DEL,GOI,19:05,22:00,0,175,0,,B737 MAX,5950,9200,16950,true,Flex,15,7,true,90,20,195
+fl-del-goi-01,Monsoon Air,MN,MN 407,DEL,GOI,21:40,00:45,1,185,0,,A320neo,4700,7300,13400,false,Saver,15,7,true,79,18,195
+fl-del-hyd-06,Himalaya Jet,HJ,HJ 968,DEL,HYD,05:40,08:15,0,155,0,,B737 MAX,5000,7750,14250,true,Flex,15,7,true,89,21,165
+fl-del-hyd-01,Monsoon Air,MN,MN 783,DEL,HYD,07:15,09:45,0,150,0,,A320neo,4550,7050,12950,false,Saver,15,7,true,78,19,165
+fl-del-hyd-04,Monsoon Air,MN,MN 894,DEL,HYD,09:30,12:05,0,155,0,,A320neo,4400,6800,12550,true,Flex,15,7,true,81,11,165
+fl-del-hyd-02,Coastal Wings,CW,CW 820,DEL,HYD,14:45,18:50,0,245,1,JAI,ATR 72,4300,6650,12250,false,Saver,15,7,true,82,24,188
+fl-del-hyd-05,Coastal Wings,CW,CW 931,DEL,HYD,17:20,21:35,0,255,1,JAI,ATR 72,4050,6300,11550,false,Saver,15,7,true,78,16,188
+fl-del-hyd-03,Himalaya Jet,HJ,HJ 857,DEL,HYD,21:40,00:25,1,165,0,,B737 MAX,4750,7350,13550,true,Flex,15,7,true,93,6,165
+fl-del-jai-01,Aravalli Air,AV,AV 186,DEL,JAI,05:40,06:35,0,55,0,,A320neo,2350,3650,6700,true,Flex,15,7,true,86,6,30
+fl-del-jai-04,Aravalli Air,AV,AV 297,DEL,JAI,07:15,08:15,0,60,0,,A320neo,2400,3700,6850,false,Saver,15,7,false,89,21,30
+fl-del-jai-02,Deccan Sky,DS,DS 223,DEL,JAI,12:10,13:15,0,65,0,,A321neo,2450,3800,7000,false,Saver,15,7,false,90,11,30
+fl-del-jai-05,Deccan Sky,DS,DS 334,DEL,JAI,14:45,15:55,0,70,0,,A321neo,2550,3950,7250,true,Flex,15,7,true,86,3,30
+fl-del-jai-03,Kaveri Air,KV,KV 260,DEL,JAI,19:05,20:15,0,70,0,,E190,2350,3650,6700,false,Saver,15,7,true,86,16,30
+fl-del-jai-06,Kaveri Air,KV,KV 371,DEL,JAI,21:40,22:40,0,60,0,,E190,2350,3650,6700,false,Saver,15,7,false,82,8,30
+fl-del-maa-03,Monsoon Air,MN,MN 465,DEL,MAA,07:15,12:20,0,305,1,HYD,A320neo,5350,8300,15250,false,Saver,15,7,true,78,16,252
+fl-del-maa-06,Monsoon Air,MN,MN 576,DEL,MAA,09:30,14:20,0,290,1,HYD,A320neo,5150,8000,14700,true,Flex,15,7,true,81,8,252
+fl-del-maa-01,Coastal Wings,CW,CW 391,DEL,MAA,12:10,15:35,0,205,0,,ATR 72,5850,9050,16650,false,Saver,15,7,true,79,6,229
+fl-del-maa-04,Coastal Wings,CW,CW 502,DEL,MAA,14:45,18:00,0,195,0,,ATR 72,6200,9600,17650,false,Saver,15,7,true,82,21,229
+fl-del-maa-02,Himalaya Jet,HJ,HJ 428,DEL,MAA,19:05,22:20,0,195,0,,B737 MAX,7000,10850,19950,true,Flex,15,7,true,90,11,229
+fl-del-maa-05,Himalaya Jet,HJ,HJ 539,DEL,MAA,21:40,01:00,1,200,0,,B737 MAX,6200,9600,17650,true,Flex,15,7,true,93,3,229
+fl-del-udr-06,Himalaya Jet,HJ,HJ 364,DEL,UDR,05:40,07:10,0,90,0,,B737 MAX,3050,4750,8700,true,Flex,15,7,false,94,9,70
+fl-del-udr-01,Monsoon Air,MN,MN 179,DEL,UDR,07:15,08:40,0,85,0,,A320neo,3050,4750,8700,false,Saver,15,7,true,76,7,70
+fl-del-udr-04,Monsoon Air,MN,MN 290,DEL,UDR,09:30,11:00,0,90,0,,A320neo,3000,4650,8550,true,Flex,15,7,false,79,22,70
+fl-del-udr-02,Coastal Wings,CW,CW 216,DEL,UDR,14:45,16:15,0,90,0,,ATR 72,3150,4900,9000,false,Saver,15,7,false,80,12,70
+fl-del-udr-05,Coastal Wings,CW,CW 327,DEL,UDR,17:20,18:55,0,95,0,,ATR 72,3000,4650,8550,false,Saver,15,7,true,83,4,70
+fl-del-udr-03,Himalaya Jet,HJ,HJ 253,DEL,UDR,21:40,23:20,0,100,0,,B737 MAX,3150,4900,9000,true,Flex,15,7,true,91,17,70
+fl-goi-blr-05,Deccan Sky,DS,DS 430,GOI,BLR,05:40,07:05,0,85,0,,A321neo,3000,4650,8550,true,Flex,15,7,true,86,22,63
+fl-goi-blr-03,Kaveri Air,KV,KV 356,GOI,BLR,09:30,11:00,0,90,0,,E190,3050,4750,8700,false,Saver,15,7,true,86,12,63
+fl-goi-blr-06,Kaveri Air,KV,KV 467,GOI,BLR,12:10,13:45,0,95,0,,E190,3050,4750,8700,false,Saver,15,7,false,82,4,63
+fl-goi-blr-01,Aravalli Air,AV,AV 282,GOI,BLR,14:45,16:15,0,90,0,,A320neo,3250,5050,9250,true,Flex,15,7,true,86,2,63
+fl-goi-blr-04,Aravalli Air,AV,AV 393,GOI,BLR,17:20,18:40,0,80,0,,A320neo,3100,4800,8850,false,Saver,15,7,false,89,17,63
+fl-goi-blr-02,Deccan Sky,DS,DS 319,GOI,BLR,21:40,23:00,0,80,0,,A321neo,3100,4800,8850,false,Saver,15,7,false,90,7,63
+fl-goi-bom-05,Aravalli Air,AV,AV 518,GOI,BOM,05:40,06:55,0,75,0,,A320neo,2800,4350,8000,true,Flex,15,7,true,87,18,55
+fl-goi-bom-03,Deccan Sky,DS,DS 444,GOI,BOM,09:30,10:45,0,75,0,,A321neo,3000,4650,8550,false,Saver,15,7,true,88,8,55
+fl-goi-bom-06,Deccan Sky,DS,DS 555,GOI,BOM,12:10,13:30,0,80,0,,A321neo,3000,4650,8550,false,Saver,15,7,false,91,23,55
+fl-goi-bom-01,Kaveri Air,KV,KV 370,GOI,BOM,14:45,16:05,0,80,0,,E190,3000,4650,8550,true,Flex,15,7,true,81,21,55
+fl-goi-bom-04,Kaveri Air,KV,KV 481,GOI,BOM,17:20,18:45,0,85,0,,E190,2850,4400,8100,false,Saver,15,7,false,84,13,55
+fl-goi-bom-02,Aravalli Air,AV,AV 407,GOI,BOM,21:40,23:05,0,85,0,,A320neo,2850,4400,8100,false,Saver,15,7,false,84,3,55
+fl-goi-ccu-06,Monsoon Air,MN,MN 262,GOI,CCU,05:40,10:40,0,300,1,HYD,A320neo,4950,7650,14100,false,Saver,15,7,true,75,22,249
+fl-goi-ccu-01,Coastal Wings,CW,CW 967,GOI,CCU,07:15,10:35,0,200,0,,ATR 72,5850,9050,16650,false,Saver,15,7,true,80,20,226
+fl-goi-ccu-04,Coastal Wings,CW,CW 188,GOI,CCU,09:30,12:55,0,205,0,,ATR 72,5600,8700,15950,true,Flex,15,7,true,83,12,226
+fl-goi-ccu-02,Himalaya Jet,HJ,HJ 114,GOI,CCU,14:45,18:00,0,195,0,,B737 MAX,6750,10450,19250,true,Flex,15,7,true,91,2,226
+fl-goi-ccu-05,Himalaya Jet,HJ,HJ 225,GOI,CCU,17:20,20:40,0,200,0,,B737 MAX,6950,10750,19800,true,Flex,15,7,true,94,17,226
+fl-goi-ccu-03,Monsoon Air,MN,MN 151,GOI,CCU,21:40,02:35,1,295,1,HYD,A320neo,4700,7300,13400,false,Saver,15,7,true,79,7,249
+fl-goi-cok-03,Coastal Wings,CW,CW 513,GOI,COK,07:15,08:50,0,95,0,,ATR 72,3200,4950,9100,false,Saver,15,7,true,80,24,84
+fl-goi-cok-06,Coastal Wings,CW,CW 624,GOI,COK,09:30,11:10,0,100,0,,ATR 72,3350,5200,9550,true,Flex,15,7,false,83,16,84
+fl-goi-cok-01,Himalaya Jet,HJ,HJ 439,GOI,COK,12:10,13:45,0,95,0,,B737 MAX,3650,5650,10400,true,Flex,15,7,true,88,14,84
+fl-goi-cok-04,Himalaya Jet,HJ,HJ 550,GOI,COK,14:45,16:25,0,100,0,,B737 MAX,3550,5500,10100,true,Flex,15,7,false,91,6,84
+fl-goi-cok-02,Monsoon Air,MN,MN 476,GOI,COK,19:05,20:50,0,105,0,,A320neo,3200,4950,9100,true,Flex,15,7,false,76,19,84
+fl-goi-cok-05,Monsoon Air,MN,MN 587,GOI,COK,21:40,23:30,0,110,0,,A320neo,3000,4650,8550,false,Saver,15,7,true,79,11,84
+fl-goi-del-04,Coastal Wings,CW,CW 312,GOI,DEL,05:40,08:35,0,175,0,,ATR 72,5050,7850,14400,false,Saver,15,7,true,82,14,195
+fl-goi-del-02,Himalaya Jet,HJ,HJ 238,GOI,DEL,09:30,12:30,0,180,0,,B737 MAX,6250,9700,17800,true,Flex,15,7,true,90,4,195
+fl-goi-del-05,Himalaya Jet,HJ,HJ 349,GOI,DEL,12:10,15:15,0,185,0,,B737 MAX,6200,9600,17650,true,Flex,15,7,true,93,19,195
+fl-goi-del-03,Monsoon Air,MN,MN 275,GOI,DEL,17:20,22:00,0,280,1,JAI,A320neo,4850,7500,13800,false,Saver,15,7,true,78,9,219
+fl-goi-del-06,Monsoon Air,MN,MN 386,GOI,DEL,19:05,23:35,0,270,1,JAI,A320neo,4650,7200,13250,true,Flex,15,7,true,81,24,219
+fl-goi-del-01,Coastal Wings,CW,CW 201,GOI,DEL,21:40,00:45,1,185,0,,ATR 72,4750,7350,13550,false,Saver,15,7,true,79,22,195
+fl-goi-hyd-04,Monsoon Air,MN,MN 318,GOI,HYD,05:40,07:15,0,95,0,,A320neo,2900,4500,8250,false,Saver,15,7,false,76,8,69
+fl-goi-hyd-02,Coastal Wings,CW,CW 244,GOI,HYD,09:30,11:05,0,95,0,,ATR 72,2900,4500,8250,true,Flex,15,7,false,84,21,69
+fl-goi-hyd-05,Coastal Wings,CW,CW 355,GOI,HYD,12:10,13:35,0,85,0,,ATR 72,3050,4750,8700,false,Saver,15,7,true,80,13,69
+fl-goi-hyd-03,Himalaya Jet,HJ,HJ 281,GOI,HYD,17:20,18:50,0,90,0,,B737 MAX,3300,5100,9400,true,Flex,15,7,true,88,3,69
+fl-goi-hyd-06,Himalaya Jet,HJ,HJ 392,GOI,HYD,19:05,20:40,0,95,0,,B737 MAX,3200,4950,9100,true,Flex,15,7,false,91,18,69
+fl-goi-hyd-01,Monsoon Air,MN,MN 207,GOI,HYD,21:40,23:10,0,90,0,,A320neo,2800,4350,8000,false,Saver,15,7,true,80,16,69
+fl-goi-jai-02,Deccan Sky,DS,DS 537,GOI,JAI,07:15,10:00,0,165,0,,A321neo,5300,8200,15100,false,Saver,15,7,true,92,8,168
+fl-goi-jai-05,Deccan Sky,DS,DS 648,GOI,JAI,09:30,12:05,0,155,0,,A321neo,5100,7900,14550,false,Saver,15,7,true,88,23,168
+fl-goi-jai-03,Kaveri Air,KV,KV 574,GOI,JAI,14:45,17:20,0,155,0,,E190,5050,7850,14400,true,Flex,15,7,true,81,13,168
+fl-goi-jai-06,Kaveri Air,KV,KV 685,GOI,JAI,17:20,20:00,0,160,0,,E190,4750,7350,13550,false,Saver,15,7,true,84,5,168
+fl-goi-jai-01,Aravalli Air,AV,AV 500,GOI,JAI,19:05,23:00,0,235,1,BOM,A320neo,4300,6650,12250,false,Saver,15,7,true,88,3,191
+fl-goi-jai-04,Aravalli Air,AV,AV 611,GOI,JAI,21:40,01:45,1,245,1,BOM,A320neo,4250,6600,12100,false,Saver,15,7,true,84,18,191
+fl-goi-maa-06,Monsoon Air,MN,MN 890,GOI,MAA,05:40,07:25,0,105,0,,A320neo,3150,4900,9000,false,Saver,15,7,false,76,5,95
+fl-goi-maa-01,Coastal Wings,CW,CW 705,GOI,MAA,07:15,09:00,0,105,0,,ATR 72,3500,5450,10000,false,Saver,15,7,true,81,3,95
+fl-goi-maa-04,Coastal Wings,CW,CW 816,GOI,MAA,09:30,11:20,0,110,0,,ATR 72,3400,5250,9700,true,Flex,15,7,false,84,18,95
+fl-goi-maa-02,Himalaya Jet,HJ,HJ 742,GOI,MAA,14:45,16:35,0,110,0,,B737 MAX,3850,5950,10950,true,Flex,15,7,false,92,8,95
+fl-goi-maa-05,Himalaya Jet,HJ,HJ 853,GOI,MAA,17:20,19:15,0,115,0,,B737 MAX,3650,5650,10400,true,Flex,15,7,true,88,23,95
+fl-goi-maa-03,Monsoon Air,MN,MN 779,GOI,MAA,21:40,23:35,0,115,0,,A320neo,3200,4950,9100,false,Saver,15,7,true,80,13,95
+fl-goi-udr-04,Monsoon Air,MN,MN 604,GOI,UDR,05:40,08:00,0,140,0,,A320neo,3700,5750,10550,false,Saver,15,7,true,81,19,134
+fl-goi-udr-02,Coastal Wings,CW,CW 530,GOI,UDR,09:30,13:15,0,225,1,BOM,ATR 72,3750,5800,10700,true,Flex,15,7,true,82,9,157
+fl-goi-udr-05,Coastal Wings,CW,CW 641,GOI,UDR,12:10,15:45,0,215,1,BOM,ATR 72,3750,5800,10700,false,Saver,15,7,true,78,24,157
+fl-goi-udr-03,Himalaya Jet,HJ,HJ 567,GOI,UDR,17:20,19:35,0,135,0,,B737 MAX,4450,6900,12700,true,Flex,15,7,true,93,14,134
+fl-goi-udr-06,Himalaya Jet,HJ,HJ 678,GOI,UDR,19:05,21:25,0,140,0,,B737 MAX,4700,7300,13400,true,Flex,15,7,true,89,6,134
+fl-goi-udr-01,Monsoon Air,MN,MN 493,GOI,UDR,21:40,23:55,0,135,0,,A320neo,3800,5900,10850,false,Saver,15,7,true,78,4,134
+fl-hyd-blr-02,Deccan Sky,DS,DS 925,HYD,BLR,07:15,08:35,0,80,0,,A321neo,3050,4750,8700,false,Saver,15,7,false,86,9,59
+fl-hyd-blr-05,Deccan Sky,DS,DS 146,HYD,BLR,09:30,10:55,0,85,0,,A321neo,3150,4900,9000,false,Saver,15,7,true,89,24,59
+fl-hyd-blr-03,Kaveri Air,KV,KV 962,HYD,BLR,14:45,16:15,0,90,0,,E190,3150,4900,9000,true,Flex,15,7,true,82,14,59
+fl-hyd-blr-06,Kaveri Air,KV,KV 183,HYD,BLR,17:20,18:35,0,75,0,,E190,3000,4650,8550,false,Saver,15,7,false,85,6,59
+fl-hyd-blr-01,Aravalli Air,AV,AV 888,HYD,BLR,19:05,20:35,0,90,0,,A320neo,3000,4650,8550,false,Saver,15,7,true,89,4,59
+fl-hyd-blr-04,Aravalli Air,AV,AV 109,HYD,BLR,21:40,23:00,0,80,0,,A320neo,2950,4550,8400,false,Saver,15,7,false,85,19,59
+fl-hyd-bom-02,Aravalli Air,AV,AV 123,HYD,BOM,07:15,09:00,0,105,0,,A320neo,3400,5250,9700,false,Saver,15,7,false,87,5,81
+fl-hyd-bom-05,Aravalli Air,AV,AV 234,HYD,BOM,09:30,11:05,0,95,0,,A320neo,3300,5100,9400,false,Saver,15,7,true,83,20,81
+fl-hyd-bom-03,Deccan Sky,DS,DS 160,HYD,BOM,14:45,16:20,0,95,0,,A321neo,3550,5500,10100,true,Flex,15,7,true,91,10,81
+fl-hyd-bom-06,Deccan Sky,DS,DS 271,HYD,BOM,17:20,19:00,0,100,0,,A321neo,3400,5250,9700,false,Saver,15,7,false,87,2,81
+fl-hyd-bom-01,Kaveri Air,KV,KV 976,HYD,BOM,19:05,20:45,0,100,0,,E190,3150,4900,9000,false,Saver,15,7,true,84,23,81
+fl-hyd-bom-04,Kaveri Air,KV,KV 197,HYD,BOM,21:40,23:25,0,105,0,,E190,3150,4900,9000,false,Saver,15,7,false,87,15,81
+fl-hyd-ccu-03,Monsoon Air,MN,MN 757,HYD,CCU,07:15,11:15,0,240,1,MAA,A320neo,4100,6350,11700,false,Saver,15,7,true,75,9,180
+fl-hyd-ccu-06,Monsoon Air,MN,MN 868,HYD,CCU,09:30,13:40,0,250,1,MAA,A320neo,3950,6100,11250,true,Flex,15,7,true,78,24,180
+fl-hyd-ccu-01,Coastal Wings,CW,CW 683,HYD,CCU,12:10,14:45,0,155,0,,ATR 72,4800,7450,13700,false,Saver,15,7,true,83,22,157
+fl-hyd-ccu-04,Coastal Wings,CW,CW 794,HYD,CCU,14:45,17:10,0,145,0,,ATR 72,4650,7200,13250,false,Saver,15,7,true,79,14,157
+fl-hyd-ccu-02,Himalaya Jet,HJ,HJ 720,HYD,CCU,19:05,21:30,0,145,0,,B737 MAX,5150,8000,14700,true,Flex,15,7,true,94,4,157
+fl-hyd-ccu-05,Himalaya Jet,HJ,HJ 831,HYD,CCU,21:40,00:10,1,150,0,,B737 MAX,4650,7200,13250,true,Flex,15,7,true,90,19,157
+fl-hyd-cok-02,Monsoon Air,MN,MN 192,HYD,COK,05:40,07:40,0,120,0,,A320neo,3500,5450,10000,false,Saver,15,7,true,79,21,106
+fl-hyd-cok-05,Monsoon Air,MN,MN 303,HYD,COK,07:15,09:05,0,110,0,,A320neo,3550,5500,10100,false,Saver,15,7,true,75,13,106
+fl-hyd-cok-03,Coastal Wings,CW,CW 229,HYD,COK,12:10,14:00,0,110,0,,ATR 72,3800,5900,10850,false,Saver,15,7,true,83,3,106
+fl-hyd-cok-06,Coastal Wings,CW,CW 340,HYD,COK,14:45,16:40,0,115,0,,ATR 72,3700,5750,10550,false,Saver,15,7,false,79,18,106
+fl-hyd-cok-01,Himalaya Jet,HJ,HJ 155,HYD,COK,17:20,19:15,0,115,0,,B737 MAX,3800,5900,10850,true,Flex,15,7,true,91,16,106
+fl-hyd-cok-04,Himalaya Jet,HJ,HJ 266,HYD,COK,19:05,21:05,0,120,0,,B737 MAX,4000,6200,11400,true,Flex,15,7,true,94,8,106
+fl-hyd-del-06,Monsoon Air,MN,MN 102,HYD,DEL,05:40,09:45,0,245,1,JAI,A320neo,4000,6200,11400,false,Saver,15,7,true,77,3,188
+fl-hyd-del-01,Coastal Wings,CW,CW 807,HYD,DEL,07:15,09:45,0,150,0,,ATR 72,4600,7150,13100,false,Saver,15,7,true,82,24,165
+fl-hyd-del-04,Coastal Wings,CW,CW 918,HYD,DEL,09:30,12:05,0,155,0,,ATR 72,4450,6900,12700,true,Flex,15,7,true,78,16,165
+fl-hyd-del-02,Himalaya Jet,HJ,HJ 844,HYD,DEL,14:45,17:25,0,160,0,,B737 MAX,5250,8150,14950,true,Flex,15,7,true,93,6,165
+fl-hyd-del-05,Himalaya Jet,HJ,HJ 955,HYD,DEL,17:20,20:05,0,165,0,,B737 MAX,5400,8350,15400,true,Flex,15,7,true,89,21,165
+fl-hyd-del-03,Monsoon Air,MN,MN 881,HYD,DEL,21:40,01:55,1,255,1,JAI,A320neo,3850,5950,10950,false,Saver,15,7,true,81,11,188
+fl-hyd-goi-04,Monsoon Air,MN,MN 548,HYD,GOI,05:40,07:15,0,95,0,,A320neo,2900,4500,8250,false,Saver,15,7,false,80,9,69
+fl-hyd-goi-02,Coastal Wings,CW,CW 474,HYD,GOI,09:30,11:05,0,95,0,,ATR 72,2900,4500,8250,true,Flex,15,7,false,81,22,69
+fl-hyd-goi-05,Coastal Wings,CW,CW 585,HYD,GOI,12:10,13:35,0,85,0,,ATR 72,3050,4750,8700,false,Saver,15,7,true,84,14,69
+fl-hyd-goi-03,Himalaya Jet,HJ,HJ 511,HYD,GOI,17:20,18:50,0,90,0,,B737 MAX,3300,5100,9400,true,Flex,15,7,true,92,4,69
+fl-hyd-goi-06,Himalaya Jet,HJ,HJ 622,HYD,GOI,19:05,20:40,0,95,0,,B737 MAX,3200,4950,9100,true,Flex,15,7,false,88,19,69
+fl-hyd-goi-01,Monsoon Air,MN,MN 437,HYD,GOI,21:40,23:10,0,90,0,,A320neo,2800,4350,8000,false,Saver,15,7,true,77,17,69
+fl-hyd-jai-01,Aravalli Air,AV,AV 216,HYD,JAI,05:40,09:35,0,235,1,UDR,A320neo,3850,5950,10950,true,Flex,15,7,true,84,5,166
+fl-hyd-jai-04,Aravalli Air,AV,AV 327,HYD,JAI,07:15,11:20,0,245,1,UDR,A320neo,3950,6100,11250,false,Saver,15,7,true,87,20,166
+fl-hyd-jai-02,Deccan Sky,DS,DS 253,HYD,JAI,12:10,14:40,0,150,0,,A321neo,4650,7200,13250,false,Saver,15,7,true,88,10,143
+fl-hyd-jai-05,Deccan Sky,DS,DS 364,HYD,JAI,14:45,17:05,0,140,0,,A321neo,4950,7650,14100,true,Flex,15,7,true,91,2,143
+fl-hyd-jai-03,Kaveri Air,KV,KV 290,HYD,JAI,19:05,21:25,0,140,0,,E190,4250,6600,12100,false,Saver,15,7,true,84,15,143
+fl-hyd-jai-06,Kaveri Air,KV,KV 401,HYD,JAI,21:40,00:05,1,145,0,,E190,4200,6500,11950,false,Saver,15,7,true,87,7,143
+fl-hyd-maa-03,Monsoon Air,MN,MN 495,HYD,MAA,07:15,08:35,0,80,0,,A320neo,2950,4550,8400,false,Saver,15,7,true,76,15,66
+fl-hyd-maa-06,Monsoon Air,MN,MN 606,HYD,MAA,09:30,10:55,0,85,0,,A320neo,2900,4500,8250,true,Flex,15,7,false,79,7,66
+fl-hyd-maa-01,Coastal Wings,CW,CW 421,HYD,MAA,12:10,13:35,0,85,0,,ATR 72,2900,4500,8250,false,Saver,15,7,true,84,5,66
+fl-hyd-maa-04,Coastal Wings,CW,CW 532,HYD,MAA,14:45,16:15,0,90,0,,ATR 72,3000,4650,8550,false,Saver,15,7,false,80,20,66
+fl-hyd-maa-02,Himalaya Jet,HJ,HJ 458,HYD,MAA,19:05,20:35,0,90,0,,B737 MAX,3250,5050,9250,true,Flex,15,7,false,88,10,66
+fl-hyd-maa-05,Himalaya Jet,HJ,HJ 569,HYD,MAA,21:40,23:15,0,95,0,,B737 MAX,3050,4750,8700,true,Flex,15,7,true,91,2,66
+fl-hyd-udr-06,Himalaya Jet,HJ,HJ 394,HYD,UDR,05:40,07:55,0,135,0,,B737 MAX,4000,6200,11400,true,Flex,15,7,true,92,8,123
+fl-hyd-udr-01,Monsoon Air,MN,MN 209,HYD,UDR,07:15,09:25,0,130,0,,A320neo,4000,6200,11400,false,Saver,15,7,true,81,6,123
+fl-hyd-udr-04,Monsoon Air,MN,MN 320,HYD,UDR,09:30,11:45,0,135,0,,A320neo,3850,5950,10950,true,Flex,15,7,true,77,21,123
+fl-hyd-udr-02,Coastal Wings,CW,CW 246,HYD,UDR,14:45,16:45,0,120,0,,ATR 72,4100,6350,11700,false,Saver,15,7,true,78,11,123
+fl-hyd-udr-05,Coastal Wings,CW,CW 357,HYD,UDR,17:20,19:25,0,125,0,,ATR 72,3900,6050,11100,false,Saver,15,7,true,81,3,123
+fl-hyd-udr-03,Himalaya Jet,HJ,HJ 283,HYD,UDR,21:40,23:50,0,130,0,,B737 MAX,4150,6450,11850,true,Flex,15,7,true,89,16,123
+fl-jai-blr-02,Himalaya Jet,HJ,HJ 538,JAI,BLR,05:40,08:40,0,180,0,,B737 MAX,5850,9050,16650,true,Flex,15,7,true,88,6,199
+fl-jai-blr-05,Himalaya Jet,HJ,HJ 649,JAI,BLR,07:15,10:20,0,185,0,,B737 MAX,6050,9400,17250,true,Flex,15,7,true,91,21,199
+fl-jai-blr-03,Monsoon Air,MN,MN 575,JAI,BLR,12:10,16:35,0,265,1,HYD,A320neo,5050,7850,14400,false,Saver,15,7,true,76,11,222
+fl-jai-blr-06,Monsoon Air,MN,MN 686,JAI,BLR,14:45,19:05,0,260,1,HYD,A320neo,4850,7500,13800,false,Saver,15,7,true,79,3,222
+fl-jai-blr-01,Coastal Wings,CW,CW 501,JAI,BLR,17:20,20:25,0,185,0,,ATR 72,5150,8000,14700,false,Saver,15,7,true,84,24,199
+fl-jai-blr-04,Coastal Wings,CW,CW 612,JAI,BLR,19:05,22:00,0,175,0,,ATR 72,5450,8450,15550,true,Flex,15,7,true,80,16,199
+fl-jai-bom-02,Coastal Wings,CW,CW 626,JAI,BOM,05:40,07:50,0,130,0,,ATR 72,3700,5750,10550,false,Saver,15,7,true,82,2,118
+fl-jai-bom-05,Coastal Wings,CW,CW 737,JAI,BOM,07:15,09:15,0,120,0,,ATR 72,3800,5900,10850,false,Saver,15,7,true,78,17,118
+fl-jai-bom-03,Himalaya Jet,HJ,HJ 663,JAI,BOM,12:10,14:10,0,120,0,,B737 MAX,4400,6800,12550,true,Flex,15,7,true,93,7,118
+fl-jai-bom-06,Himalaya Jet,HJ,HJ 774,JAI,BOM,14:45,16:50,0,125,0,,B737 MAX,4250,6600,12100,true,Flex,15,7,true,89,22,118
+fl-jai-bom-01,Monsoon Air,MN,MN 589,JAI,BOM,17:20,19:25,0,125,0,,A320neo,3900,6050,11100,false,Saver,15,7,true,78,20,118
+fl-jai-bom-04,Monsoon Air,MN,MN 700,JAI,BOM,19:05,21:15,0,130,0,,A320neo,3800,5900,10850,true,Flex,15,7,true,81,12,118
+fl-jai-ccu-03,Aravalli Air,AV,AV 370,JAI,CCU,05:40,08:25,0,165,0,,A320neo,4750,7350,13550,true,Flex,15,7,true,83,6,176
+fl-jai-ccu-06,Aravalli Air,AV,AV 481,JAI,CCU,07:15,10:05,0,170,0,,A320neo,4900,7600,13950,false,Saver,15,7,true,86,21,176
+fl-jai-ccu-01,Deccan Sky,DS,DS 296,JAI,CCU,09:30,12:20,0,170,0,,A321neo,5400,8350,15400,false,Saver,15,7,true,91,19,176
+fl-jai-ccu-04,Deccan Sky,DS,DS 407,JAI,CCU,12:10,15:05,0,175,0,,A321neo,5400,8350,15400,false,Saver,15,7,true,87,11,176
+fl-jai-ccu-02,Kaveri Air,KV,KV 333,JAI,CCU,17:20,21:20,0,240,1,DEL,E190,4550,7050,12950,false,Saver,15,7,true,87,24,200
+fl-jai-ccu-05,Kaveri Air,KV,KV 444,JAI,CCU,19:05,23:15,0,250,1,DEL,E190,4400,6800,12550,false,Saver,15,7,true,83,16,200
+fl-jai-cok-05,Aravalli Air,AV,AV 806,JAI,COK,05:40,09:05,0,205,0,,A320neo,5900,9150,16800,true,Flex,15,7,true,83,10,241
+fl-jai-cok-03,Deccan Sky,DS,DS 732,JAI,COK,09:30,14:30,0,300,1,BLR,A321neo,6150,9550,17550,false,Saver,15,7,true,91,23,265
+fl-jai-cok-06,Deccan Sky,DS,DS 843,JAI,COK,12:10,17:20,0,310,1,BLR,A321neo,6100,9450,17400,false,Saver,15,7,true,87,15,265
+fl-jai-cok-01,Kaveri Air,KV,KV 658,JAI,COK,14:45,18:15,0,210,0,,E190,6800,10550,19400,true,Flex,15,7,true,84,13,241
+fl-jai-cok-04,Kaveri Air,KV,KV 769,JAI,COK,17:20,20:55,0,215,0,,E190,6300,9750,17950,false,Saver,15,7,true,87,5,241
+fl-jai-cok-02,Aravalli Air,AV,AV 695,JAI,COK,21:40,01:15,1,215,0,,A320neo,6150,9550,17550,false,Saver,15,7,true,87,18,241
+fl-jai-del-01,Deccan Sky,DS,DS 420,JAI,DEL,05:40,06:35,0,55,0,,A321neo,2400,3700,6850,true,Flex,15,7,true,90,21,30
+fl-jai-del-04,Deccan Sky,DS,DS 531,JAI,DEL,07:15,08:15,0,60,0,,A321neo,2500,3900,7150,false,Saver,15,7,false,86,13,30
+fl-jai-del-02,Kaveri Air,KV,KV 457,JAI,DEL,12:10,13:15,0,65,0,,E190,2400,3700,6850,false,Saver,15,7,false,86,3,30
+fl-jai-del-05,Kaveri Air,KV,KV 568,JAI,DEL,14:45,15:55,0,70,0,,E190,2450,3800,7000,true,Flex,15,7,true,82,18,30
+fl-jai-del-03,Aravalli Air,AV,AV 494,JAI,DEL,19:05,20:15,0,70,0,,A320neo,2400,3700,6850,false,Saver,15,7,true,89,8,30
+fl-jai-del-06,Aravalli Air,AV,AV 605,JAI,DEL,21:40,22:40,0,60,0,,A320neo,2400,3700,6850,false,Saver,15,7,false,85,23,30
+fl-jai-goi-02,Deccan Sky,DS,DS 977,JAI,GOI,07:15,10:00,0,165,0,,A321neo,5300,8200,15100,false,Saver,15,7,true,89,19,168
+fl-jai-goi-05,Deccan Sky,DS,DS 198,JAI,GOI,09:30,12:05,0,155,0,,A321neo,5100,7900,14550,false,Saver,15,7,true,92,11,168
+fl-jai-goi-03,Kaveri Air,KV,KV 124,JAI,GOI,14:45,17:20,0,155,0,,E190,5050,7850,14400,true,Flex,15,7,true,85,24,168
+fl-jai-goi-06,Kaveri Air,KV,KV 235,JAI,GOI,17:20,20:00,0,160,0,,E190,4750,7350,13550,false,Saver,15,7,true,81,16,168
+fl-jai-goi-01,Aravalli Air,AV,AV 940,JAI,GOI,19:05,23:05,0,240,1,BOM,A320neo,4300,6650,12250,false,Saver,15,7,true,85,14,191
+fl-jai-goi-04,Aravalli Air,AV,AV 161,JAI,GOI,21:40,01:50,1,250,1,BOM,A320neo,4250,6600,12100,false,Saver,15,7,true,88,6,191
+fl-jai-hyd-01,Aravalli Air,AV,AV 426,JAI,HYD,05:40,09:40,0,240,1,UDR,A320neo,3850,5950,10950,true,Flex,15,7,true,84,15,166
+fl-jai-hyd-04,Aravalli Air,AV,AV 537,JAI,HYD,07:15,11:20,0,245,1,UDR,A320neo,3950,6100,11250,false,Saver,15,7,true,87,7,166
+fl-jai-hyd-02,Deccan Sky,DS,DS 463,JAI,HYD,12:10,14:40,0,150,0,,A321neo,4650,7200,13250,false,Saver,15,7,true,88,20,143
+fl-jai-hyd-05,Deccan Sky,DS,DS 574,JAI,HYD,14:45,17:05,0,140,0,,A321neo,4950,7650,14100,true,Flex,15,7,true,91,12,143
+fl-jai-hyd-03,Kaveri Air,KV,KV 500,JAI,HYD,19:05,21:25,0,140,0,,E190,4250,6600,12100,false,Saver,15,7,true,84,2,143
+fl-jai-hyd-06,Kaveri Air,KV,KV 611,JAI,HYD,21:40,00:05,1,145,0,,E190,4200,6500,11950,false,Saver,15,7,true,87,17,143
+fl-jai-maa-03,Aravalli Air,AV,AV 108,JAI,MAA,05:40,08:40,0,180,0,,A320neo,5550,8600,15800,true,Flex,15,7,true,84,12,208
+fl-jai-maa-06,Aravalli Air,AV,AV 219,JAI,MAA,07:15,10:20,0,185,0,,A320neo,5700,8850,16250,false,Saver,15,7,true,87,4,208
+fl-jai-maa-01,Deccan Sky,DS,DS 924,JAI,MAA,09:30,12:35,0,185,0,,A321neo,6350,9850,18100,false,Saver,15,7,true,92,2,208
+fl-jai-maa-04,Deccan Sky,DS,DS 145,JAI,MAA,12:10,15:20,0,190,0,,A321neo,6350,9850,18100,false,Saver,15,7,true,88,17,208
+fl-jai-maa-02,Kaveri Air,KV,KV 961,JAI,MAA,17:20,21:55,0,275,1,HYD,E190,5300,8200,15100,false,Saver,15,7,true,81,7,232
+fl-jai-maa-05,Kaveri Air,KV,KV 182,JAI,MAA,19:05,23:50,0,285,1,HYD,E190,5100,7900,14550,false,Saver,15,7,true,84,22,232
+fl-jai-udr-01,Aravalli Air,AV,AV 712,JAI,UDR,05:40,06:50,0,70,0,,A320neo,2600,4050,7400,true,Flex,15,7,true,89,3,40
+fl-jai-udr-04,Aravalli Air,AV,AV 823,JAI,UDR,07:15,08:30,0,75,0,,A320neo,2650,4100,7550,false,Saver,15,7,false,85,18,40
+fl-jai-udr-02,Deccan Sky,DS,DS 749,JAI,UDR,12:10,13:30,0,80,0,,A321neo,2750,4250,7850,false,Saver,15,7,false,86,8,40
+fl-jai-udr-05,Deccan Sky,DS,DS 860,JAI,UDR,14:45,15:50,0,65,0,,A321neo,2700,4200,7700,true,Flex,15,7,true,89,23,40
+fl-jai-udr-03,Kaveri Air,KV,KV 786,JAI,UDR,19:05,20:15,0,70,0,,E190,2600,4050,7400,false,Saver,15,7,true,82,13,40
+fl-jai-udr-06,Kaveri Air,KV,KV 897,JAI,UDR,21:40,22:55,0,75,0,,E190,2500,3900,7150,false,Saver,15,7,false,85,5,40
+fl-maa-blr-01,Kaveri Air,KV,KV 660,MAA,BLR,05:40,06:45,0,65,0,,E190,2450,3800,7000,true,Flex,15,7,true,82,12,35
+fl-maa-blr-04,Kaveri Air,KV,KV 771,MAA,BLR,07:15,08:25,0,70,0,,E190,2500,3900,7150,false,Saver,15,7,false,85,4,35
+fl-maa-blr-02,Aravalli Air,AV,AV 697,MAA,BLR,12:10,13:25,0,75,0,,A320neo,2550,3950,7250,false,Saver,15,7,false,85,17,35
+fl-maa-blr-05,Aravalli Air,AV,AV 808,MAA,BLR,14:45,15:50,0,65,0,,A320neo,2500,3900,7150,true,Flex,15,7,true,88,9,35
+fl-maa-blr-03,Deccan Sky,DS,DS 734,MAA,BLR,19:05,20:10,0,65,0,,A321neo,2550,3950,7250,false,Saver,15,7,true,89,22,35
+fl-maa-blr-06,Deccan Sky,DS,DS 845,MAA,BLR,21:40,22:50,0,70,0,,A321neo,2450,3800,7000,false,Saver,15,7,false,92,14,35
+fl-maa-bom-01,Deccan Sky,DS,DS 748,MAA,BOM,05:40,07:50,0,130,0,,A321neo,4200,6500,11950,true,Flex,15,7,true,91,8,134
+fl-maa-bom-04,Deccan Sky,DS,DS 859,MAA,BOM,07:15,09:30,0,135,0,,A321neo,4300,6650,12250,false,Saver,15,7,true,87,23,134
+fl-maa-bom-02,Kaveri Air,KV,KV 785,MAA,BOM,12:10,15:50,0,220,1,BLR,E190,3950,6100,11250,false,Saver,15,7,true,87,13,158
+fl-maa-bom-05,Kaveri Air,KV,KV 896,MAA,BOM,14:45,18:35,0,230,1,BLR,E190,3800,5900,10850,true,Flex,15,7,true,83,5,158
+fl-maa-bom-03,Aravalli Air,AV,AV 822,MAA,BOM,19:05,21:30,0,145,0,,A320neo,4250,6600,12100,false,Saver,15,7,true,83,18,134
+fl-maa-bom-06,Aravalli Air,AV,AV 933,MAA,BOM,21:40,23:50,0,130,0,,A320neo,4200,6500,11950,false,Saver,15,7,true,86,10,134
+fl-maa-ccu-02,Coastal Wings,CW,CW 492,MAA,CCU,05:40,10:00,0,260,1,HYD,ATR 72,4100,6350,11700,false,Saver,15,7,true,79,12,203
+fl-maa-ccu-05,Coastal Wings,CW,CW 603,MAA,CCU,07:15,11:30,0,255,1,HYD,ATR 72,4600,7150,13100,false,Saver,15,7,true,82,4,203
+fl-maa-ccu-03,Himalaya Jet,HJ,HJ 529,MAA,CCU,12:10,14:55,0,165,0,,B737 MAX,5450,8450,15550,true,Flex,15,7,true,90,17,180
+fl-maa-ccu-06,Himalaya Jet,HJ,HJ 640,MAA,CCU,14:45,17:35,0,170,0,,B737 MAX,5800,9000,16550,true,Flex,15,7,true,93,9,180
+fl-maa-ccu-01,Monsoon Air,MN,MN 455,MAA,CCU,17:20,20:05,0,165,0,,A320neo,4750,7350,13550,false,Saver,15,7,true,75,7,180
+fl-maa-ccu-04,Monsoon Air,MN,MN 566,MAA,CCU,19:05,21:55,0,170,0,,A320neo,5000,7750,14250,true,Flex,15,7,true,78,22,180
+fl-maa-cok-04,Coastal Wings,CW,CW 928,MAA,COK,05:40,07:05,0,85,0,,ATR 72,2800,4350,8000,false,Saver,15,7,false,79,16,67
+fl-maa-cok-02,Himalaya Jet,HJ,HJ 854,MAA,COK,09:30,11:00,0,90,0,,B737 MAX,3150,4900,9000,true,Flex,15,7,false,94,6,67
+fl-maa-cok-05,Himalaya Jet,HJ,HJ 965,MAA,COK,12:10,13:45,0,95,0,,B737 MAX,3350,5200,9550,true,Flex,15,7,true,90,21,67
+fl-maa-cok-03,Monsoon Air,MN,MN 891,MAA,COK,17:20,18:55,0,95,0,,A320neo,2850,4400,8100,false,Saver,15,7,true,75,11,67
+fl-maa-cok-06,Monsoon Air,MN,MN 112,MAA,COK,19:05,20:30,0,85,0,,A320neo,2950,4550,8400,true,Flex,15,7,false,78,3,67
+fl-maa-cok-01,Coastal Wings,CW,CW 817,MAA,COK,21:40,23:15,0,95,0,,ATR 72,2850,4400,8100,false,Saver,15,7,true,83,24,67
+fl-maa-del-03,Himalaya Jet,HJ,HJ 653,MAA,DEL,07:15,10:40,0,205,0,,B737 MAX,6800,10550,19400,true,Flex,15,7,true,89,19,229
+fl-maa-del-06,Himalaya Jet,HJ,HJ 764,MAA,DEL,09:30,13:00,0,210,0,,B737 MAX,6500,10100,18550,true,Flex,15,7,true,92,11,229
+fl-maa-del-01,Monsoon Air,MN,MN 579,MAA,DEL,12:10,15:35,0,205,0,,A320neo,6250,9700,17800,false,Saver,15,7,true,81,9,229
+fl-maa-del-04,Monsoon Air,MN,MN 690,MAA,DEL,14:45,18:00,0,195,0,,A320neo,6000,9300,17100,false,Saver,15,7,true,77,24,229
+fl-maa-del-02,Coastal Wings,CW,CW 616,MAA,DEL,19:05,23:50,0,285,1,HYD,ATR 72,5500,8550,15700,true,Flex,15,7,true,78,14,252
+fl-maa-del-05,Coastal Wings,CW,CW 727,MAA,DEL,21:40,02:35,1,295,1,HYD,ATR 72,4950,7650,14100,false,Saver,15,7,true,81,6,252
+fl-maa-goi-06,Coastal Wings,CW,CW 394,MAA,GOI,05:40,07:25,0,105,0,,ATR 72,3350,5200,9550,false,Saver,15,7,false,80,4,95
+fl-maa-goi-01,Himalaya Jet,HJ,HJ 209,MAA,GOI,07:15,09:00,0,105,0,,B737 MAX,3800,5900,10850,true,Flex,15,7,true,92,2,95
+fl-maa-goi-04,Himalaya Jet,HJ,HJ 320,MAA,GOI,09:30,11:20,0,110,0,,B737 MAX,3650,5650,10400,true,Flex,15,7,false,88,17,95
+fl-maa-goi-02,Monsoon Air,MN,MN 246,MAA,GOI,14:45,16:35,0,110,0,,A320neo,3450,5350,9850,false,Saver,15,7,false,80,7,95
+fl-maa-goi-05,Monsoon Air,MN,MN 357,MAA,GOI,17:20,19:15,0,115,0,,A320neo,3300,5100,9400,false,Saver,15,7,true,76,22,95
+fl-maa-goi-03,Coastal Wings,CW,CW 283,MAA,GOI,21:40,23:35,0,115,0,,ATR 72,3250,5050,9250,false,Saver,15,7,true,84,12,95
+fl-maa-hyd-03,Coastal Wings,CW,CW 659,MAA,HYD,07:15,08:35,0,80,0,,ATR 72,3000,4650,8550,false,Saver,15,7,true,83,13,66
+fl-maa-hyd-06,Coastal Wings,CW,CW 770,MAA,HYD,09:30,10:55,0,85,0,,ATR 72,2900,4500,8250,true,Flex,15,7,false,79,5,66
+fl-maa-hyd-01,Himalaya Jet,HJ,HJ 585,MAA,HYD,12:10,13:35,0,85,0,,B737 MAX,3100,4800,8850,true,Flex,15,7,true,91,3,66
+fl-maa-hyd-04,Himalaya Jet,HJ,HJ 696,MAA,HYD,14:45,16:15,0,90,0,,B737 MAX,3250,5050,9250,true,Flex,15,7,false,94,18,66
+fl-maa-hyd-02,Monsoon Air,MN,MN 622,MAA,HYD,19:05,20:35,0,90,0,,A320neo,2950,4550,8400,true,Flex,15,7,false,79,8,66
+fl-maa-hyd-05,Monsoon Air,MN,MN 733,MAA,HYD,21:40,23:15,0,95,0,,A320neo,2800,4350,8000,false,Saver,15,7,true,75,23,66
+fl-maa-jai-03,Deccan Sky,DS,DS 952,MAA,JAI,05:40,10:20,0,280,1,HYD,A321neo,5150,8000,14700,true,Flex,15,7,true,91,23,232
+fl-maa-jai-06,Deccan Sky,DS,DS 173,MAA,JAI,07:15,11:40,0,265,1,HYD,A321neo,5350,8300,15250,false,Saver,15,7,true,87,15,232
+fl-maa-jai-01,Kaveri Air,KV,KV 878,MAA,JAI,09:30,12:35,0,185,0,,E190,5900,9150,16800,false,Saver,15,7,true,84,13,208
+fl-maa-jai-04,Kaveri Air,KV,KV 989,MAA,JAI,12:10,15:20,0,190,0,,E190,5850,9050,16650,false,Saver,15,7,true,87,5,208
+fl-maa-jai-02,Aravalli Air,AV,AV 915,MAA,JAI,17:20,20:30,0,190,0,,A320neo,6000,9300,17100,false,Saver,15,7,true,87,18,208
+fl-maa-jai-05,Aravalli Air,AV,AV 136,MAA,JAI,19:05,22:20,0,195,0,,A320neo,5750,8900,16400,false,Saver,15,7,true,83,10,208
+fl-maa-udr-03,Coastal Wings,CW,CW 945,MAA,UDR,07:15,10:05,0,170,0,,ATR 72,5000,7750,14250,false,Saver,15,7,true,81,24,189
+fl-maa-udr-06,Coastal Wings,CW,CW 166,MAA,UDR,09:30,12:25,0,175,0,,ATR 72,5300,8200,15100,true,Flex,15,7,true,84,16,189
+fl-maa-udr-01,Himalaya Jet,HJ,HJ 871,MAA,UDR,12:10,16:40,0,270,1,HYD,B737 MAX,5400,8350,15400,true,Flex,15,7,true,89,14,212
+fl-maa-udr-04,Himalaya Jet,HJ,HJ 982,MAA,UDR,14:45,19:00,0,255,1,HYD,B737 MAX,5150,8000,14700,true,Flex,15,7,true,92,6,212
+fl-maa-udr-02,Monsoon Air,MN,MN 908,MAA,UDR,19:05,22:00,0,175,0,,A320neo,4950,7650,14100,true,Flex,15,7,true,77,19,189
+fl-maa-udr-05,Monsoon Air,MN,MN 129,MAA,UDR,21:40,00:40,1,180,0,,A320neo,4900,7600,13950,false,Saver,15,7,true,80,11,189
+fl-udr-blr-02,Deccan Sky,DS,DS 983,UDR,BLR,07:15,09:55,0,160,0,,A321neo,5100,7900,14550,false,Saver,15,7,true,87,18,173
+fl-udr-blr-05,Deccan Sky,DS,DS 204,UDR,BLR,09:30,12:15,0,165,0,,A321neo,5400,8350,15400,false,Saver,15,7,true,90,10,173
+fl-udr-blr-03,Kaveri Air,KV,KV 130,UDR,BLR,14:45,17:35,0,170,0,,E190,4900,7600,13950,true,Flex,15,7,true,83,23,173
+fl-udr-blr-06,Kaveri Air,KV,KV 241,UDR,BLR,17:20,19:55,0,155,0,,E190,5000,7750,14250,false,Saver,15,7,true,86,15,173
+fl-udr-blr-01,Aravalli Air,AV,AV 946,UDR,BLR,19:05,23:15,0,250,1,HYD,A320neo,4550,7050,12950,false,Saver,15,7,true,83,13,196
+fl-udr-blr-04,Aravalli Air,AV,AV 167,UDR,BLR,21:40,01:45,1,245,1,HYD,A320neo,4100,6350,11700,false,Saver,15,7,true,86,5,196
+fl-udr-bom-02,Aravalli Air,AV,AV 181,UDR,BOM,07:15,09:00,0,105,0,,A320neo,3250,5050,9250,false,Saver,15,7,false,88,14,81
+fl-udr-bom-05,Aravalli Air,AV,AV 292,UDR,BOM,09:30,11:05,0,95,0,,A320neo,3350,5200,9550,false,Saver,15,7,true,84,6,81
+fl-udr-bom-03,Deccan Sky,DS,DS 218,UDR,BOM,14:45,16:20,0,95,0,,A321neo,3350,5200,9550,true,Flex,15,7,true,92,19,81
+fl-udr-bom-06,Deccan Sky,DS,DS 329,UDR,BOM,17:20,19:00,0,100,0,,A321neo,3450,5350,9850,false,Saver,15,7,false,88,11,81
+fl-udr-bom-01,Kaveri Air,KV,KV 144,UDR,BOM,19:05,20:45,0,100,0,,E190,3200,4950,9100,false,Saver,15,7,true,85,9,81
+fl-udr-bom-04,Kaveri Air,KV,KV 255,UDR,BOM,21:40,23:25,0,105,0,,E190,3200,4950,9100,false,Saver,15,7,false,81,24,81
+fl-udr-ccu-03,Monsoon Air,MN,MN 815,UDR,CCU,07:15,11:40,0,265,1,JAI,A320neo,4850,7500,13800,false,Saver,15,7,true,76,18,218
+fl-udr-ccu-06,Monsoon Air,MN,MN 926,UDR,CCU,09:30,14:05,0,275,1,JAI,A320neo,4650,7200,13250,true,Flex,15,7,true,79,10,218
+fl-udr-ccu-01,Coastal Wings,CW,CW 741,UDR,CCU,12:10,15:10,0,180,0,,ATR 72,5250,8150,14950,false,Saver,15,7,true,84,8,195
+fl-udr-ccu-04,Coastal Wings,CW,CW 852,UDR,CCU,14:45,17:35,0,170,0,,ATR 72,5550,8600,15800,false,Saver,15,7,true,80,23,195
+fl-udr-ccu-02,Himalaya Jet,HJ,HJ 778,UDR,CCU,19:05,22:00,0,175,0,,B737 MAX,6250,9700,17800,true,Flex,15,7,true,88,13,195
+fl-udr-ccu-05,Himalaya Jet,HJ,HJ 889,UDR,CCU,21:40,00:40,1,180,0,,B737 MAX,5550,8600,15800,true,Flex,15,7,true,91,5,195
+fl-udr-cok-02,Monsoon Air,MN,MN 250,UDR,COK,05:40,08:55,0,195,0,,A320neo,4900,7600,13950,false,Saver,15,7,true,80,7,212
+fl-udr-cok-05,Monsoon Air,MN,MN 361,UDR,COK,07:15,10:20,0,185,0,,A320neo,5550,8600,15800,false,Saver,15,7,true,76,22,212
+fl-udr-cok-03,Coastal Wings,CW,CW 287,UDR,COK,12:10,15:15,0,185,0,,ATR 72,6050,9400,17250,false,Saver,15,7,true,84,12,212
+fl-udr-cok-06,Coastal Wings,CW,CW 398,UDR,COK,14:45,17:55,0,190,0,,ATR 72,5800,9000,16550,false,Saver,15,7,true,80,4,212
+fl-udr-cok-01,Himalaya Jet,HJ,HJ 213,UDR,COK,17:20,22:05,0,285,1,GOI,B737 MAX,5500,8550,15700,true,Flex,15,7,true,92,2,235
+fl-udr-cok-04,Himalaya Jet,HJ,HJ 324,UDR,COK,19:05,23:55,0,290,1,GOI,B737 MAX,5850,9050,16650,true,Flex,15,7,true,88,17,235
+fl-udr-del-06,Monsoon Air,MN,MN 160,UDR,DEL,05:40,07:10,0,90,0,,A320neo,2800,4350,8000,false,Saver,15,7,false,78,12,70
+fl-udr-del-01,Coastal Wings,CW,CW 865,UDR,DEL,07:15,08:40,0,85,0,,ATR 72,3050,4750,8700,false,Saver,15,7,true,83,10,70
+fl-udr-del-04,Coastal Wings,CW,CW 976,UDR,DEL,09:30,11:00,0,90,0,,ATR 72,2950,4550,8400,true,Flex,15,7,false,79,2,70
+fl-udr-del-02,Himalaya Jet,HJ,HJ 902,UDR,DEL,14:45,16:15,0,90,0,,B737 MAX,3350,5200,9550,true,Flex,15,7,false,94,15,70
+fl-udr-del-05,Himalaya Jet,HJ,HJ 123,UDR,DEL,17:20,18:55,0,95,0,,B737 MAX,3150,4900,9000,true,Flex,15,7,true,90,7,70
+fl-udr-del-03,Monsoon Air,MN,MN 939,UDR,DEL,21:40,23:20,0,100,0,,A320neo,2850,4400,8100,false,Saver,15,7,true,75,20,70
+fl-udr-goi-04,Monsoon Air,MN,MN 606,UDR,GOI,05:40,08:00,0,140,0,,A320neo,3950,6100,11250,false,Saver,15,7,true,81,18,134
+fl-udr-goi-02,Coastal Wings,CW,CW 532,UDR,GOI,09:30,13:20,0,230,1,BOM,ATR 72,3700,5750,10550,true,Flex,15,7,true,82,8,157
+fl-udr-goi-05,Coastal Wings,CW,CW 643,UDR,GOI,12:10,15:50,0,220,1,BOM,ATR 72,3950,6100,11250,false,Saver,15,7,true,78,23,157
+fl-udr-goi-03,Himalaya Jet,HJ,HJ 569,UDR,GOI,17:20,19:35,0,135,0,,B737 MAX,4350,6750,12400,true,Flex,15,7,true,93,13,134
+fl-udr-goi-06,Himalaya Jet,HJ,HJ 680,UDR,GOI,19:05,21:25,0,140,0,,B737 MAX,4600,7150,13100,true,Flex,15,7,true,89,5,134
+fl-udr-goi-01,Monsoon Air,MN,MN 495,UDR,GOI,21:40,23:55,0,135,0,,A320neo,3750,5800,10700,false,Saver,15,7,true,78,3,134
+fl-udr-hyd-06,Himalaya Jet,HJ,HJ 166,UDR,HYD,05:40,07:55,0,135,0,,B737 MAX,3950,6100,11250,true,Flex,15,7,true,88,6,123
+fl-udr-hyd-01,Monsoon Air,MN,MN 871,UDR,HYD,07:15,09:25,0,130,0,,A320neo,3900,6050,11100,false,Saver,15,7,true,77,4,123
+fl-udr-hyd-04,Monsoon Air,MN,MN 982,UDR,HYD,09:30,11:45,0,135,0,,A320neo,3800,5900,10850,true,Flex,15,7,true,80,19,123
+fl-udr-hyd-02,Coastal Wings,CW,CW 908,UDR,HYD,14:45,16:45,0,120,0,,ATR 72,4050,6300,11550,false,Saver,15,7,true,81,9,123
+fl-udr-hyd-05,Coastal Wings,CW,CW 129,UDR,HYD,17:20,19:25,0,125,0,,ATR 72,3850,5950,10950,false,Saver,15,7,true,84,24,123
+fl-udr-hyd-03,Himalaya Jet,HJ,HJ 945,UDR,HYD,21:40,23:50,0,130,0,,B737 MAX,4050,6300,11550,true,Flex,15,7,true,92,14,123
+fl-udr-jai-01,Aravalli Air,AV,AV 274,UDR,JAI,05:40,06:50,0,70,0,,A320neo,2600,4050,7400,true,Flex,15,7,true,85,14,40
+fl-udr-jai-04,Aravalli Air,AV,AV 385,UDR,JAI,07:15,08:30,0,75,0,,A320neo,2600,4050,7400,false,Saver,15,7,false,88,6,40
+fl-udr-jai-02,Deccan Sky,DS,DS 311,UDR,JAI,12:10,13:30,0,80,0,,A321neo,2750,4250,7850,false,Saver,15,7,false,89,19,40
+fl-udr-jai-05,Deccan Sky,DS,DS 422,UDR,JAI,14:45,15:50,0,65,0,,A321neo,2700,4200,7700,true,Flex,15,7,true,92,11,40
+fl-udr-jai-03,Kaveri Air,KV,KV 348,UDR,JAI,19:05,20:15,0,70,0,,E190,2600,4050,7400,false,Saver,15,7,true,85,24,40
+fl-udr-jai-06,Kaveri Air,KV,KV 459,UDR,JAI,21:40,22:55,0,75,0,,E190,2600,4050,7400,false,Saver,15,7,false,81,16,40
+fl-udr-maa-03,Monsoon Air,MN,MN 553,UDR,MAA,07:15,11:30,0,255,1,HYD,A320neo,4400,6800,12550,false,Saver,15,7,true,77,24,212
+fl-udr-maa-06,Monsoon Air,MN,MN 664,UDR,MAA,09:30,13:55,0,265,1,HYD,A320neo,4650,7200,13250,true,Flex,15,7,true,80,16,212
+fl-udr-maa-01,Coastal Wings,CW,CW 479,UDR,MAA,12:10,15:00,0,170,0,,ATR 72,5250,8150,14950,false,Saver,15,7,true,78,14,189
+fl-udr-maa-04,Coastal Wings,CW,CW 590,UDR,MAA,14:45,17:40,0,175,0,,ATR 72,5550,8600,15800,false,Saver,15,7,true,81,6,189
+fl-udr-maa-02,Himalaya Jet,HJ,HJ 516,UDR,MAA,19:05,22:00,0,175,0,,B737 MAX,5600,8700,15950,true,Flex,15,7,true,89,19,189
+fl-udr-maa-05,Himalaya Jet,HJ,HJ 627,UDR,MAA,21:40,00:40,1,180,0,,B737 MAX,5550,8600,15800,true,Flex,15,7,true,92,11,189

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="600" y1="0" x2="600" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9ED8D0"/>
+      <stop offset="0.6" stop-color="#3FA79C"/>
+      <stop offset="1" stop-color="#0B5C57"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="600" y1="560" x2="600" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#127A70"/>
+      <stop offset="1" stop-color="#04211F"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="280" cy="180" r="72" fill="#FFF3D6" fill-opacity="0.9"/>
+  <path d="M0 560C200 536 380 546 560 570C760 596 980 594 1200 562V800H0V560Z" fill="url(#sea)"/>
+  <g stroke="#EAFBF7" stroke-opacity="0.4" stroke-width="3">
+    <path d="M120 632C280 616 440 622 600 644"/>
+    <path d="M300 700C460 684 620 690 780 714"/>
+    <path d="M120 762C300 744 480 750 660 774"/>
+  </g>
+  <rect x="640" y="360" width="330" height="210" rx="12" fill="#F7EBDD"/>
+  <path d="M620 360L805 246L990 360H620Z" fill="#E25536"/>
+  <path d="M650 360L805 268L960 360H650Z" fill="#FF8A70"/>
+  <g fill="#0A4B47">
+    <rect x="676" y="412" width="58" height="158" rx="6"/>
+    <rect x="776" y="412" width="58" height="158" rx="6"/>
+    <rect x="876" y="412" width="58" height="158" rx="6"/>
+  </g>
+  <g fill="#FFD9A1">
+    <rect x="690" y="432" width="30" height="52" rx="4"/>
+    <rect x="790" y="432" width="30" height="52" rx="4"/>
+    <rect x="890" y="432" width="30" height="52" rx="4"/>
+  </g>
+  <rect x="120" y="430" width="240" height="140" rx="10" fill="#F1DFC8"/>
+  <rect x="120" y="430" width="240" height="24" rx="10" fill="#DDBE9C"/>
+  <g fill="#0B5C57">
+    <rect x="152" y="480" width="40" height="90" rx="5"/>
+    <rect x="220" y="480" width="40" height="90" rx="5"/>
+    <rect x="288" y="480" width="40" height="90" rx="5"/>
+  </g>
+  <g fill="#04211F">
+    <path d="M500 510C500 420 556 348 556 348C556 348 612 420 612 510H500Z"/>
+    <rect x="550" y="510" width="14" height="120" rx="7"/>
+    <path d="M1040 520C1040 448 1084 390 1084 390C1084 390 1128 448 1128 520H1040Z" fill-opacity="0.9"/>
+    <rect x="1078" y="520" width="13" height="112" rx="6" fill-opacity="0.9"/>
+  </g>
+  <g stroke="#EAFBF7" stroke-opacity="0.6" stroke-width="3" fill="none">
+    <path d="M420 214C436 202 452 202 468 214"/>
+    <path d="M470 242C482 232 494 232 506 242"/>
+  </g>
+</svg>

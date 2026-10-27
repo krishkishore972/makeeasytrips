@@ -76,12 +76,10 @@ Quick Links (route pages), About the Site, Important Links.
 
 ```
 /                         Home
-/flights                  Flight search landing
-/flights/results          Flight results (query-string driven)
-/flights/[id]             Flight review / booking summary (optional detail route)
-/hotels                   Hotel search landing
-/hotels/results           Hotel results (query-string driven)
-/hotels/[slug]            Hotel detail: gallery, rooms, reviews, policies
+/flights                  Flight search + results (query-string driven)
+/flights/[id]             Flight review shell (booking opens in Phase 5)
+/hotels                   Hotel landing + results (query-string driven)
+/hotels/[id]              Hotel detail: gallery, amenities, rate plans, policies
 /holidays                 Holiday packages listing
 /holidays/[slug]          Holiday package detail
 /trains                   Trains landing (static shell in this build)
@@ -93,6 +91,11 @@ Quick Links (route pages), About the Site, Important Links.
 /wishlist                 Static wishlist mock
 /info/[slug]              About, help, legal, accessibility, contact
 ```
+
+**Implementation note (Phase 2):** the observed product uses separate `/results` URLs. TripNest
+keeps search and results on one route because the search form is a native `GET` form and the
+server renders results from the same search params. That removes a client-only redirect step and
+keeps every result view shareable.
 
 ### 2.3 Page-level intent
 
@@ -644,3 +647,112 @@ travel guidelines, and a long FAQ.
    persistence.
 5. **Images:** local abstract SVGs in Phase 1; Phase 4 can add curated
    royalty-free photography if you want a more photographic feel.
+
+---
+
+## 11. Phase 2 implementation record (flights and hotels)
+
+Phase 2 turns the URL-state foundation into working search, filter, sort, and detail flows backed
+by local CSV data. It stays inside the Phase 1 design system; no observed brand assets or copy are
+used.
+
+### 11.1 Data layer
+
+| File                  | Purpose                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| `lib/data/csv.ts`     | Reads a CSV once, parses with PapaParse, validates rows with Zod, caches   |
+| `lib/data/schemas.ts` | Zod row schemas and inferred row types                                     |
+| `lib/data/cities.ts`  | `getCities`, `getCity`, `getFlightCities`, `getHotelCities`                |
+| `lib/data/flights.ts` | Search, facets, sorting, detail lookup, route alternatives, popular routes |
+| `lib/data/hotels.ts`  | Search, facets, featured stays, city stats, detail lookup                  |
+| `lib/data/index.ts`   | Barrel for the public data helpers                                         |
+
+The cached promise is per file, so concurrent Server Component and route-handler calls share one
+parse. CSV values are coerced in the schema (numbers, booleans, JSON arrays) rather than in every
+consumer.
+
+| File               | Rows | Shape highlights                                                                |
+| ------------------ | ---- | ------------------------------------------------------------------------------- |
+| `data/cities.csv`  | 16   | `code,name,region,airport,tagline,hotels` (10 flight + 8 hotel cities)          |
+| `data/flights.csv` | 540  | 10 cities, 90 directional routes, `fare_economy/premium/business`, stops, times |
+| `data/hotels.csv`  | 32   | 8 cities × 4 stays, price/night, star and guest ratings, amenities, policies    |
+
+Fictional carriers: Aravalli Air (`AV`), Coastal Wings (`CW`), Deccan Sky (`DS`), Himalaya Jet
+(`HJ`), Kaveri Air (`KA`), Monsoon Air (`MA`). Stays are original names such as The Salt House,
+Casa Susegad, and Lodhi Courtyard.
+
+### 11.2 Query contract
+
+Flight params: `from`, `to`, `depart`, `return`, `pax`, `cabin`, `sort`, `stops`, `airlines`,
+`window`, `duration`, `refundable`.
+
+Hotel params: `city`, `checkin`, `checkout`, `rooms`, `guests`, `sort`, `price`, `stars`,
+`rating`, `amenities`, `breakfast`, `cancel`.
+
+`lib/validation/search.ts` parses each param with Zod, clamps out-of-range values, applies
+sensible defaults (dates default forward from today, one room, two guests, economy cabin), and
+returns a typed query plus a human-readable error for genuinely invalid combinations (for
+example, a return date before departure or a missing city). Invalid input renders an inline alert
+with a reset link; it never throws.
+
+### 11.3 Routes and APIs
+
+- `/flights`: search form, popular routes when no route is chosen, results with filter sidebar,
+  sort, active-filter chips, mobile filter drawer, empty states, and loading skeletons.
+- `/flights/[id]`: itinerary, fare breakdown per traveller and in total, baggage and policy
+  details, same-route alternatives, and a Phase 5 booking notice.
+- `/hotels`: search form, featured stays and city cards when no city is chosen, results with
+  filters, sort, chips, drawer, empty states, and skeletons.
+- `/hotels/[id]`: Embla gallery, amenities, two clearly labelled demo rate plans (Saver and
+  Flex), policies, an illustrative location panel, other stays, and a sticky price summary.
+- `/api/flights`, `/api/flights/[id]`, `/api/hotels`, `/api/hotels/[id]`, `/api/cities`: JSON
+  responses, `400` with a typed error for invalid query input, `404` for unknown ids.
+
+Both result pages call `await connection()` before reading dates so the partial prerender shell
+can stream the URL-dependent part instead of failing at build time.
+
+### 11.4 Pricing rules
+
+Fares are per traveller; the results and detail pages multiply by `pax`. Stay totals multiply the
+nightly rate by nights and rooms, then apply 12% tax up to ₹7,500 per night and 18% above it.
+`lib/pricing.ts` is the single source for both breakdowns, so cards, detail panels, and APIs agree.
+
+### 11.5 Interaction verification
+
+Verified against the production build with a headless Chromium driven over CDP:
+
+| Check                     | Result                                                                     |
+| ------------------------- | -------------------------------------------------------------------------- |
+| Hotel star filter         | URL gains `stars=5`, list narrows 4 → 1, chip “5-star” appears             |
+| Hotel sort                | Keyboard change sets `sort=price-asc`; prices reorder ₹6,800 → ₹15,200     |
+| Mobile filter drawer      | Opens with focus on close, applies `stars=5`, Escape restores focus/scroll |
+| Duplicate DOM ids         | None; filter ids are scoped per instance (`useId`)                         |
+| Booking notice dialog     | Opens from “Reserve this stay”, focus on close, Escape returns to trigger  |
+| Hotel gallery             | Next/previous update `aria-live` “Image 2 of 3” and the active dot         |
+| Flight non-stop filter    | `stops=0` on BOM→DEL narrows 6 → 4 and removes one-stop rows               |
+| Combined flight filters   | `stops=0&airlines=AV` narrows to 2 flights                                 |
+| Flight detail for two pax | Business total reflects two travellers                                     |
+| APIs                      | `200` for valid queries, `400` for incomplete flight query, `404` unknown  |
+
+Server responses were also checked with `curl` for `/flights`, filtered flight URLs,
+`/flights/[id]`, `/hotels`, filtered hotel URLs, `/hotels/[id]`, and all five API routes.
+
+### 11.6 Deliberate gaps
+
+- No map/list toggle, pagination, or fare calendar yet; the catalogue is small enough to render
+  in one list, and paging would add state without adding learning value at this size.
+- Detail pages are shells: “Choose this rate” and “Reserve this stay” open an honest Phase 5
+  notice rather than a fake payment flow.
+- Filters are applied on the server after a URL change, so results update in one round trip
+  instead of client-side filtering.
+- Hotel galleries use six original SVG scenes rotated per property; real photography remains out
+  of scope.
+
+### 11.7 Next.js 16 notes
+
+- `cacheComponents: true` and `partialPrefetching: true` are enabled. `dynamicParams` is not
+  compatible and is not used.
+- URL-dependent server content sits inside `<Suspense>`; `usePathname()` consumers in the navbar
+  and mobile nav are wrapped the same way so the shell can prerender.
+- `error.tsx` uses the Next 16 `retry` prop.
+- `await connection()` is the documented escape hatch for `new Date()` defaults during prerender.

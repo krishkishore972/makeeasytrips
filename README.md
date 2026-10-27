@@ -5,20 +5,27 @@ flows of modern travel-booking products. It is **not** affiliated with, endorsed
 connected to any travel brand. There are no real bookings, payments, accounts, or stored
 personal details.
 
-The project is being built in phases. **Phase 1 (foundation) is complete.** Search results,
-filters, detail pages, and the mock checkout arrive in later phases.
+The project is being built in phases. **Phases 1 (foundation) and 2 (flights and hotels) are
+complete.** Holidays, offers, the full home composition, and the mock checkout arrive in later
+phases.
 
 ## What is in this build
 
 - Next.js App Router with React Server Components by default and small client leaves
-- TypeScript in strict mode with Zod for environment validation
+- TypeScript in strict mode with Zod for environment validation and CSV row parsing
 - Tailwind CSS v4 theme with an original lagoon-teal, coral, and gold palette
 - Fraunces display serif and Manrope UI sans via `next/font`
 - Lenis smooth scrolling with `prefers-reduced-motion` support
 - Motion (Framer Motion) shared variants, scroll reveals, and reduced-motion handling
 - Responsive two-tier navbar, mobile navigation sheet, demo login dialog, and footer
 - Foundation home page: hero, static GET search widget, destinations, offers, and how-it-works
-- Placeholder routes for every top-level travel line, plus editorial and legal pages
+- A typed, cached CSV data layer with 16 cities, 540 flights, and 32 stays
+- Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
+  result cards, and a review shell per flight
+- Hotel search and results: city/date/room form, filters, sorting, result cards, a landing page
+  with featured stays, and a detail page with gallery, amenities, rate plans, and policies
+- JSON APIs at `/api/flights`, `/api/hotels`, and `/api/cities`, validated with Zod
+- Placeholder routes for the remaining travel lines, plus editorial and legal pages
 - Root `loading.tsx`, `error.tsx`, `not-found.tsx`, and an SVG app icon
 - Local abstract SVG artwork under `public/images`; no third-party brand assets
 
@@ -43,36 +50,106 @@ npm run start
 
 ## Routes
 
-| Route                    | Phase 1 state                                                        |
-| ------------------------ | -------------------------------------------------------------------- |
-| `/`                      | Foundation home preview                                              |
-| `/flights`               | Placeholder; accepts and echoes search query params                  |
-| `/hotels`                | Placeholder for the Phase 2 search and results flow                  |
-| `/holidays`              | Placeholder for the Phase 3 catalogue and detail pages               |
-| `/trains`, `/cabs`       | Static shells, intentionally out of the current roadmap              |
-| `/offers`                | Placeholder for the Phase 3 offer board                              |
-| `/my-trips`, `/wishlist` | Static empty-state demos                                             |
-| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, contact, disclaimer |
+| Route                    | State                                                                       |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `/`                      | Foundation home preview (full composition lands in Phase 4)                 |
+| `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states       |
+| `/flights/[id]`          | Flight review shell with fare breakdown and a Phase 5 booking notice        |
+| `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays     |
+| `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box |
+| `/holidays`              | Placeholder for the Phase 3 catalogue and detail pages                      |
+| `/trains`, `/cabs`       | Static shells, intentionally out of the current roadmap                     |
+| `/offers`                | Placeholder for the Phase 3 offer board                                     |
+| `/my-trips`, `/wishlist` | Static empty-state demos                                                    |
+| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, contact, disclaimer        |
+| `/api/flights`           | JSON search API (query validation, `400` on invalid input)                  |
+| `/api/flights/[id]`      | JSON flight detail (`404` when unknown)                                     |
+| `/api/hotels`            | JSON hotel search API                                                       |
+| `/api/hotels/[id]`       | JSON hotel detail with the stay price breakdown                             |
+| `/api/cities`            | City list, optionally scoped to `flights` or `hotels`                       |
 
-The home search widget is a native `GET` form pointing at `/flights`. Submitting it puts the
-route, dates, traveller count, and cabin in the URL, which proves the URL-state approach before
-the results UI exists.
+Search and filter state lives entirely in URL search params, so every results view is linkable
+and the server renders the matching set:
+
+- Flights: `from`, `to`, `depart`, `return`, `pax`, `cabin`, `sort`, `stops`, `airlines`,
+  `window`, `duration`, `refundable`
+- Hotels: `city`, `checkin`, `checkout`, `rooms`, `guests`, `sort`, `price`, `stars`, `rating`,
+  `amenities`, `breakfast`, `cancel`
+
+Example:
+
+```text
+/flights?from=BOM&to=GOI&depart=2026-11-13&pax=2&cabin=economy&stops=0
+/hotels?city=GOI&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&stars=5
+```
 
 ## Structure
 
 ```text
-app/                  Routes, layouts, loading/error/not-found, global styles
+app/                  Routes, layouts, loading/error/not-found, APIs, global styles
+  api/                JSON route handlers for flights, hotels, and cities
+  flights/            Search/results page, detail shell, loading skeletons
+  hotels/             Landing/results page, detail page, loading skeletons
 components/
+  booking/            Mock booking notice dialog (Phase 5 hand-off)
+  flights/            Search form, filters, cards, popular routes, skeletons
   home/               Home-specific search widget
+  hotels/             Search form, filters, cards, gallery, skeletons
   layout/             Navbar, mobile nav, login dialog, footer, newsletter
   providers/          Motion and Lenis providers
-  shared/             Logo, section heading, scroll reveal, feature preview
+  search/             Shared filter group, flag, sort, drawer, chips, URL hook
+  shared/             Logo, breadcrumbs, rating, amenities, empty state, reveals
+  ui/                 Small primitives (buttons, dialogs, popovers, selects)
+data/                 CSV catalogue: cities, flights, hotels
 docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 hooks/                Small client hooks (scroll state, media query)
-lib/                  Site config, fonts, motion variants, utilities, info content
+lib/
+  data/               Cached CSV loader, Zod schemas, query and facet helpers
+  validation/         URL search-param parsing and defaults
+  pricing.ts          Fare and stay totals with tax bands
+  search-options.ts   Filter, sort, cabin, and amenity option tables
+  dates.ts            Date parsing, labels, and night counts
 public/images/        Original abstract SVG placeholders
 types/                Shared TypeScript types
 ```
+
+## Data layer
+
+CSV files are read once per process, parsed with PapaParse, validated row by row with Zod, and
+cached as a promise in `lib/data/csv.ts`. Server Components and the API route handlers share the
+same typed helpers, so there is no second source of truth.
+
+| File               | Rows | Notes                                                             |
+| ------------------ | ---- | ----------------------------------------------------------------- |
+| `data/cities.csv`  | 16   | 10 flight cities and 8 hotel cities, with airport and tagline     |
+| `data/flights.csv` | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins  |
+| `data/hotels.csv`  | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies |
+
+All fares, taxes, ratings, and availability are fictional demo values. Nothing is held, charged,
+or persisted.
+
+## Verification
+
+```bash
+npm run typecheck
+npm run lint
+npm run format:check
+npm run build
+npm run start
+```
+
+Then spot-check:
+
+```bash
+curl -s "http://localhost:3000/api/flights?from=BOM&to=GOI&cabin=economy" | head -c 400
+curl -s "http://localhost:3000/api/hotels?city=GOI&checkin=2026-11-13&checkout=2026-11-17" | head -c 400
+curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/hotels/nope"   # 404
+curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/flights?from=BOM" # 400
+```
+
+In the UI, changing a filter or sort order should update the URL and re-render the server-driven
+result list. Filters use one shared client hook (`useSearchParamsUpdater`) so the back button and
+shared links behave as expected.
 
 ## Design system
 
@@ -88,37 +165,28 @@ and `shadow-glow` rather than raw hex values.
 - Radius and shadows: generous, soft, and consistent across cards and panels
 - Motion: transform/opacity only, one-shot scroll reveals, reduced-motion fallbacks
 
-## Data plan
+## Data roadmap
 
-Phase 1 does not read CSV yet. The next phase adds `/data` files and a typed, cached data layer:
-
-```text
-data/flights.csv
-data/hotels.csv
-data/cities.csv
-data/offers.csv
-data/holidays.csv
-```
-
-The loader will parse each file once, validate rows with Zod, cache the typed result, and expose
-it through Server Components and `/app/api/...` route handlers. Search and filter state will live
-in URL search params.
+`cities.csv`, `flights.csv`, and `hotels.csv` are implemented (see **Data layer** above).
+`offers.csv` and `holidays.csv` arrive with the Phase 3 catalogue, using the same cached loader and
+Zod row schemas so every consumer keeps one typed source of truth.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis: observed sitemap and layout patterns, inferred flows,
-CSV schemas, responsive behaviour, design decisions, and limitations. Live MakeMyTrip capture was
-blocked by an Akamai 403, so the analysis relies on archived snapshots and public page structure.
-No proprietary code, logos, photography, or marketing copy was reused.
+`docs/REA.md` records the Step 0 analysis and the Phase 2 implementation record: observed sitemap
+and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions, and
+limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the analysis relies on
+archived snapshots and public page structure. No proprietary code, logos, photography, or
+marketing copy was reused.
 
 ## Roadmap
 
 1. **Phase 1 — Foundation (done):** setup, tokens, layout shell, motion, home preview, route
    scaffolding, error/loading states.
-2. **Phase 2 — Flights and hotels:** CSV data layer, search widgets, URL-driven results, filters,
-   sorting, result cards, detail shells.
-3. **Phase 3 — Holidays, offers, and APIs:** catalogue, detail pages, route handlers, Zod query
-   validation.
+2. **Phase 2 — Flights and hotels (done):** CSV data layer, search widgets, URL-driven results,
+   filters, sorting, result cards, detail shells.
+3. **Phase 3 — Holidays, offers, and APIs:** catalogue, detail pages, remaining route handlers,
+   Zod query validation.
 4. **Phase 4 — Home and editorial polish:** full home composition, carousels, FAQ, richer content.
 5. **Phase 5 — Booking:** mock review, confirmation, no payment or persistence.
 6. **Phase 6 — Quality:** accessibility audit, performance pass, tests, documentation.

@@ -3,7 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import {
   ArrowUpRight,
   BedDouble,
@@ -34,7 +34,6 @@ const navIcons: Record<string, LucideIcon> = {
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   const close = () => setOpen(false);
 
   return (
@@ -69,38 +68,9 @@ export function MobileNav() {
 
           <nav aria-label="Mobile primary" className="mt-7">
             <p className="eyebrow mb-3">Where to next?</p>
-            <ul className="grid grid-cols-2 gap-2.5">
-              {siteConfig.navigation.map((item) => {
-                const Icon = navIcons[item.icon] ?? MapPin;
-                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={close}
-                      aria-current={active ? "page" : undefined}
-                      className={`group flex h-full flex-col gap-3 rounded-xl border p-3.5 transition-colors ${
-                        active
-                          ? "border-brand-200 bg-brand-50 text-brand-800"
-                          : "border-line bg-canvas text-ink hover:border-brand-200 hover:bg-brand-50"
-                      }`}
-                    >
-                      <span className="grid size-9 place-items-center rounded-lg bg-surface text-brand-700 shadow-xs">
-                        <Icon aria-hidden="true" className="size-[18px]" />
-                      </span>
-                      <span className="flex items-center justify-between gap-2 text-sm font-bold">
-                        {item.label}
-                        <ChevronRight
-                          aria-hidden="true"
-                          className="size-4 text-muted-soft transition-transform group-hover:translate-x-0.5"
-                        />
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <Suspense fallback={<MobileNavList pathname={null} onNavigate={close} />}>
+              <MobileNavActive onNavigate={close} />
+            </Suspense>
           </nav>
 
           <div className="mt-6 rounded-xl border border-line bg-canvas p-4">
@@ -142,4 +112,52 @@ export function MobileNav() {
       </Dialog.Portal>
     </Dialog.Root>
   );
+}
+
+function MobileNavList({
+  pathname,
+  onNavigate,
+}: {
+  pathname: string | null;
+  onNavigate: () => void;
+}) {
+  return (
+    <ul className="grid grid-cols-2 gap-2.5">
+      {siteConfig.navigation.map((item) => {
+        const Icon = navIcons[item.icon] ?? MapPin;
+        const active = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+
+        return (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
+              className={`group flex h-full flex-col gap-3 rounded-xl border p-3.5 transition-colors ${
+                active
+                  ? "border-brand-200 bg-brand-50 text-brand-800"
+                  : "border-line bg-canvas text-ink hover:border-brand-200 hover:bg-brand-50"
+              }`}
+            >
+              <span className="grid size-9 place-items-center rounded-lg bg-surface text-brand-700 shadow-xs">
+                <Icon aria-hidden="true" className="size-[18px]" />
+              </span>
+              <span className="flex items-center justify-between gap-2 text-sm font-bold">
+                {item.label}
+                <ChevronRight
+                  aria-hidden="true"
+                  className="size-4 text-muted-soft transition-transform group-hover:translate-x-0.5"
+                />
+              </span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function MobileNavActive({ onNavigate }: { onNavigate: () => void }) {
+  const pathname = usePathname();
+  return <MobileNavList pathname={pathname} onNavigate={onNavigate} />;
 }

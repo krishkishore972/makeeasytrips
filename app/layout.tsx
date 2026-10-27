@@ -4,6 +4,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { AppProviders } from "@/components/providers/app-providers";
 import { fontDisplay, fontSans } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site";
+import "react-day-picker/style.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
