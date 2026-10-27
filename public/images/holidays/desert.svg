@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="desert-sky" x1="600" y1="0" x2="600" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFEAC8"/>
+      <stop offset="0.55" stop-color="#F7C08A"/>
+      <stop offset="1" stop-color="#DE8A5C"/>
+    </linearGradient>
+    <linearGradient id="desert-dune1" x1="600" y1="480" x2="600" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0C884"/>
+      <stop offset="1" stop-color="#DCA45F"/>
+    </linearGradient>
+    <linearGradient id="desert-dune2" x1="600" y1="590" x2="600" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D99A55"/>
+      <stop offset="1" stop-color="#A96334"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#desert-sky)"/>
+  <circle cx="300" cy="200" r="92" fill="#FFF3D2" fill-opacity="0.95"/>
+  <circle cx="300" cy="200" r="140" fill="#FFE0A6" fill-opacity="0.2"/>
+  <path d="M0 500c170-40 330-36 470 8 140 44 300 46 470 4 100-24 180-24 260-6v80H0v-86Z" fill="#E8B96F" fill-opacity="0.55"/>
+  <path d="M640 470h230v-64h34v64h30v-96h44v96h28v-52h36v52h36v-30h30v112H640v-82Z" fill="#B8733F"/>
+  <path d="M700 470v-48h30v48h-30Zm70 0v-70h34v70h-34Zm76 0v-40h30v40h-30Z" fill="#8C4E33"/>
+  <path d="M0 610c180-64 350-70 500-20 150 50 320 56 480 10 90-26 160-28 220-14v214H0V610Z" fill="url(#desert-dune1)"/>
+  <path d="M0 720c150-50 300-56 440-18 140 38 290 42 430 6 130-34 240-32 330-6v98H0v-80Z" fill="url(#desert-dune2)"/>
+  <g stroke="#8C4E33" stroke-linecap="round" stroke-width="5">
+    <path d="M300 700c20-16 40-16 58-2 18-14 38-12 54 4" fill="none"/>
+    <path d="M320 700v22m24-26v26m30-18v20" stroke-width="4"/>
+  </g>
+  <g fill="#6E4628">
+    <path d="M330 660c8-14 18-22 30-24l-4 12c8 2 14 8 16 16l-10 2c-2-6-8-10-14-8l-4 10-14-8Z"/>
+    <path d="M356 660c10-12 22-18 34-18l-6 12c8 4 12 10 12 18l-10 0c0-6-4-10-10-10l-6 10-14-12Z"/>
+  </g>
+  <g stroke="#7A3F2B" stroke-linecap="round" stroke-width="3" fill="none" opacity="0.6">
+    <path d="M880 190c10-12 22-12 32 0"/>
+    <path d="M934 168c8-10 18-10 26 0"/>
+    <path d="M840 224c8-10 18-10 26 0"/>
+  </g>
+</svg>

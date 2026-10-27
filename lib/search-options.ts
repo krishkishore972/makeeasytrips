@@ -142,3 +142,120 @@ export const PROPERTY_TYPES = [
   "Homestay",
   "Villa",
 ] as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Holidays                                                                  */
+/* -------------------------------------------------------------------------- */
+
+export const holidaySortValues = [
+  "recommended",
+  "price-asc",
+  "price-desc",
+  "rating",
+  "duration",
+] as const;
+export type HolidaySort = (typeof holidaySortValues)[number];
+
+export const HOLIDAY_SORT_OPTIONS: { value: HolidaySort; label: string }[] = [
+  { value: "recommended", label: "Recommended" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+  { value: "rating", label: "Traveller rating" },
+  { value: "duration", label: "Longest first" },
+];
+
+export const holidayThemeValues = [
+  "beach",
+  "backwaters",
+  "mountains",
+  "heritage",
+  "food",
+  "wellness",
+  "wildlife",
+  "city",
+  "adventure",
+  "craft",
+] as const;
+export type HolidayTheme = (typeof holidayThemeValues)[number];
+
+export const HOLIDAY_THEME_OPTIONS: { value: HolidayTheme; label: string }[] = [
+  { value: "beach", label: "Beach" },
+  { value: "backwaters", label: "Backwaters" },
+  { value: "mountains", label: "Mountains" },
+  { value: "heritage", label: "Heritage" },
+  { value: "food", label: "Food" },
+  { value: "wellness", label: "Wellness" },
+  { value: "wildlife", label: "Wildlife" },
+  { value: "city", label: "City" },
+  { value: "adventure", label: "Adventure" },
+  { value: "craft", label: "Craft" },
+];
+
+export const HOLIDAY_THEME_LABELS: Record<string, string> = Object.fromEntries(
+  HOLIDAY_THEME_OPTIONS.map((option) => [option.value, option.label]),
+);
+
+export const holidayDurationValues = ["short", "medium", "long"] as const;
+export type HolidayDuration = (typeof holidayDurationValues)[number];
+
+export const HOLIDAY_DURATION_OPTIONS: {
+  value: HolidayDuration;
+  label: string;
+  detail: string;
+}[] = [
+  { value: "short", label: "2–3 days", detail: "A quick reset" },
+  { value: "medium", label: "4–5 days", detail: "The classic break" },
+  { value: "long", label: "6+ days", detail: "Room to roam" },
+];
+
+export const holidayPriceBandValues = ["under-20k", "20k-35k", "35k-50k", "over-50k"] as const;
+export type HolidayPriceBand = (typeof holidayPriceBandValues)[number];
+
+export const HOLIDAY_PRICE_BAND_OPTIONS: {
+  value: HolidayPriceBand;
+  label: string;
+  detail: string;
+}[] = [
+  { value: "under-20k", label: "Under ₹20,000", detail: "per person" },
+  { value: "20k-35k", label: "₹20,000 – ₹35,000", detail: "per person" },
+  { value: "35k-50k", label: "₹35,000 – ₹50,000", detail: "per person" },
+  { value: "over-50k", label: "Over ₹50,000", detail: "per person" },
+];
+
+/* -------------------------------------------------------------------------- */
+/*  Offers                                                                    */
+/* -------------------------------------------------------------------------- */
+
+export const offerServiceValues = ["flights", "hotels", "holidays", "trains", "cabs"] as const;
+export type OfferService = (typeof offerServiceValues)[number];
+
+export const offerCategoryValues = ["all", ...offerServiceValues] as const;
+export type OfferCategory = (typeof offerCategoryValues)[number];
+
+export const OFFER_CATEGORY_OPTIONS: { value: OfferCategory; label: string }[] = [
+  { value: "all", label: "All offers" },
+  { value: "flights", label: "Flights" },
+  { value: "hotels", label: "Stays" },
+  { value: "holidays", label: "Holidays" },
+  { value: "trains", label: "Trains" },
+  { value: "cabs", label: "Cabs" },
+];
+
+export const offerToneValues = ["coral", "teal", "gold"] as const;
+export type OfferTone = (typeof offerToneValues)[number];
+
+export const offerIconValues = [
+  "plane",
+  "bed",
+  "palmtree",
+  "train",
+  "car",
+  "sparkles",
+  "tag",
+  "percent",
+  "gift",
+  "calendar",
+  "sun",
+  "map",
+] as const;
+export type OfferIcon = (typeof offerIconValues)[number];

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="mount-sky" x1="600" y1="0" x2="600" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCEFF5"/>
+      <stop offset="0.6" stop-color="#F3D9C6"/>
+      <stop offset="1" stop-color="#F0B99A"/>
+    </linearGradient>
+    <linearGradient id="mount-far" x1="600" y1="300" x2="600" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7FB6B0"/>
+      <stop offset="1" stop-color="#4A8B85"/>
+    </linearGradient>
+    <linearGradient id="mount-mid" x1="600" y1="420" x2="600" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2C6E6A"/>
+      <stop offset="1" stop-color="#0B5C57"/>
+    </linearGradient>
+    <linearGradient id="mount-near" x1="600" y1="560" x2="600" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A4B47"/>
+      <stop offset="1" stop-color="#04211F"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#mount-sky)"/>
+  <circle cx="880" cy="180" r="76" fill="#FFF1D4" fill-opacity="0.95"/>
+  <path d="M0 520 210 300l120 132 130-170 190 236 120-140 180 196 130-120 120 146v220H0V520Z" fill="url(#mount-far)"/>
+  <path d="M210 300l52 58 68 74-70-24-50 38-60-50 60-96Z" fill="#F4FAF8" fill-opacity="0.9"/>
+  <path d="M460 262l58 72 68 84-74-26-52 40-58-54 58-116Z" fill="#F4FAF8" fill-opacity="0.92"/>
+  <path d="M950 288l42 46 58 64-60-22-44 34-50-44 54-78Z" fill="#F4FAF8" fill-opacity="0.85"/>
+  <path d="M0 640 180 470l130 118 160-150 200 196 150-130 170 170 210-140v266H0V640Z" fill="url(#mount-mid)"/>
+  <path d="M0 720 160 600l150 110 190-140 190 160 170-110 180 140 160-110v150H0V720Z" fill="url(#mount-near)"/>
+  <g fill="#F4FAF8" fill-opacity="0.28">
+    <path d="M0 560c220-30 420-24 610 12 190 36 400 34 590-6v34c-190 36-400 38-590 2-190-36-390-42-610-12v-30Z"/>
+    <path d="M0 668c240-26 450-18 640 12 190 30 380 26 560-10v26c-180 34-370 38-560 8-190-30-400-38-640-12v-24Z"/>
+  </g>
+  <g fill="#04211F" fill-opacity="0.8">
+    <path d="M300 720l18-46 18 46h-36Z"/>
+    <path d="M352 726l14-34 14 34h-28Z"/>
+    <path d="M880 730l16-40 16 40h-32Z"/>
+  </g>
+</svg>

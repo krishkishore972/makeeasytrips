@@ -409,70 +409,70 @@ the database can later replace the loader without changing UI props.
 
 ### 5.4 `offers.csv`
 
-| Field            | Type    | Example                                                       |
-| ---------------- | ------- | ------------------------------------------------------------- |
-| `id`             | string  | `of-001`                                                      |
-| `category`       | enum    | `all` / `flights` / `hotels` / `holidays` / `trains` / `cabs` |
-| `eyebrow`        | string  | `Flights`                                                     |
-| `title`          | string  | `Take the long way home`                                      |
-| `description`    | string  | …                                                             |
-| `code`           | string  | `NESTFLY`                                                     |
-| `discount_label` | string  | `Up to 12% off`                                               |
-| `image`          | string  | `/images/offer-flights.svg`                                   |
-| `cta_label`      | string  | `Explore flights`                                             |
-| `cta_href`       | string  | `/flights`                                                    |
-| `valid_until`    | date    | `2026-12-31`                                                  |
-| `terms`          | string  | …                                                             |
-| `featured`       | boolean | `true`                                                        |
+| Field            | Type    | Example                                               |
+| ---------------- | ------- | ----------------------------------------------------- |
+| `id`             | string  | `off-001`                                             |
+| `category`       | enum    | `flights` / `hotels` / `holidays` / `trains` / `cabs` |
+| `eyebrow`        | string  | `Flights`                                             |
+| `title`          | string  | `First flight, lighter fare`                          |
+| `description`    | string  | …                                                     |
+| `code`           | string  | `NESTFLY`                                             |
+| `discount_label` | string  | `Up to 12% off`                                       |
+| `icon`           | enum    | `plane` / `bed` / `palmtree` / `train` / `car` …      |
+| `tone`           | enum    | `coral` / `teal` / `gold`                             |
+| `cta_label`      | string  | `Search flights`                                      |
+| `cta_href`       | string  | `/flights`                                            |
+| `valid_until`    | date    | `2027-03-31`                                          |
+| `terms`          | string  | …                                                     |
+| `featured`       | boolean | `true`                                                |
 
 ### 5.5 `holidays.csv`
 
-| Field                 | Type        | Example                                           |
-| --------------------- | ----------- | ------------------------------------------------- |
-| `id`                  | string      | `ho-001`                                          |
-| `slug`                | string      | `slow-goa-weekender`                              |
-| `title`               | string      | `Slow Goa Weekender`                              |
-| `destination_city_id` | string      | `goi`                                             |
-| `country`             | string      | `India`                                           |
-| `days`                | number      | `4`                                               |
-| `nights`              | number      | `3`                                               |
-| `price`               | number      | `18900`                                           |
-| `currency`            | string      | `INR`                                             |
-| `themes`              | JSON string | `["Beach","Food"]`                                |
-| `rating`              | number      | `4.7`                                             |
-| `review_count`        | number      | `86`                                              |
-| `image`               | string      | `/images/holiday-goa.svg`                         |
-| `gallery`             | JSON string | `["…"]`                                           |
-| `summary`             | string      | …                                                 |
-| `highlights`          | JSON string | `["…"]`                                           |
-| `inclusions`          | JSON string | `["…"]`                                           |
-| `exclusions`          | JSON string | `["…"]`                                           |
-| `itinerary`           | JSON string | `[{ "day": 1, "title": "...", "detail": "..." }]` |
-| `departure_dates`     | JSON string | `["2026-11-14", "2026-11-28"]`                    |
+| Field              | Type        | Example                                           |
+| ------------------ | ----------- | ------------------------------------------------- |
+| `id`               | string      | `holi-goi-susegad-sea`                            |
+| `slug`             | string      | `susegad-by-the-sea`                              |
+| `title`            | string      | `Susegad by the Sea`                              |
+| `city_code`        | string      | `GOI`                                             |
+| `country`          | string      | `India`                                           |
+| `days`             | number      | `4`                                               |
+| `nights`           | number      | `3`                                               |
+| `price_per_person` | number      | `24500`                                           |
+| `rating`           | number      | `4.7`                                             |
+| `review_count`     | number      | `214`                                             |
+| `image`            | string      | `/images/holidays/coast.svg`                      |
+| `gallery`          | JSON string | `["…"]`                                           |
+| `themes`           | pipe list   | `beach\|food`                                     |
+| `summary`          | string      | …                                                 |
+| `highlights`       | JSON string | `["…"]`                                           |
+| `inclusions`       | JSON string | `["…"]`                                           |
+| `exclusions`       | JSON string | `["…"]`                                           |
+| `itinerary`        | JSON string | `[{ "day": 1, "title": "...", "detail": "..." }]` |
+| `departure_dates`  | JSON string | `["2026-11-14", "2026-11-28"]`                    |
+| `featured`         | boolean     | `true`                                            |
 
 ### 5.6 Derived API response shapes
 
 ```ts
-type Paginated<T> = {
-  items: T[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  facets?: Record<string, { value: string; count: number }[]>;
+type ListResponse<T> = {
+  data: T[];
+  meta: Record<string, unknown>;
 };
 ```
 
-Route handlers planned for Phase 3:
+Route handlers implemented across Phases 2 and 3:
 
-- `GET /api/flights?from=&to=&depart=&return=&pax=&cabin=&sort=&stops=&airlines=&priceMin=&priceMax=`
-- `GET /api/hotels?city=&checkin=&checkout=&rooms=&guests=&sort=&stars=&rating=&amenities=&priceMin=&priceMax=`
-- `GET /api/holidays?destination=&theme=&duration=&priceMin=&priceMax=&sort=`
+- `GET /api/flights?from=&to=&depart=&return=&pax=&cabin=&sort=&stops=&airlines=&window=&duration=&refundable=`
+- `GET /api/flights/[id]`
+- `GET /api/hotels?city=&checkin=&checkout=&rooms=&guests=&sort=&stars=&rating=&amenities=&price=&breakfast=&cancel=`
+- `GET /api/hotels/[id]`
+- `GET /api/holidays?destination=&theme=&duration=&price=&sort=&travellers=`
+- `GET /api/holidays/[slug]`
 - `GET /api/offers?category=`
-- `GET /api/cities?q=`
-- `GET /api/health`
+- `GET /api/cities?scope=`
 
-All inputs validated with Zod; invalid input returns `400` with a typed error.
+All inputs are parsed with Zod; invalid input returns `400` with a typed error, and unknown ids or
+slugs return `404`. Successful list responses use `{ data, meta }` and set `Cache-Control` headers.
 
 ---
 
@@ -756,3 +756,124 @@ Server responses were also checked with `curl` for `/flights`, filtered flight U
   and mobile nav are wrapped the same way so the shell can prerender.
 - `error.tsx` uses the Next 16 `retry` prop.
 - `await connection()` is the documented escape hatch for `new Date()` defaults during prerender.
+
+---
+
+## 12. Phase 3 implementation record (holidays, offers, and APIs)
+
+Phase 3 adds the holiday catalogue, package detail pages, the offer board, and the remaining
+list/detail APIs. It reuses the Phase 2 cached CSV layer, Zod parsing, URL-state hook, filter
+primitives, and design tokens. All package names, itineraries, offer codes, dates, and prices are
+original demo content.
+
+### 12.1 Data layer
+
+| File                       | Purpose                                                               |
+| -------------------------- | --------------------------------------------------------------------- |
+| `lib/data/holidays.ts`     | Search, facets, destinations, city stats, featured, similar packages  |
+| `lib/data/offers.ts`       | Category listing, featured offers, category counts                    |
+| `lib/data/schemas.ts`      | `holidaySchema`, `offerSchema`, JSON-cell parsing, inferred row types |
+| `lib/data/index.ts`        | Barrel updated to export both helpers                                 |
+| `lib/pricing.ts`           | `holidayPriceBreakdown` for per-person totals with 5% demo tax        |
+| `lib/validation/search.ts` | `parseHolidaySearchParams`, `parseOfferSearchParams`                  |
+
+| File                | Rows | Shape highlights                                                                    |
+| ------------------- | ---- | ----------------------------------------------------------------------------------- |
+| `data/holidays.csv` | 12   | 10 destinations, 10 themes, 3 duration bands, 4 price bands, JSON itinerary/gallery |
+| `data/offers.csv`   | 12   | 5 service categories, copyable codes, tones, icons, validity, terms, featured flag  |
+
+CSV cells that hold lists use either JSON arrays (`gallery`, `highlights`, `inclusions`,
+`exclusions`, `itinerary`, `departure_dates`) or a pipe-separated list (`themes`). The schema
+parses both, so row-level validation still reports the exact file and row. The cached promise is
+per file, so pages and APIs share one parse per process.
+
+Six original SVG scenes were added under `public/images/holidays/` (`coast`, `backwaters`,
+`heritage`, `mountains`, `desert`, `city`) and reused across packages.
+
+### 12.2 Query contract
+
+Holiday params: `destination`, `theme` (comma list), `duration` (comma list), `price` (comma
+list), `sort`, `travellers`, `depart`.
+
+- `destination`: three-letter city code, uppercased; an unknown shape produces an inline error.
+- `theme`: `beach`, `backwaters`, `mountains`, `heritage`, `food`, `wellness`, `wildlife`, `city`,
+  `adventure`, `craft`.
+- `duration`: `short` (2–3 days), `medium` (4–5), `long` (6+).
+- `price`: `under-20k`, `20k-35k`, `35k-50k`, `over-50k` per person.
+- `sort`: `recommended`, `price-asc`, `price-desc`, `rating`, `duration`.
+- `travellers`: integer 1–9, default 2.
+- `depart`: used on the detail page to preselect a departure when it matches the package list.
+
+Offer params: `category` (`all`, `flights`, `hotels`, `holidays`, `trains`, `cabs`). Unknown values
+render a warning and fall back to `all`; the API returns `400`.
+
+Facets are computed from the destination-scoped catalogue, so counts stay meaningful when a
+destination is selected. Theme filters use OR within the theme group and AND across groups.
+
+### 12.3 Routes and APIs
+
+- `/holidays`: search form, featured strip, destination cards with counts and starting prices,
+  theme/length/budget filters, sort, active chips, mobile drawer, empty states, and skeletons.
+- `/holidays/[slug]`: illustrated gallery, trip overview, highlights, day-by-day itinerary,
+  inclusions/exclusions, plain-language notes, departure picker, traveller stepper, live price
+  breakdown, Phase 5 booking notice, and similar packages scored by shared city and themes.
+- `/offers`: category tabs with counts, featured offer banner, copyable codes with `aria-live`
+  feedback, validity, expandable terms, CTA links, invalid-category warning, and skeletons.
+- `/api/holidays`, `/api/holidays/[slug]`, `/api/offers`: JSON responses with `{ data, meta }`,
+  `Cache-Control`, `400` for invalid input, and `404` for unknown slugs.
+
+### 12.4 Pricing rules
+
+Holiday prices are per person on twin sharing. The demo total multiplies by `travellers`, then
+adds a flat 5% tax and fee. `holidayPriceBreakdown` is shared by cards, the detail panel, and both
+holiday APIs, so every surface agrees. No single supplement, child rate, or real availability is
+modelled.
+
+### 12.5 Interaction verification
+
+Verified against the production build with a headless Chromium driven over CDP (41 checks):
+
+| Check                  | Result                                                                  |
+| ---------------------- | ----------------------------------------------------------------------- |
+| Holiday catalogue      | 12 cards, featured strip, and 10 destination cards render               |
+| Theme filter           | `theme=beach` narrows 12 → 3; an active chip appears                    |
+| Combined filters       | `theme=beach&price=under-20k` narrows to 1 package                      |
+| Sort                   | `sort=price-asc` persists in the URL and reorders results               |
+| Reset                  | Clears theme/price and restores 12 cards                                |
+| Mobile filter drawer   | Opens, applies `theme=heritage` (5 results), closes via “Show results”  |
+| Holiday detail         | Itinerary, gallery, similar packages, and their own city names render   |
+| Traveller stepper      | Total moves ₹51,450 → ₹77,175 as travellers go 2 → 3                    |
+| Departure picker       | Selecting 5 Dec 2026 updates the summary and `aria-pressed` state       |
+| Booking notice         | Opens from “Reserve this holiday” with the Phase 5 message, then closes |
+| Offer board            | 12 offers render; featured banner and category counts are correct       |
+| Offer category tab     | `category=flights` narrows to 3 offers and marks the active tab         |
+| Invalid offer category | Warning appears and the board falls back to all 12 offers               |
+| Copy code              | Clipboard feedback announces “Offer code copied”                        |
+| Mobile offers          | No horizontal overflow at 390px; all six category tabs remain usable    |
+| Console / network      | No console errors and no failed requests during the run                 |
+
+Server responses were checked with `curl` for `/holidays`, filtered holiday URLs,
+`/holidays/[slug]`, `/offers`, `/offers?category=flights`, and all three new API routes, including
+`400` for invalid destination/category and `404` for an unknown holiday slug.
+
+### 12.6 Deliberate gaps
+
+- Holiday and offer catalogues are deliberately small and rendered in one list; there is no
+  pagination, infinite scroll, or fare calendar at this size.
+- “Similar packages” is a deterministic score over shared city and themes, not a recommendation
+  model.
+- Offers are a board, not a checkout: codes are copied but never applied, and there is no offer
+  detail route.
+- Trains and cabs remain static shells, so their offers link to those shells.
+- Because detail content streams inside `<Suspense>`, an unknown slug renders the custom
+  not-found UI with HTTP `200` after the shell has flushed (the same behaviour as the Phase 2
+  flight and hotel details). The JSON APIs still return `404`.
+- Booking remains a Phase 5 notice; no payment, account, inventory hold, or persistence exists.
+
+### 12.7 Next.js 16 notes
+
+- The Phase 3 routes follow the same PPR pattern: URL-dependent content is wrapped in
+  `<Suspense>`, and `await connection()` runs before reading search params or date defaults.
+- New loading routes (`/holidays`, `/holidays/[slug]`, `/offers`) reuse the skeleton components.
+- `generateMetadata` for holiday details runs independently of the streamed page and returns a
+  safe fallback title for unknown slugs.

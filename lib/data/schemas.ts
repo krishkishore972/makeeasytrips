@@ -1,7 +1,12 @@
 import { z } from "zod";
 import {
   cabinValues,
+  holidaySortValues,
+  holidayThemeValues,
   hotelSortValues,
+  offerIconValues,
+  offerServiceValues,
+  offerToneValues,
   PROPERTY_TYPES,
   flightSortValues,
 } from "@/lib/search-options";
@@ -14,6 +19,27 @@ const csvList = z.string().transform((value) =>
     .map((item) => item.trim())
     .filter(Boolean),
 );
+
+/** Parse a CSV cell that holds a JSON array, reporting row-level issues cleanly. */
+function csvJsonArray<T>(itemSchema: z.ZodType<T>) {
+  return z.string().transform((value, ctx): T[] => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      ctx.addIssue({ code: "custom", message: "Expected valid JSON" });
+      return z.NEVER;
+    }
+
+    const result = z.array(itemSchema).safeParse(parsed);
+    if (!result.success) {
+      ctx.addIssue({ code: "custom", message: "JSON array has the wrong shape" });
+      return z.NEVER;
+    }
+
+    return result.data;
+  });
+}
 
 const clockTime = z.string().regex(/^\d{2}:\d{2}$/, "Expected HH:MM");
 
@@ -109,6 +135,69 @@ export const hotelSchema = z.object({
 export const flightSortSchema = z.enum(flightSortValues);
 export const hotelSortSchema = z.enum(hotelSortValues);
 
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
+
+export const holidayDaySchema = z.object({
+  day: z.coerce.number().int().positive(),
+  title: z.string().trim().min(1),
+  detail: z.string().trim().min(1),
+});
+
+export const holidaySchema = z.object({
+  id: z.string().trim().min(1),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/, "Expected a lowercase slug"),
+  title: z.string().trim().min(1),
+  city_code: z
+    .string()
+    .trim()
+    .length(3)
+    .transform((value) => value.toUpperCase()),
+  country: z.string().trim().min(1),
+  days: z.coerce.number().int().min(2).max(15),
+  nights: z.coerce.number().int().min(1).max(14),
+  price_per_person: z.coerce.number().int().positive(),
+  rating: z.coerce.number().min(0).max(5),
+  review_count: z.coerce.number().int().nonnegative(),
+  image: z.string().trim().min(1),
+  gallery: csvJsonArray(z.string().trim().min(1)),
+  themes: csvList.pipe(z.array(z.enum(holidayThemeValues))),
+  summary: z.string().trim().min(1),
+  highlights: csvJsonArray(z.string().trim().min(1)),
+  inclusions: csvJsonArray(z.string().trim().min(1)),
+  exclusions: csvJsonArray(z.string().trim().min(1)),
+  itinerary: csvJsonArray(holidayDaySchema),
+  departure_dates: csvJsonArray(isoDate),
+  featured: csvBoolean,
+});
+
+export const offerSchema = z.object({
+  id: z.string().trim().min(1),
+  category: z.enum(offerServiceValues),
+  eyebrow: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  code: z
+    .string()
+    .trim()
+    .regex(/^[A-Z0-9]{4,16}$/, "Expected an uppercase code"),
+  discount_label: z.string().trim().min(1),
+  icon: z.enum(offerIconValues),
+  tone: z.enum(offerToneValues),
+  cta_label: z.string().trim().min(1),
+  cta_href: z.string().trim().min(1),
+  valid_until: isoDate,
+  terms: z.string().trim().min(1),
+  featured: csvBoolean,
+});
+
+export const holidaySortSchema = z.enum(holidaySortValues);
+
 export type City = z.infer<typeof citySchema>;
 export type Flight = z.infer<typeof flightSchema>;
 export type Hotel = z.infer<typeof hotelSchema>;
+export type Holiday = z.infer<typeof holidaySchema>;
+export type HolidayDay = z.infer<typeof holidayDaySchema>;
+export type Offer = z.infer<typeof offerSchema>;

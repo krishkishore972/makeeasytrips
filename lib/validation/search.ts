@@ -1,5 +1,6 @@
 import { addDaysISO, isValidISODate, nightsBetween, todayISO } from "@/lib/dates";
 import type { FlightQuery } from "@/lib/data/flights";
+import type { HolidayQuery } from "@/lib/data/holidays";
 import type { HotelQuery } from "@/lib/data/hotels";
 import {
   amenityFilterValues,
@@ -7,14 +8,24 @@ import {
   departureWindowValues,
   durationBandValues,
   flightSortValues,
+  holidayDurationValues,
+  holidayPriceBandValues,
+  holidaySortValues,
+  holidayThemeValues,
   hotelSortValues,
+  offerCategoryValues,
   priceBandValues,
   starValues,
   stopValues,
   type AmenityFilter,
   type Cabin,
   type FlightSort,
+  type HolidayDuration,
+  type HolidayPriceBand,
+  type HolidaySort,
+  type HolidayTheme,
   type HotelSort,
+  type OfferCategory,
   type PriceBand,
 } from "@/lib/search-options";
 import { firstParam } from "@/lib/utils";
@@ -39,6 +50,17 @@ export type StayQuery = {
 export type ParsedHotelSearch = {
   query: HotelQuery;
   hasCity: boolean;
+  error: string | null;
+};
+
+export type ParsedHolidaySearch = {
+  query: HolidayQuery;
+  hasFilters: boolean;
+  error: string | null;
+};
+
+export type ParsedOfferSearch = {
+  category: OfferCategory;
   error: string | null;
 };
 
@@ -190,5 +212,48 @@ export function parseHotelSearchParams(params: RawSearchParams): ParsedHotelSear
     },
     hasCity,
     error,
+  };
+}
+
+export function parseHolidaySearchParams(params: RawSearchParams): ParsedHolidaySearch {
+  const destination = cityCode(raw(params, "destination"));
+  const sort: HolidaySort = oneOf(raw(params, "sort"), holidaySortValues, "recommended");
+  const themes = listOf(raw(params, "theme")?.toLowerCase(), holidayThemeValues);
+  const durations = listOf(raw(params, "duration"), holidayDurationValues);
+  const priceBands = listOf(raw(params, "price"), holidayPriceBandValues);
+
+  let error: string | null = null;
+  if (raw(params, "destination") && !destination) {
+    error = "That destination code is not valid.";
+  }
+
+  const hasFilters = Boolean(
+    destination || themes.length > 0 || durations.length > 0 || priceBands.length > 0,
+  );
+
+  return {
+    query: {
+      destination,
+      themes: themes as HolidayTheme[],
+      durations: durations as HolidayDuration[],
+      priceBands: priceBands as HolidayPriceBand[],
+      sort,
+      travellers: boundedInt(raw(params, "travellers"), 2, 1, 9),
+    },
+    hasFilters,
+    error,
+  };
+}
+
+export function parseOfferSearchParams(params: RawSearchParams): ParsedOfferSearch {
+  const requested = raw(params, "category")?.toLowerCase();
+  const category: OfferCategory = oneOf(requested, offerCategoryValues, "all");
+
+  return {
+    category,
+    error:
+      requested && !offerCategoryValues.includes(requested as OfferCategory)
+        ? "That offer category does not exist."
+        : null,
   };
 }

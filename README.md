@@ -5,9 +5,9 @@ flows of modern travel-booking products. It is **not** affiliated with, endorsed
 connected to any travel brand. There are no real bookings, payments, accounts, or stored
 personal details.
 
-The project is being built in phases. **Phases 1 (foundation) and 2 (flights and hotels) are
-complete.** Holidays, offers, the full home composition, and the mock checkout arrive in later
-phases.
+The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), and 3
+(holidays, offers, and APIs) are complete.** The full home composition and the mock checkout
+arrive in later phases.
 
 ## What is in this build
 
@@ -19,12 +19,18 @@ phases.
 - Motion (Framer Motion) shared variants, scroll reveals, and reduced-motion handling
 - Responsive two-tier navbar, mobile navigation sheet, demo login dialog, and footer
 - Foundation home page: hero, static GET search widget, destinations, offers, and how-it-works
-- A typed, cached CSV data layer with 16 cities, 540 flights, and 32 stays
+- A typed, cached CSV data layer with 16 cities, 540 flights, 32 stays, 12 holidays, and 12 offers
 - Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
   result cards, and a review shell per flight
 - Hotel search and results: city/date/room form, filters, sorting, result cards, a landing page
   with featured stays, and a detail page with gallery, amenities, rate plans, and policies
-- JSON APIs at `/api/flights`, `/api/hotels`, and `/api/cities`, validated with Zod
+- Holiday catalogue: destination-led browsing, theme/length/budget filters, sorting, featured and
+  destination strips, and package detail pages with gallery, day-by-day itinerary, inclusions,
+  departure picker, live demo totals, and similar packages
+- Offer board: category tabs with counts, a featured banner, copyable demo codes, validity dates,
+  and expandable terms
+- JSON APIs at `/api/flights`, `/api/hotels`, `/api/holidays`, `/api/offers`, and `/api/cities`,
+  validated with Zod
 - Placeholder routes for the remaining travel lines, plus editorial and legal pages
 - Root `loading.tsx`, `error.tsx`, `not-found.tsx`, and an SVG app icon
 - Local abstract SVG artwork under `public/images`; no third-party brand assets
@@ -50,23 +56,27 @@ npm run start
 
 ## Routes
 
-| Route                    | State                                                                       |
-| ------------------------ | --------------------------------------------------------------------------- |
-| `/`                      | Foundation home preview (full composition lands in Phase 4)                 |
-| `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states       |
-| `/flights/[id]`          | Flight review shell with fare breakdown and a Phase 5 booking notice        |
-| `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays     |
-| `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box |
-| `/holidays`              | Placeholder for the Phase 3 catalogue and detail pages                      |
-| `/trains`, `/cabs`       | Static shells, intentionally out of the current roadmap                     |
-| `/offers`                | Placeholder for the Phase 3 offer board                                     |
-| `/my-trips`, `/wishlist` | Static empty-state demos                                                    |
-| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, contact, disclaimer        |
-| `/api/flights`           | JSON search API (query validation, `400` on invalid input)                  |
-| `/api/flights/[id]`      | JSON flight detail (`404` when unknown)                                     |
-| `/api/hotels`            | JSON hotel search API                                                       |
-| `/api/hotels/[id]`       | JSON hotel detail with the stay price breakdown                             |
-| `/api/cities`            | City list, optionally scoped to `flights` or `hotels`                       |
+| Route                    | State                                                                                   |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `/`                      | Foundation home preview (full composition lands in Phase 4)                             |
+| `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states                   |
+| `/flights/[id]`          | Flight review shell with fare breakdown and a Phase 5 booking notice                    |
+| `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
+| `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box             |
+| `/holidays`              | Holiday catalogue: destination strip, theme/length/budget filters, sort, featured trips |
+| `/holidays/[slug]`       | Package detail: gallery, itinerary, inclusions, departure picker, live total, similar   |
+| `/trains`, `/cabs`       | Static shells, intentionally out of the current roadmap                                 |
+| `/offers`                | Offer board with category tabs, featured offer, copyable codes, and terms               |
+| `/my-trips`, `/wishlist` | Static empty-state demos                                                                |
+| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, contact, disclaimer                    |
+| `/api/flights`           | JSON search API (query validation, `400` on invalid input)                              |
+| `/api/flights/[id]`      | JSON flight detail (`404` when unknown)                                                 |
+| `/api/hotels`            | JSON hotel search API                                                                   |
+| `/api/hotels/[id]`       | JSON hotel detail with the stay price breakdown                                         |
+| `/api/holidays`          | JSON holiday search API with per-person and traveller totals                            |
+| `/api/holidays/[slug]`   | JSON holiday detail with itinerary and price breakdown                                  |
+| `/api/offers`            | JSON offer list, category filter, and category counts                                   |
+| `/api/cities`            | City list, optionally scoped to `flights` or `hotels`                                   |
 
 Search and filter state lives entirely in URL search params, so every results view is linkable
 and the server renders the matching set:
@@ -75,39 +85,47 @@ and the server renders the matching set:
   `window`, `duration`, `refundable`
 - Hotels: `city`, `checkin`, `checkout`, `rooms`, `guests`, `sort`, `price`, `stars`, `rating`,
   `amenities`, `breakfast`, `cancel`
+- Holidays: `destination`, `theme`, `duration`, `price`, `sort`, `travellers`, `depart`
+- Offers: `category` (`all`, `flights`, `hotels`, `holidays`, `trains`, `cabs`)
 
 Example:
 
 ```text
 /flights?from=BOM&to=GOI&depart=2026-11-13&pax=2&cabin=economy&stops=0
 /hotels?city=GOI&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&stars=5
+/holidays?destination=GOI&theme=beach,food&duration=short&price=under-20k&travellers=3
+/offers?category=holidays
 ```
 
 ## Structure
 
 ```text
 app/                  Routes, layouts, loading/error/not-found, APIs, global styles
-  api/                JSON route handlers for flights, hotels, and cities
+  api/                JSON route handlers for flights, hotels, holidays, offers, and cities
   flights/            Search/results page, detail shell, loading skeletons
+  holidays/           Catalogue page, package detail, loading skeletons
   hotels/             Landing/results page, detail page, loading skeletons
+  offers/             Offer board and loading skeleton
 components/
   booking/            Mock booking notice dialog (Phase 5 hand-off)
   flights/            Search form, filters, cards, popular routes, skeletons
+  holidays/           Search form, filters, cards, gallery, itinerary, booking panel, skeletons
   home/               Home-specific search widget
   hotels/             Search form, filters, cards, gallery, skeletons
   layout/             Navbar, mobile nav, login dialog, footer, newsletter
+  offers/             Offer card, category tabs, copy-code button, icon mapper, skeletons
   providers/          Motion and Lenis providers
   search/             Shared filter group, flag, sort, drawer, chips, URL hook
   shared/             Logo, breadcrumbs, rating, amenities, empty state, reveals
   ui/                 Small primitives (buttons, dialogs, popovers, selects)
-data/                 CSV catalogue: cities, flights, hotels
+data/                 CSV catalogue: cities, flights, hotels, holidays, offers
 docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 hooks/                Small client hooks (scroll state, media query)
 lib/
   data/               Cached CSV loader, Zod schemas, query and facet helpers
   validation/         URL search-param parsing and defaults
-  pricing.ts          Fare and stay totals with tax bands
-  search-options.ts   Filter, sort, cabin, and amenity option tables
+  pricing.ts          Fare, stay, and holiday totals with tax bands
+  search-options.ts   Filter, sort, cabin, amenity, holiday, and offer option tables
   dates.ts            Date parsing, labels, and night counts
 public/images/        Original abstract SVG placeholders
 types/                Shared TypeScript types
@@ -119,11 +137,13 @@ CSV files are read once per process, parsed with PapaParse, validated row by row
 cached as a promise in `lib/data/csv.ts`. Server Components and the API route handlers share the
 same typed helpers, so there is no second source of truth.
 
-| File               | Rows | Notes                                                             |
-| ------------------ | ---- | ----------------------------------------------------------------- |
-| `data/cities.csv`  | 16   | 10 flight cities and 8 hotel cities, with airport and tagline     |
-| `data/flights.csv` | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins  |
-| `data/hotels.csv`  | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies |
+| File                | Rows | Notes                                                               |
+| ------------------- | ---- | ------------------------------------------------------------------- |
+| `data/cities.csv`   | 16   | 10 flight cities and 8 hotel cities, with airport and tagline       |
+| `data/flights.csv`  | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins    |
+| `data/hotels.csv`   | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies   |
+| `data/holidays.csv` | 12   | 10 destinations, 10 themes, day-by-day JSON itineraries, departures |
+| `data/offers.csv`   | 12   | Flights, stays, holidays, trains, and cabs with codes and terms     |
 
 All fares, taxes, ratings, and availability are fictional demo values. Nothing is held, charged,
 or persisted.
@@ -143,8 +163,13 @@ Then spot-check:
 ```bash
 curl -s "http://localhost:3000/api/flights?from=BOM&to=GOI&cabin=economy" | head -c 400
 curl -s "http://localhost:3000/api/hotels?city=GOI&checkin=2026-11-13&checkout=2026-11-17" | head -c 400
+curl -s "http://localhost:3000/api/holidays?theme=beach&travellers=3" | head -c 400
+curl -s "http://localhost:3000/api/holidays/susegad-by-the-sea" | head -c 400
+curl -s "http://localhost:3000/api/offers?category=holidays" | head -c 400
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/hotels/nope"   # 404
+curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/holidays/nope" # 404
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/flights?from=BOM" # 400
+curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/offers?category=nope" # 400
 ```
 
 In the UI, changing a filter or sort order should update the URL and re-render the server-driven
@@ -167,17 +192,17 @@ and `shadow-glow` rather than raw hex values.
 
 ## Data roadmap
 
-`cities.csv`, `flights.csv`, and `hotels.csv` are implemented (see **Data layer** above).
-`offers.csv` and `holidays.csv` arrive with the Phase 3 catalogue, using the same cached loader and
-Zod row schemas so every consumer keeps one typed source of truth.
+`cities.csv`, `flights.csv`, `hotels.csv`, `holidays.csv`, and `offers.csv` are implemented (see
+**Data layer** above). They share the same cached loader and Zod row schemas, so every consumer
+keeps one typed source of truth. Trains and cabs remain static shells by design.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2 implementation record: observed sitemap
-and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions, and
-limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the analysis relies on
-archived snapshots and public page structure. No proprietary code, logos, photography, or
-marketing copy was reused.
+`docs/REA.md` records the Step 0 analysis and the Phase 2 and Phase 3 implementation records:
+observed sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design
+decisions, verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so
+the analysis relies on archived snapshots and public page structure. No proprietary code, logos,
+photography, or marketing copy was reused.
 
 ## Roadmap
 
@@ -185,8 +210,8 @@ marketing copy was reused.
    scaffolding, error/loading states.
 2. **Phase 2 — Flights and hotels (done):** CSV data layer, search widgets, URL-driven results,
    filters, sorting, result cards, detail shells.
-3. **Phase 3 — Holidays, offers, and APIs:** catalogue, detail pages, remaining route handlers,
-   Zod query validation.
+3. **Phase 3 — Holidays, offers, and APIs (done):** holiday catalogue and detail pages, offer
+   board, route handlers, Zod query validation.
 4. **Phase 4 — Home and editorial polish:** full home composition, carousels, FAQ, richer content.
 5. **Phase 5 — Booking:** mock review, confirmation, no payment or persistence.
 6. **Phase 6 — Quality:** accessibility audit, performance pass, tests, documentation.
