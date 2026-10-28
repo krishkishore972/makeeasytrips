@@ -14,9 +14,7 @@ import {
   MapPin,
   Menu,
   Palmtree,
-  Plane,
   Tag,
-  TrainFront,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -24,10 +22,8 @@ import { Logo } from "@/components/shared/logo";
 import { siteConfig } from "@/lib/site";
 
 const navIcons: Record<string, LucideIcon> = {
-  plane: Plane,
   bed: BedDouble,
   palmtree: Palmtree,
-  train: TrainFront,
   car: CarFront,
   tag: Tag,
 };
@@ -53,7 +49,7 @@ export function MobileNav() {
         <Dialog.Content className="dialog-sheet fixed inset-y-0 right-0 z-[80] flex w-[min(88vw,24rem)] flex-col overflow-y-auto bg-surface p-5 shadow-lg">
           <Dialog.Title className="sr-only">TripNest navigation</Dialog.Title>
           <Dialog.Description className="sr-only">
-            Browse flights, hotels, holidays, trains, cabs, and offers.
+            Browse hotels, holidays, rent a car, and offers.
           </Dialog.Description>
 
           <div className="flex items-center justify-between gap-4">

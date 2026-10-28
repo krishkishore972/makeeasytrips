@@ -1299,3 +1299,150 @@ port clashes. Both scripts exit non-zero on failure, so they can be wired into C
 - `next dev` regenerates the `AGENTS.md` blocks; they are committed so the tree stays clean.
 - The audit scripts are plain `.mjs` files and are excluded from the app build; they use
   `axe-core` as a direct dev dependency rather than relying on the ESLint transitive copy.
+
+## 16. Phase 7 implementation record (rent a car)
+
+Phase 7 replaces the Cabs placeholder with a self-drive rental section modelled on Zoomcar's
+public consumer flow. The brief was explicit: study the live product with REA, implement the
+features and interaction patterns that make a self-drive marketplace legible, and hide flights and
+trains from the front end without deleting their code.
+
+### 16.1 Observations
+
+Sources:
+
+| Source                                                                  | What it informed                                                                                              | Evidence                                                                                             |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Live `https://www.zoomcar.com/` capture (1280×900, en-IN, Asia/Kolkata) | Home composition, search entry point, plan framing, city grid, trust and FAQ blocks                           | REA `capture_browser_scenario` `ev_8693f8029795a614c3eedb5106b0c1ae359595a724372b8bab6d008bb6c8fa9a` |
+| Zoomcar public `llms-full.txt`                                          | Feature vocabulary: Daily Drives, Subscription, Weekday Pass, home delivery, kilometre limits, host programme | Fetched in the Phase 7 session; treated as documentation, not code                                   |
+
+Observed and inferred patterns:
+
+- The primary decision is **city + pick-up time + drop-off time**, not origin and destination.
+  A self-drive search has no route; it has a window.
+- The catalogue is framed around **specific cars** (model, variant, year, transmission, fuel,
+  seats), with the hourly rate shown next to a computed trip total.
+- Three commercial shapes are surfaced as first-class plans: short daily rentals, long
+  subscriptions (a week or more), and a weekday pass that starts on Monday.
+- Distance from the city centre, home delivery, FASTag, and host type are visible decision inputs,
+  not buried detail.
+- Cards carry a rating, a "guest favourite" style badge, a host label, and the included kilometre
+  allowance.
+- The home page leans on a city grid, a short how-it-works sequence, trust copy, and an FAQ rather
+  than a long marketing narrative.
+- A host-acquisition call to action closes the page.
+
+No Zoomcar code, copy, logo, photography, or layout assets were reused. The implementation keeps
+TripNest's own tokens, type, artwork, and voice.
+
+### 16.2 What was adopted
+
+| Zoomcar pattern                            | TripNest implementation                                                                                                                    |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| City + start/end search                    | `CarSearchForm` with a city select and two `datetime-local` inputs, submitted as GET params                                                |
+| Daily Drives / Subscription / Weekday Pass | `CAR_MODE_OPTIONS`, with minimum-day rules enforced in `parseCarSearchParams` and in the client form                                       |
+| Hourly price + trip total                  | `price_per_hour` in the CSV; `carRentalBreakdown` converts to 24-hour day blocks and shows the window total                                |
+| Included kilometres vs unlimited           | `CAR_KM_PLAN_OPTIONS`: 300 km/day included, ₹12/km after, unlimited at ₹399/day                                                            |
+| Home delivery                              | Per-car `home_delivery` and `delivery_fee`, selectable in the booking panel                                                                |
+| Distance from centre                       | `distance_km` filter and card/detail copy                                                                                                  |
+| FASTag                                     | Per-car `fastag` badge and an optional add-on for cars without one                                                                         |
+| Guest favourite / professional host        | `guest_favorite` and `host_type` badges and a host section                                                                                 |
+| Filters and sorts                          | Budget, body style, transmission, fuel, seats, rating, model year, distance, FASTag, delivery; sorts by relevance, price, rating, distance |
+| City grid and how-it-works                 | Landing sections driven by `getCarCityStats` and a four-step list                                                                          |
+| Host programme                             | Copy-only call to action pointing at the existing host story page                                                                          |
+
+### 16.3 Navigation and taxonomy
+
+The front end now presents four lines: Hotels, Holidays, Rent a car, Offers. Flights and trains
+keep their routes, data, components, and tests, but nothing links to them:
+
+- `lib/site.ts` navigation and footer lists were rewritten.
+- The navbar, mobile nav, home hero tabs, home featured sections, hotel/holiday cross-links,
+  my-trips, booking empty state, layout keywords, FAQs, and info pages were updated.
+- `data/offers.csv` keeps its flight and train rows so the data stays intact;
+  `visibleOfferServiceValues` and `getOffers`/`getOfferCategoryCounts` filter public reads to
+  `hotels`, `holidays`, and `cars`. The old cab rows were re-categorised as `cars`.
+- `next.config.ts` permanently redirects `/cabs` and `/cabs/:path*` to `/rent-a-car`.
+
+This keeps the flight and train implementation available for a later phase without exposing a
+half-finished line in the primary journey.
+
+### 16.4 Data model
+
+`data/cars.csv` contains 62 rows across 12 cities, 12 fictional brands, and six body styles. The
+schema is intentionally flat: one row is one rentable car, not a category. Host names are
+fictional, images are original abstract SVGs per body style, and every price, rating, and review
+count is demo data.
+
+`lib/data/cars.ts` mirrors the hotel/flight helpers: a cached `getCars`, a `getCarById` lookup, a
+`searchCars` query that applies city, filters, and sort, `buildCarFacets` over the city slice, and
+featured/similar/city-stat helpers. The API routes reuse them, so the UI and JSON cannot drift.
+
+### 16.5 Pricing and plans
+
+The hourly rate is the source of truth. The day rate is `price_per_hour × 24`, and billing rounds
+up to whole 24-hour blocks with a minimum of one day. On top of the base:
+
+1. unlimited-kilometre supplement, if chosen;
+2. home delivery, if the host offers it and the guest selects it;
+3. extras: FASTag once, child seat and additional driver per day;
+4. 18% GST on the subtotal;
+5. the refundable deposit, displayed but never charged or taxed.
+
+The same `carRentalBreakdown` runs in the client price panel and in the server-side booking
+resolver, and the tests pin both totals.
+
+Mode validation lives in one place per layer: `parseCarSearchParams` for URL-driven search, the
+booking schema for the review hand-off, and `CarSearchForm` for immediate feedback. Subscription
+requires at least seven days; Weekday Pass requires a Monday pick-up and at least five days.
+
+### 16.6 Components and responsive behaviour
+
+The section adds a search form, result card, filter panel, gallery shell, booking panel, and
+skeletons. The detail page is a Server Component with one client leaf for the price panel; the
+search page streams results inside `<Suspense>` and keeps filters URL-driven.
+
+The first build exposed a layout bug worth recording: the search form used viewport breakpoints
+for its field grid. On the landing page the form sits in a 26rem hero column, so at desktop widths
+it still forced five columns into ~400px, collapsing the labels and letting the submit button
+overlap the rental summary. The fix was to make the form a **container query context**
+(`@container`) and drive the grid from its own width: one column by default, two from `22rem`, and
+the five-column row only from `60rem`. The rental summary is hidden below `60rem`, and the native
+datetime inputs drop to 12px in narrow cards so the picker icon keeps its padding.
+
+### 16.7 Verification
+
+- `npx tsc --noEmit` and `eslint .` are clean.
+- `npm test`: 115 tests across 7 files, including car windows, pricing, URL parsing, booking
+  resolution, facets, and offer visibility.
+- `npm run build`: 42 routes. `/rent-a-car`, `/rent-a-car/search`, and `/rent-a-car/[id]` are
+  partial-prerender with static shells.
+- `npm run audit:a11y`: 19/19 routes clean under WCAG 2.2 AA. One `aria-prohibited-attr` on the
+  generated review stars was fixed with `role="img"` and a text label.
+- `npm run audit:perf`: 13 routes. Worst LCP 704 ms, CLS 0 on every route, largest JS 289 kB,
+  largest transfer 400 kB. Budgets pass.
+- Manual checks at 390, 1024, 1280, and 1440 px confirmed the form grid, the plan tabs, the
+  filter drawer, the detail price panel, and the booking hand-off.
+- The client form rejects an invalid plan before navigation; a direct URL with an invalid window
+  or plan renders the review error state instead of a broken summary.
+
+### 16.8 Deliberate gaps
+
+- No availability model: every car is always bookable in the demo.
+- No accounts, licence checks, KYC, payments, or deposit authorisation.
+- No map or geocoding; distance is a static fictional number.
+- One abstract illustration per body style rather than per-car photography.
+- Reviews are generated from the rating, not submitted by users.
+- The host programme is copy only.
+- Flights remain fully implemented but unlinked; trains remain a static shell.
+
+### 16.9 Next.js 16 notes
+
+- `/rent-a-car` and `/` call `await connection()` before reading the current date for their default
+  rental and stay windows. Without it, `next build` fails with
+  `blocking-prerender-current-time` because `new Date()` is unstable during prerender.
+- Search and detail pages keep the established pattern: static shell, `<Suspense>`, and
+  `await connection()` inside the query-reading component.
+- Container queries are used instead of viewport breakpoints wherever a component is reused at
+  two very different widths; this is the same reason the hotel and flight forms remain separate
+  components with their own layouts.

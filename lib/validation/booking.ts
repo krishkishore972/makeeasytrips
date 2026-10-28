@@ -1,14 +1,15 @@
 import { z } from "zod";
-import { isValidISODate } from "@/lib/dates";
-import { cabinValues } from "@/lib/search-options";
+import { isValidISODate, isValidISODateTime, rentalHoursBetween } from "@/lib/dates";
+import { cabinValues, carAddonValues, carKmPlanValues } from "@/lib/search-options";
 import { firstParam } from "@/lib/utils";
 
 export type RawBookingParams = Record<string, string | string[] | undefined>;
 
-export const bookingTypeValues = ["flight", "hotel", "holiday"] as const;
+export const bookingTypeValues = ["flight", "hotel", "holiday", "car"] as const;
 export type BookingType = (typeof bookingTypeValues)[number];
 
 const isoDate = z.string().refine(isValidISODate, "Choose a valid date.");
+const isoDateTime = z.string().refine(isValidISODateTime, "Choose a valid date and time.");
 
 const bookingCount = (min: number, max: number) => z.coerce.number().int().min(min).max(max);
 
@@ -37,12 +38,42 @@ const holidayBookingSchema = z.object({
   travellers: bookingCount(1, 9),
 });
 
+const carBookingSchema = z.object({
+  type: z.literal("car"),
+  id: z.string().trim().min(1),
+  start: isoDateTime,
+  end: isoDateTime,
+  plan: z.enum(carKmPlanValues),
+  delivery: z
+    .enum(["0", "1"])
+    .optional()
+    .transform((value) => value === "1"),
+  addons: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(",")
+            .map((item) => item.trim())
+            .filter((item): item is (typeof carAddonValues)[number] =>
+              carAddonValues.includes(item as (typeof carAddonValues)[number]),
+            )
+        : [],
+    ),
+});
+
 /**
  * A booking is a linkable selection, not a stored record. The discriminated
- * union keeps flight, stay, and holiday params from leaking into each other.
+ * union keeps flight, stay, holiday, and car params from leaking into each other.
  */
 export const bookingSelectionSchema = z
-  .discriminatedUnion("type", [flightBookingSchema, hotelBookingSchema, holidayBookingSchema])
+  .discriminatedUnion("type", [
+    flightBookingSchema,
+    hotelBookingSchema,
+    holidayBookingSchema,
+    carBookingSchema,
+  ])
   .superRefine((value, ctx) => {
     if (value.type === "hotel" && value.checkout <= value.checkin) {
       ctx.addIssue({
@@ -50,6 +81,24 @@ export const bookingSelectionSchema = z
         path: ["checkout"],
         message: "Check-out needs to be after check-in.",
       });
+    }
+
+    if (value.type === "car") {
+      const hours = rentalHoursBetween(value.start, value.end);
+
+      if (hours === null) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["end"],
+          message: "Drop-off needs to be after pick-up.",
+        });
+      } else if (hours > 30 * 24) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["end"],
+          message: "This demo caps a single rental at 30 days.",
+        });
+      }
     }
   });
 
@@ -118,6 +167,21 @@ function friendlyError(error: z.ZodError, type: BookingType): string {
     }
   }
 
+  if (type === "car") {
+    switch (field) {
+      case "id":
+        return "That car is missing from this link. Open the listing again and choose it.";
+      case "start":
+        return "Choose a valid pick-up date and time for this car.";
+      case "end":
+        return "Drop-off needs to be after pick-up, within 30 days.";
+      case "plan":
+        return "Choose a kilometre plan before reviewing this car.";
+      default:
+        break;
+    }
+  }
+
   return "That booking link is incomplete. Open the trip you were viewing and choose it again.";
 }
 
@@ -132,14 +196,14 @@ export function parseBookingParams(params: RawBookingParams): ParsedBooking {
   if (!type) {
     return {
       selection: null,
-      error: "Choose a flight, stay, or holiday before opening the review step.",
+      error: "Choose a stay, holiday, or car before opening the review step.",
     };
   }
 
   if (!isBookingType(type)) {
     return {
       selection: null,
-      error: "That booking type is not part of this demo. Choose a flight, stay, or holiday.",
+      error: "That booking type is not part of this demo. Choose a stay, holiday, or car.",
     };
   }
 
@@ -156,6 +220,10 @@ export function parseBookingParams(params: RawBookingParams): ParsedBooking {
     guests: raw(params, "guests"),
     plan: raw(params, "plan"),
     travellers: raw(params, "travellers"),
+    start: raw(params, "start"),
+    end: raw(params, "end"),
+    delivery: raw(params, "delivery"),
+    addons: raw(params, "addons"),
   });
 
   if (result.success) {

@@ -1,6 +1,10 @@
 import { z } from "zod";
 import {
   cabinValues,
+  carFuelValues,
+  carSortValues,
+  carTransmissionValues,
+  carTypeValues,
   holidaySortValues,
   holidayThemeValues,
   hotelSortValues,
@@ -134,6 +138,40 @@ export const hotelSchema = z.object({
 
 export const flightSortSchema = z.enum(flightSortValues);
 export const hotelSortSchema = z.enum(hotelSortValues);
+export const carSortSchema = z.enum(carSortValues);
+
+export const carSchema = z.object({
+  id: z.string().trim().min(1),
+  brand: z.string().trim().min(1),
+  model: z.string().trim().min(1),
+  variant: z.string().trim().min(1),
+  year: z.coerce.number().int().min(2015).max(2030),
+  city_code: z
+    .string()
+    .trim()
+    .length(3)
+    .transform((value) => value.toUpperCase()),
+  car_type: z.enum(carTypeValues),
+  transmission: z.enum(carTransmissionValues),
+  fuel: z.enum(carFuelValues),
+  seats: z.coerce.number().int().min(2).max(9),
+  price_per_hour: z.coerce.number().int().positive(),
+  km_limit_per_day: z.coerce.number().int().positive(),
+  rating: z.coerce.number().min(0).max(5),
+  review_count: z.coerce.number().int().nonnegative(),
+  distance_km: z.coerce.number().nonnegative(),
+  host_name: z.string().trim().min(1),
+  host_type: z.enum(["Professional", "Individual"]),
+  fastag: csvBoolean,
+  home_delivery: csvBoolean,
+  delivery_fee: z.coerce.number().int().nonnegative(),
+  deposit: z.coerce.number().int().nonnegative(),
+  image: z.string().trim().min(1),
+  tagline: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  featured: csvBoolean,
+  guest_favorite: csvBoolean,
+});
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
 
@@ -198,6 +236,7 @@ export const holidaySortSchema = z.enum(holidaySortValues);
 export type City = z.infer<typeof citySchema>;
 export type Flight = z.infer<typeof flightSchema>;
 export type Hotel = z.infer<typeof hotelSchema>;
+export type Car = z.infer<typeof carSchema>;
 export type Holiday = z.infer<typeof holidaySchema>;
 export type HolidayDay = z.infer<typeof holidayDaySchema>;
 export type Offer = z.infer<typeof offerSchema>;

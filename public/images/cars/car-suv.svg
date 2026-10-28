@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract illustration of an SUV on a mountain road">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8eee4"/>
+      <stop offset="1" stop-color="#fafcf8"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3f6212"/>
+      <stop offset="1" stop-color="#1a2e05"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2ecd8"/>
+      <stop offset="1" stop-color="#a9c48c"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <path d="M0 288l108-108 92 78 96-64 116 92 104-74 116 86 168-70v276H0z" fill="#c4d6ae" opacity="0.8"/>
+  <path d="M0 350l130-74 112 52 122-58 140 76 128-48 168 52v150H0z" fill="#9dbb7f" opacity="0.65"/>
+  <rect y="414" width="800" height="86" fill="#2c3a22"/>
+  <path d="M40 462h720" stroke="#fafcf8" stroke-width="5" stroke-dasharray="34 28" opacity="0.6"/>
+  <g>
+    <ellipse cx="402" cy="424" rx="252" ry="26" fill="#16200f" opacity="0.22"/>
+    <path d="M188 358c0-30 18-48 52-52l60-8 58-60c10-11 24-17 40-17h78c18 0 32 6 43 17l52 60 62 10c28 5 44 24 44 48v26c0 10-7 17-17 17H205c-11 0-17-7-17-17z" fill="url(#body)"/>
+    <path d="M326 298l48-50c6-6 15-10 25-10h72c12 0 21 4 29 12l44 48z" fill="url(#glass)"/>
+    <path d="M406 240v58" stroke="#3f6212" stroke-width="7" opacity="0.5"/>
+    <rect x="204" y="336" width="56" height="15" rx="7.5" fill="#fde68a"/>
+    <rect x="556" y="336" width="48" height="15" rx="7.5" fill="#fca5a5"/>
+    <rect x="196" y="368" width="76" height="16" rx="8" fill="#1a2e05"/>
+    <rect x="536" y="368" width="76" height="16" rx="8" fill="#1a2e05"/>
+    <circle cx="300" cy="408" r="50" fill="#121c0a"/>
+    <circle cx="300" cy="408" r="26" fill="#e8eee4"/>
+    <circle cx="300" cy="408" r="10" fill="#121c0a"/>
+    <circle cx="532" cy="408" r="50" fill="#121c0a"/>
+    <circle cx="532" cy="408" r="26" fill="#e8eee4"/>
+    <circle cx="532" cy="408" r="10" fill="#121c0a"/>
+    <rect x="368" y="276" width="46" height="6" rx="3" fill="#dbe8c8" opacity="0.85"/>
+  </g>
+  <g fill="#3f6212" opacity="0.4">
+    <path d="M104 250l14-34 14 34z"/>
+    <path d="M146 250l18-46 18 46z"/>
+    <rect x="110" y="250" width="8" height="34" rx="4"/>
+    <rect x="158" y="250" width="8" height="34" rx="4"/>
+  </g>
+</svg>

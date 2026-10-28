@@ -7,6 +7,20 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  async redirects() {
+    return [
+      {
+        source: "/cabs",
+        destination: "/rent-a-car",
+        permanent: true,
+      },
+      {
+        source: "/cabs/:path*",
+        destination: "/rent-a-car/:path*",
+        permanent: true,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {

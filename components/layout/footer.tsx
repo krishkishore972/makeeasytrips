@@ -19,8 +19,8 @@ export function Footer() {
           <div className="max-w-sm sm:col-span-2 lg:col-span-1">
             <Logo />
             <p className="mt-5 text-sm leading-7 text-muted">
-              Thoughtful trips, clearly planned. Compare flights, find a stay with character, and
-              shape a holiday that feels like yours.
+              Thoughtful trips, clearly planned. Find a stay with character, shape a holiday, or
+              pick up a self-drive car for the road between.
             </p>
 
             <div className="mt-6">

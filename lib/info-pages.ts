@@ -52,7 +52,7 @@ export const infoPages = {
       {
         heading: "Show the honest details",
         body: [
-          "Fares show baggage, cancellation rules, and total time. Stays show location, breakfast, taxes, and check-in details. Holiday packages show what is included and what is not.",
+          "Stays show location, breakfast, taxes, and check-in details. Holiday packages show what is included and what is not. Self-drive cars show transmission, fuel, seats, kilometre plans, and the refundable deposit.",
           "The checkout is a mock review step. It validates the form with Zod, shows a clear price summary, and then lands on a confirmation page. No card is charged and no personal data is persisted.",
         ],
       },
@@ -68,7 +68,7 @@ export const infoPages = {
         heading: "The team we would build",
         body: [
           "A small product team with a designer who cares about typography, an engineer who enjoys a clean data layer, and a trip designer who has actually missed a connecting train.",
-          "The work would be India-first: routes, stays, and packages shaped around how people here actually travel, including weekend breaks, family visits, and long-delayed honeymoons.",
+          "The work would be India-first: stays, road trips, and packages shaped around how people here actually travel, including weekend breaks, family visits, and long-delayed honeymoons.",
         ],
       },
       {
@@ -109,7 +109,7 @@ export const infoPages = {
       {
         heading: "The principles",
         body: [
-          "Fewer, longer trips can be better than a rushed checklist. Trains deserve a fair look. Local stays and local guides keep more value in the place you are visiting.",
+          "Fewer, longer trips can be better than a rushed checklist. A self-drive car can turn a transfer into part of the trip. Local stays and local guides keep more value in the place you are visiting.",
           "A real product would need measurable standards, honest labels, and a way to verify them. This demo does not claim any of that yet.",
         ],
       },
@@ -130,7 +130,7 @@ export const infoPages = {
       {
         heading: "Using the demo",
         body: [
-          "Search fields submit a query to the flights, stays, or holidays route, and the filters and results all live in the URL. Choosing a fare, rate, or package opens a mock review step. Confirming creates a reference from the URL only; there is no account, payment, or saved trip.",
+          "Search fields submit a query to the stays, holidays, or rent-a-car route, and the filters and results all live in the URL. Choosing a rate, package, or car opens a mock review step. Confirming creates a reference from the URL only; there is no account, payment, or saved trip.",
           "The sign-in and newsletter forms are intentionally non-functional. They show the interaction pattern and then explain that nothing was sent or stored.",
         ],
       },
@@ -298,7 +298,7 @@ export const infoPages = {
       {
         heading: "No real bookings",
         body: [
-          "Every flight, hotel, holiday package, price, rating, and offer in this project is fictional demo data. No booking is created, no payment is taken, and no supplier is contacted.",
+          "Every hotel, holiday package, car listing, price, rating, and offer in this project is fictional demo data. No booking is created, no payment is taken, and no supplier is contacted.",
           "The checkout flow is a mock review and confirmation. It exists to demonstrate form structure, validation, and price summaries, not to transact.",
         ],
       },

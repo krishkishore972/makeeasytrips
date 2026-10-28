@@ -41,6 +41,8 @@ function productCrumb(type: BookingType) {
       return { label: "Stays", href: "/hotels" };
     case "holiday":
       return { label: "Holidays", href: "/holidays" };
+    case "car":
+      return { label: "Rent a car", href: "/rent-a-car" };
   }
 }
 
@@ -267,7 +269,9 @@ async function BookingConfirmationContent({ searchParams }: ConfirmationPageProp
                     ? "/flights"
                     : summary.type === "hotel"
                       ? "/hotels"
-                      : "/holidays"
+                      : summary.type === "car"
+                        ? "/rent-a-car"
+                        : "/holidays"
                 }
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-4 py-2.5 text-xs font-bold text-ink-soft transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
               >

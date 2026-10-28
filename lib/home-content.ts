@@ -18,17 +18,17 @@ export const HOME_FAQS: HomeFaq[] = [
   {
     question: "Do the prices include taxes and fees?",
     answer:
-      "Where a demo total is shown, it includes the taxes modelled for that product. Flight fares show the fare and tax split, stays add the property tax percentage, and holiday packages add a flat 5% demo tax. These are illustrative numbers, not live supplier quotes.",
+      "Where a demo total is shown, it includes the taxes modelled for that product. Stays add the property tax percentage, holiday packages add a flat 5% demo tax, and car rentals add 18% GST plus any delivery or add-on fees. These are illustrative numbers, not live supplier quotes.",
   },
   {
     question: "Can I change or cancel something I found?",
     answer:
-      "The demo now has a mock review and confirmation step for flights, stays, and holidays. Confirming creates a reference from the URL only; nothing is saved, charged, or held. Cancellation rules are shown on detail pages so you can compare them, but they are illustrative and no real reservation exists.",
+      "The demo has a mock review and confirmation step for stays, holidays, and car rentals. Confirming creates a reference from the URL only; nothing is saved, charged, or held. Cancellation rules are shown on detail pages so you can compare them, but they are illustrative and no real reservation exists.",
   },
   {
-    question: "Why are the airlines, hotels, and packages unfamiliar?",
+    question: "Why are the hotel, package, and car names unfamiliar?",
     answer:
-      "Every name in the catalogue is fictional and written for this project. Using original airlines, stays, and itineraries keeps the demo free of real brand assets and copyrighted marketing copy while still exercising the same layouts and flows.",
+      "Every name in the catalogue is fictional and written for this project. Using original stays, itineraries, car hosts, and models keeps the demo free of real brand assets and copyrighted marketing copy while still exercising the same layouts and flows.",
   },
   {
     question: "Where does the catalogue data come from?",

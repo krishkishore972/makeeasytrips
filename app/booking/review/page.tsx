@@ -59,6 +59,8 @@ function productCrumb(type: BookingType) {
       return { label: "Stays", href: "/hotels" };
     case "holiday":
       return { label: "Holidays", href: "/holidays" };
+    case "car":
+      return { label: "Rent a car", href: "/rent-a-car" };
   }
 }
 

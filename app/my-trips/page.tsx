@@ -52,10 +52,10 @@ export default function MyTripsPage() {
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
             <Link
-              href="/flights"
+              href="/rent-a-car"
               className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-5 py-3 text-sm font-bold text-ink-soft transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
             >
-              Search flights
+              Rent a car
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </div>

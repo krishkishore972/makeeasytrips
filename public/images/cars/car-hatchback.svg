@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract illustration of a hatchback on a coastal road">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9f2ec"/>
+      <stop offset="1" stop-color="#f7fbf9"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bde9e2"/>
+      <stop offset="1" stop-color="#7cc9bd"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <circle cx="640" cy="110" r="58" fill="#f6c768" opacity="0.85"/>
+  <path d="M0 330c110-36 190-24 292 4s198 40 300 10 148-34 208-10v166H0z" fill="#bfe3d8"/>
+  <path d="M0 380c120-26 210-14 318 8s210 26 316 2 126-18 166-6v116H0z" fill="#8ec9ba" opacity="0.7"/>
+  <rect y="414" width="800" height="86" fill="#2f4f4a"/>
+  <path d="M40 462h720" stroke="#f7fbf9" stroke-width="5" stroke-dasharray="34 28" opacity="0.65"/>
+  <g>
+    <ellipse cx="402" cy="418" rx="238" ry="24" fill="#0b2f2b" opacity="0.22"/>
+    <path d="M214 372c2-34 20-50 54-54l58-8 44-44c10-10 22-15 38-15h84c18 0 31 6 42 19l38 46 52 12c28 7 42 24 42 50v14c0 10-7 17-17 17H231c-11 0-17-7-17-17z" fill="url(#body)"/>
+    <path d="M330 318l38-38c6-6 14-9 24-9h78c11 0 20 4 27 12l32 35z" fill="url(#glass)"/>
+    <path d="M398 271v47" stroke="#0f766e" stroke-width="6" opacity="0.55"/>
+    <rect x="232" y="352" width="54" height="14" rx="7" fill="#f6c768"/>
+    <rect x="548" y="352" width="44" height="14" rx="7" fill="#f6c768"/>
+    <circle cx="306" cy="404" r="42" fill="#163b37"/>
+    <circle cx="306" cy="404" r="22" fill="#d9f2ec"/>
+    <circle cx="306" cy="404" r="9" fill="#163b37"/>
+    <circle cx="524" cy="404" r="42" fill="#163b37"/>
+    <circle cx="524" cy="404" r="22" fill="#d9f2ec"/>
+    <circle cx="524" cy="404" r="9" fill="#163b37"/>
+    <path d="M244 378h64" stroke="#5eead4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  </g>
+  <g fill="#0f766e" opacity="0.5">
+    <path d="M96 236c0-24 18-42 42-42s42 18 42 42z"/>
+    <rect x="132" y="236" width="12" height="54" rx="6"/>
+  </g>
+</svg>

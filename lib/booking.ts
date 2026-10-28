@@ -1,22 +1,34 @@
 import {
   addDaysISO,
   formatDateLong,
+  formatDateTimeLong,
   formatDuration,
   formatGuestLabel,
   formatNightLabel,
+  formatRentalDuration,
   nightsBetween,
+  rentalDaysFor,
+  rentalHoursBetween,
 } from "@/lib/dates";
+import { getCarById } from "@/lib/data/cars";
 import { getCity } from "@/lib/data/cities";
 import { fareFor, getFlightById } from "@/lib/data/flights";
 import { getHolidayBySlug } from "@/lib/data/holidays";
 import { getHotelById } from "@/lib/data/hotels";
 import {
+  carRentalBreakdown,
   flightFareBreakdown,
   holidayPriceBreakdown,
   hotelStayBreakdown,
   type FareBreakdown,
 } from "@/lib/pricing";
-import { AMENITY_LABELS, CABIN_OPTIONS, HOLIDAY_THEME_LABELS } from "@/lib/search-options";
+import {
+  AMENITY_LABELS,
+  CABIN_OPTIONS,
+  CAR_ADDON_OPTIONS,
+  CAR_KM_PLAN_OPTIONS,
+  HOLIDAY_THEME_LABELS,
+} from "@/lib/search-options";
 import { formatCurrency, toQueryString } from "@/lib/utils";
 import type { BookingSelection, BookingType } from "@/lib/validation/booking";
 
@@ -63,18 +75,21 @@ const typeLabels: Record<BookingType, string> = {
   flight: "Flight",
   hotel: "Stay",
   holiday: "Holiday",
+  car: "Car rental",
 };
 
 const typePrefixes: Record<BookingType, string> = {
   flight: "FL",
   hotel: "ST",
   holiday: "HL",
+  car: "CR",
 };
 
 const productLabels: Record<BookingType, string> = {
   flight: "Back to flight details",
   hotel: "Back to stay details",
   holiday: "Back to package details",
+  car: "Back to car details",
 };
 
 function plural(count: number, singular: string, pluralForm = `${singular}s`) {
@@ -120,6 +135,16 @@ export function bookingParams(selection: BookingSelection): Record<string, strin
         depart: selection.depart,
         travellers: String(selection.travellers),
       };
+    case "car":
+      return {
+        type: "car",
+        id: selection.id,
+        start: selection.start,
+        end: selection.end,
+        plan: selection.plan,
+        delivery: selection.delivery ? "1" : "0",
+        addons: selection.addons.join(","),
+      };
   }
 }
 
@@ -155,6 +180,8 @@ export async function resolveBooking(selection: BookingSelection): Promise<Booki
       return resolveHotelBooking(selection);
     case "holiday":
       return resolveHolidayBooking(selection);
+    case "car":
+      return resolveCarBooking(selection);
   }
 }
 
@@ -466,6 +493,150 @@ async function resolveHolidayBooking(
           title: "Keep the demo reference",
           detail:
             "It is generated from this selection and is not a real tour operator booking or a payment receipt.",
+        },
+      ],
+    },
+    error: null,
+  };
+}
+
+async function resolveCarBooking(
+  selection: Extract<BookingSelection, { type: "car" }>,
+): Promise<BookingResolution> {
+  const car = await getCarById(selection.id);
+
+  if (!car) {
+    return {
+      summary: null,
+      error: "That car is no longer in the demo fleet. Choose another car to continue.",
+    };
+  }
+
+  const hours = rentalHoursBetween(selection.start, selection.end);
+
+  if (hours === null) {
+    return {
+      summary: null,
+      error: "Drop-off needs to be after pick-up. Adjust the times and try again.",
+    };
+  }
+
+  if (hours > 30 * 24) {
+    return {
+      summary: null,
+      error: "This demo caps a single rental at 30 days. Choose a shorter window.",
+    };
+  }
+
+  const city = await getCity(car.city_code);
+  const days = rentalDaysFor(hours);
+  const kmPlan = CAR_KM_PLAN_OPTIONS.find((option) => option.value === selection.plan);
+  const addons = CAR_ADDON_OPTIONS.filter((option) => selection.addons.includes(option.value));
+  const delivery = selection.delivery && car.home_delivery;
+  const breakdown = carRentalBreakdown(car.price_per_hour, {
+    days,
+    kmPlanExtraPerDay: kmPlan?.extraPerDay ?? 0,
+    delivery,
+    deliveryFee: car.delivery_fee,
+    addons,
+    deposit: car.deposit,
+  });
+
+  const carName = `${car.brand} ${car.model} ${car.variant}`;
+  const breakdownRows: BookingBreakdownRow[] = [
+    {
+      label: `${formatCurrency(breakdown.perDay)} × ${days} ${plural(days, "day")}`,
+      value: formatCurrency(breakdown.base),
+    },
+  ];
+
+  if (breakdown.kmFee > 0) {
+    breakdownRows.push({
+      label: `${kmPlan?.label ?? "Unlimited kilometres"} × ${days} ${plural(days, "day")}`,
+      value: formatCurrency(breakdown.kmFee),
+    });
+  }
+
+  if (breakdown.deliveryFee > 0) {
+    breakdownRows.push({
+      label: "Home delivery",
+      value: formatCurrency(breakdown.deliveryFee),
+    });
+  }
+
+  if (breakdown.addonFee > 0) {
+    breakdownRows.push({
+      label: addons.map((addon) => addon.label).join(", "),
+      value: formatCurrency(breakdown.addonFee),
+    });
+  }
+
+  breakdownRows.push({ label: "GST (18%)", value: formatCurrency(breakdown.taxes) });
+
+  return {
+    summary: {
+      type: "car",
+      typeLabel: typeLabels.car,
+      reference: bookingReference(selection),
+      title: carName,
+      subtitle: `${car.year} · ${car.transmission} · ${car.fuel} · ${city?.name ?? car.city_code}`,
+      image: car.image,
+      imageAlt: `An abstract illustration of the ${car.brand} ${car.model}.`,
+      details: [
+        { label: "Car", value: `${carName} · ${car.year}` },
+        { label: "Pick-up", value: formatDateTimeLong(selection.start) },
+        { label: "Drop-off", value: formatDateTimeLong(selection.end) },
+        { label: "Duration", value: formatRentalDuration(hours) },
+        {
+          label: "Kilometre plan",
+          value: kmPlan ? `${kmPlan.label} · ${kmPlan.detail}` : `${car.km_limit_per_day} km/day`,
+        },
+        {
+          label: "Handover",
+          value: delivery
+            ? `Home delivery · ${formatCurrency(car.delivery_fee)}`
+            : "Pick-up from the host",
+        },
+        { label: "Host", value: `${car.host_name} · ${car.host_type} host` },
+        {
+          label: "Refundable deposit",
+          value: `${formatCurrency(car.deposit)} · not charged in this demo`,
+        },
+      ],
+      inclusions: [
+        `${car.km_limit_per_day} km included every day`,
+        kmPlan?.value === "unlimited" ? "Unlimited kilometres in this demo" : "Extra km at ₹12/km",
+        car.fastag ? "Active FASTag fitted" : "Bring your own FASTag",
+        delivery ? "Delivered to your address" : "Pick-up from the host's location",
+        `${car.transmission} transmission · ${car.fuel} · ${car.seats} seats`,
+        ...addons.map((addon) => addon.label),
+      ],
+      breakdown,
+      breakdownRows,
+      totalLabel: "Rental total",
+      priceNote: `Includes 18% GST. The ${formatCurrency(
+        car.deposit,
+      )} refundable deposit is shown separately and never charged. No car is held.`,
+      productHref: `/rent-a-car/${car.id}${toQueryString({
+        start: selection.start,
+        end: selection.end,
+      })}`,
+      productLabel: productLabels.car,
+      nextSteps: [
+        {
+          title: `Pick up in ${city?.name ?? car.city_code}`,
+          detail: `${car.host_name} hosts this ${car.model}. The listed handover point is ${car.distance_km} km from the city centre.`,
+        },
+        {
+          title: "Bring a valid driving licence",
+          detail:
+            "This demo does not collect licence details or identity documents. Nothing is verified and nothing is stored.",
+        },
+        {
+          title: "Return with the same fuel level",
+          detail: `Fuel, tolls, parking, and fines are not included. The ${formatCurrency(
+            car.deposit,
+          )} deposit is illustrative and refundable under the demo rules.`,
         },
       ],
     },

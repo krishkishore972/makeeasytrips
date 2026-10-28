@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { isValidISODate } from "@/lib/dates";
 import {
+  parseCarSearchParams,
   parseFlightSearchParams,
   parseHolidaySearchParams,
   parseHotelSearchParams,
   parseOfferSearchParams,
+  parseRentalParams,
   parseStayParams,
 } from "@/lib/validation/search";
 
@@ -245,7 +247,135 @@ describe("parseOfferSearchParams", () => {
   it("reports an unknown category", () => {
     expect(parseOfferSearchParams({ category: "cruises" })).toEqual({
       category: "all",
-      error: "That offer category does not exist.",
+      error: "That offer category is not available right now.",
     });
+    expect(parseOfferSearchParams({ category: "flights" })).toEqual({
+      category: "all",
+      error: "That offer category is not available right now.",
+    });
+  });
+});
+
+describe("parseRentalParams", () => {
+  it("reads a valid window and bills in day blocks", () => {
+    const rental = parseRentalParams({
+      start: "2026-11-13T10:00",
+      end: "2026-11-14T16:00",
+    });
+
+    expect(rental.error).toBeNull();
+    expect(rental.hours).toBe(30);
+    expect(rental.days).toBe(2);
+  });
+
+  it("falls back to a two-day default window", () => {
+    const rental = parseRentalParams({});
+
+    expect(rental.error).toBeNull();
+    expect(rental.hours).toBe(48);
+    expect(rental.days).toBe(2);
+  });
+
+  it("reports invalid times and reversed windows", () => {
+    expect(parseRentalParams({ start: "2026-11-13" }).error).toBe(
+      "Choose a valid pick-up date and time.",
+    );
+    expect(parseRentalParams({ start: "2026-11-15T10:00", end: "2026-11-13T10:00" }).error).toBe(
+      "Drop-off needs to be after pick-up.",
+    );
+    expect(parseRentalParams({ start: "2026-11-01T10:00", end: "2026-12-15T10:00" }).error).toBe(
+      "This demo caps a single rental at 30 days.",
+    );
+  });
+});
+
+describe("parseCarSearchParams", () => {
+  it("reads city, dates, filters, and sort", () => {
+    const parsed = parseCarSearchParams({
+      city: "goi",
+      start: "2026-11-13T10:00",
+      end: "2026-11-15T10:00",
+      mode: "daily",
+      sort: "price-asc",
+      type: "SUV,Hatchback,bogus",
+      transmission: "Automatic",
+      fuel: "Electric,Petrol",
+      seats: "4-5",
+      budget: "300-600",
+      rating: "4.5",
+      year: "2025",
+      distance: "20",
+      fastag: "1",
+      delivery: "true",
+    });
+
+    expect(parsed.error).toBeNull();
+    expect(parsed.hasCity).toBe(true);
+    expect(parsed.query).toMatchObject({
+      city: "GOI",
+      sort: "price-asc",
+      types: ["SUV", "Hatchback"],
+      transmissions: ["Automatic"],
+      fuels: ["Electric", "Petrol"],
+      seatBands: ["4-5"],
+      budgets: ["300-600"],
+      minRating: 4.5,
+      minYear: 2025,
+      maxDistance: 20,
+      fastagOnly: true,
+      deliveryOnly: true,
+    });
+  });
+
+  it("defaults to a daily plan without a city", () => {
+    const parsed = parseCarSearchParams({});
+
+    expect(parsed.hasCity).toBe(false);
+    expect(parsed.error).toBeNull();
+    expect(parsed.query.mode).toBe("daily");
+    expect(parsed.query.sort).toBe("recommended");
+    expect(parsed.query.days).toBe(2);
+  });
+
+  it("enforces subscription and weekday minimums", () => {
+    expect(
+      parseCarSearchParams({
+        city: "GOI",
+        start: "2026-11-13T10:00",
+        end: "2026-11-15T10:00",
+        mode: "subscription",
+      }).error,
+    ).toBe("Subscription rentals need at least 7 days. Choose a later drop-off or Daily Drives.");
+
+    expect(
+      parseCarSearchParams({
+        city: "GOI",
+        start: "2026-11-13T10:00",
+        end: "2026-11-20T10:00",
+        mode: "weekday",
+      }).error,
+    ).toBe("Weekday Pass pick-ups start on a Monday.");
+
+    expect(
+      parseCarSearchParams({
+        city: "GOI",
+        start: "2026-11-16T10:00",
+        end: "2026-11-20T10:00",
+        mode: "weekday",
+      }).error,
+    ).toBe("Weekday Pass needs Monday to Friday, so at least 5 days.");
+
+    expect(
+      parseCarSearchParams({
+        city: "GOI",
+        start: "2026-11-16T10:00",
+        end: "2026-11-21T10:00",
+        mode: "weekday",
+      }).error,
+    ).toBeNull();
+  });
+
+  it("reports an invalid city code", () => {
+    expect(parseCarSearchParams({ city: "GO" }).error).toBe("That city code is not valid.");
   });
 });

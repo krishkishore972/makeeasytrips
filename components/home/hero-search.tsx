@@ -6,37 +6,19 @@ import {
   CarFront,
   MapPin,
   Palmtree,
-  Plane,
-  PlaneTakeoff,
   Search,
   ShieldCheck,
-  TrainFront,
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
+import type { CityOption } from "@/components/flights/flight-search-form";
+import { addDaysISO, todayISO } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 
 const searchTabs: { label: string; href: string; icon: LucideIcon; active?: boolean }[] = [
-  { label: "Flights", href: "/flights", icon: Plane, active: true },
-  { label: "Hotels", href: "/hotels", icon: BedDouble },
+  { label: "Hotels", href: "/hotels", icon: BedDouble, active: true },
   { label: "Holidays", href: "/holidays", icon: Palmtree },
-  { label: "Trains", href: "/trains", icon: TrainFront },
-  { label: "Cabs", href: "/cabs", icon: CarFront },
-];
-
-const trendingSearches = [
-  {
-    label: "Mumbai → Goa",
-    href: "/flights?from=BOM&to=GOI&depart=2026-11-13&return=2026-11-17&pax=2&cabin=economy",
-  },
-  {
-    label: "Delhi → Udaipur",
-    href: "/flights?from=DEL&to=UDR&depart=2026-12-04&return=2026-12-08&pax=2&cabin=economy",
-  },
-  {
-    label: "Bengaluru → Kochi",
-    href: "/flights?from=BLR&to=COK&depart=2026-11-20&return=2026-11-24&pax=2&cabin=economy",
-  },
+  { label: "Rent a car", href: "/rent-a-car", icon: CarFront },
 ];
 
 type FieldProps = {
@@ -70,7 +52,29 @@ function Field({ id, label, icon: Icon, children, className }: FieldProps) {
 const inputClassName =
   "h-7 w-full min-w-0 bg-transparent text-[13px] font-bold text-ink outline-none placeholder:text-muted-soft";
 
-export function HeroSearch() {
+type HeroSearchProps = {
+  cities: CityOption[];
+};
+
+export function HeroSearch({ cities }: HeroSearchProps) {
+  const checkIn = addDaysISO(todayISO(), 14);
+  const checkOut = addDaysISO(checkIn, 2);
+
+  const trendingSearches = [
+    {
+      label: "Goa, late November",
+      href: `/hotels?city=GOI&checkin=${checkIn}&checkout=${checkOut}&rooms=1&guests=2`,
+    },
+    {
+      label: "Udaipur courtyards",
+      href: `/hotels?city=UDR&checkin=${checkIn}&checkout=${checkOut}&rooms=1&guests=2`,
+    },
+    {
+      label: "Kochi by the water",
+      href: `/hotels?city=COK&checkin=${checkIn}&checkout=${checkOut}&rooms=1&guests=2`,
+    },
+  ];
+
   return (
     <div className="rounded-2xl border border-line bg-surface p-3 shadow-lg sm:p-4 lg:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
@@ -109,66 +113,56 @@ export function HeroSearch() {
         </span>
       </div>
 
-      <form
-        action="/flights"
-        method="get"
-        role="search"
-        aria-label="Flight search"
-        className="mt-4"
-      >
-        <div className="grid gap-2.5 lg:grid-cols-[1.1fr_1.1fr_0.8fr_0.8fr_0.95fr_auto]">
-          <Field id="from" label="From" icon={PlaneTakeoff}>
-            <input
-              id="from"
-              name="from"
-              type="text"
-              defaultValue="Mumbai (BOM)"
-              autoComplete="off"
-              className={inputClassName}
-            />
-          </Field>
-
-          <Field id="to" label="To" icon={MapPin}>
-            <input
-              id="to"
-              name="to"
-              type="text"
-              defaultValue="Goa (GOI)"
-              autoComplete="off"
-              className={inputClassName}
-            />
-          </Field>
-
-          <Field id="depart" label="Depart" icon={CalendarDays}>
-            <input
-              id="depart"
-              name="depart"
-              type="date"
-              defaultValue="2026-11-13"
-              className={cn(inputClassName, "[color-scheme:light]")}
-            />
-          </Field>
-
-          <Field id="return" label="Return" icon={CalendarDays}>
-            <input
-              id="return"
-              name="return"
-              type="date"
-              defaultValue="2026-11-17"
-              className={cn(inputClassName, "[color-scheme:light]")}
-            />
-          </Field>
-
-          <Field id="pax" label="Travellers" icon={UsersRound}>
-            <select id="pax" name="pax" defaultValue="2" className={inputClassName}>
-              <option value="1">1 adult</option>
-              <option value="2">2 adults</option>
-              <option value="3">3 adults</option>
-              <option value="4">4 adults</option>
+      <form action="/hotels" method="get" role="search" aria-label="Hotel search" className="mt-4">
+        <div className="grid gap-2.5 lg:grid-cols-[1.3fr_1fr_1fr_0.8fr_0.9fr_auto]">
+          <Field id="city" label="Where to?" icon={MapPin}>
+            <select id="city" name="city" defaultValue="GOI" className={inputClassName}>
+              {cities.map((city) => (
+                <option key={city.code} value={city.code}>
+                  {city.name} ({city.code})
+                </option>
+              ))}
             </select>
           </Field>
 
-          <input type="hidden" name="cabin" value="economy" />
+          <Field id="checkin" label="Check-in" icon={CalendarDays}>
+            <input
+              id="checkin"
+              name="checkin"
+              type="date"
+              defaultValue={checkIn}
+              className={cn(inputClassName, "[color-scheme:light]")}
+            />
+          </Field>
+
+          <Field id="checkout" label="Check-out" icon={CalendarDays}>
+            <input
+              id="checkout"
+              name="checkout"
+              type="date"
+              defaultValue={checkOut}
+              className={cn(inputClassName, "[color-scheme:light]")}
+            />
+          </Field>
+
+          <Field id="rooms" label="Rooms" icon={BedDouble}>
+            <select id="rooms" name="rooms" defaultValue="1" className={inputClassName}>
+              <option value="1">1 room</option>
+              <option value="2">2 rooms</option>
+              <option value="3">3 rooms</option>
+              <option value="4">4 rooms</option>
+            </select>
+          </Field>
+
+          <Field id="guests" label="Guests" icon={UsersRound}>
+            <select id="guests" name="guests" defaultValue="2" className={inputClassName}>
+              {Array.from({ length: 12 }, (_, index) => index + 1).map((count) => (
+                <option key={count} value={count}>
+                  {count} {count === 1 ? "guest" : "guests"}
+                </option>
+              ))}
+            </select>
+          </Field>
 
           <button
             type="submit"
@@ -194,6 +188,13 @@ export function HeroSearch() {
             {search.label}
           </Link>
         ))}
+        <Link
+          href="/rent-a-car"
+          className="inline-flex items-center gap-1 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-[11px] font-extrabold text-brand-800 transition-colors hover:bg-brand-100"
+        >
+          <CarFront aria-hidden="true" className="size-3.5" />
+          Need a self-drive car?
+        </Link>
       </div>
     </div>
   );

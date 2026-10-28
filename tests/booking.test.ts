@@ -33,6 +33,16 @@ const holiday: BookingSelection = {
   travellers: 3,
 };
 
+const car: BookingSelection = {
+  type: "car",
+  id: "car-maruti-suzuki-swift",
+  start: "2026-11-13T10:00",
+  end: "2026-11-15T10:00",
+  plan: "included",
+  delivery: false,
+  addons: [],
+};
+
 describe("bookingParams", () => {
   it("serialises each selection type without leaking fields", () => {
     expect(bookingParams(flight)).toEqual({
@@ -44,6 +54,12 @@ describe("bookingParams", () => {
     });
     expect(bookingParams(hotel)).toMatchObject({ type: "hotel", plan: "flex", rooms: "1" });
     expect(bookingParams(holiday)).toMatchObject({ type: "holiday", travellers: "3" });
+    expect(bookingParams(car)).toMatchObject({
+      type: "car",
+      plan: "included",
+      delivery: "0",
+      addons: "",
+    });
     expect(Object.keys(bookingParams(flight))).not.toContain("slug");
   });
 });
@@ -63,6 +79,7 @@ describe("bookingReference", () => {
   it("uses a type-specific prefix", () => {
     expect(bookingReference(hotel)).toMatch(/^TN-ST-[A-Z0-9]{6}$/);
     expect(bookingReference(holiday)).toMatch(/^TN-HL-[A-Z0-9]{6}$/);
+    expect(bookingReference(car)).toMatch(/^TN-CR-[A-Z0-9]{6}$/);
   });
 });
 
@@ -132,6 +149,59 @@ describe("resolveBooking", () => {
     expect(result.summary).toBeNull();
     expect(result.error).toBe(
       "That departure date is not available for this package. Pick another date on the package page.",
+    );
+  });
+
+  it("resolves a car with the day rate and GST", async () => {
+    const { summary, error } = await resolveBooking(car);
+
+    expect(error).toBeNull();
+    expect(summary?.title).toBe("Maruti Suzuki Swift ZXI");
+    expect(summary?.typeLabel).toBe("Car rental");
+    expect(summary?.reference).toMatch(/^TN-CR-/);
+    expect(summary?.breakdown).toMatchObject({
+      base: 10512,
+      taxes: 1892,
+      total: 12404,
+      deposit: 4000,
+    });
+    expect(summary?.details.find((detail) => detail.label === "Kilometre plan")?.value).toContain(
+      "300 km included",
+    );
+    expect(summary?.details.find((detail) => detail.label === "Handover")?.value).toBe(
+      "Pick-up from the host",
+    );
+    expect(summary?.productHref).toContain("/rent-a-car/car-maruti-suzuki-swift");
+  });
+
+  it("adds car extras before GST and falls back when delivery is unavailable", async () => {
+    const { summary, error } = await resolveBooking({
+      ...car,
+      plan: "unlimited",
+      delivery: true,
+      addons: ["child-seat"],
+    });
+
+    expect(error).toBeNull();
+    expect(summary?.breakdown).toMatchObject({
+      base: 10512,
+      kmFee: 798,
+      deliveryFee: 299,
+      addonFee: 398,
+      taxes: 2161,
+      total: 14168,
+    });
+    expect(summary?.details.find((detail) => detail.label === "Handover")?.value).toContain(
+      "Home delivery",
+    );
+    expect(summary?.inclusions).toContain("Child seat");
+  });
+
+  it("reports a car that is no longer in the fleet", async () => {
+    const result = await resolveBooking({ ...car, id: "missing-car" });
+    expect(result.summary).toBeNull();
+    expect(result.error).toBe(
+      "That car is no longer in the demo fleet. Choose another car to continue.",
     );
   });
 });

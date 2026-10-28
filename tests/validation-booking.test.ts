@@ -63,14 +63,14 @@ describe("parseBookingParams", () => {
   it("asks for a selection when the type is missing", () => {
     expect(parseBookingParams({})).toEqual({
       selection: null,
-      error: "Choose a flight, stay, or holiday before opening the review step.",
+      error: "Choose a stay, holiday, or car before opening the review step.",
     });
   });
 
   it("rejects an unsupported booking type", () => {
     expect(parseBookingParams({ type: "train" })).toEqual({
       selection: null,
-      error: "That booking type is not part of this demo. Choose a flight, stay, or holiday.",
+      error: "That booking type is not part of this demo. Choose a stay, holiday, or car.",
     });
   });
 
@@ -162,5 +162,72 @@ describe("parseBookingParams", () => {
         travellers: "0",
       }).error,
     ).toBe("Choose between 1 and 9 travellers for this package.");
+  });
+
+  it("parses a car selection with delivery and add-ons", () => {
+    const parsed = parseBookingParams({
+      type: "car",
+      id: "car-maruti-suzuki-swift",
+      start: "2026-11-13T10:00",
+      end: "2026-11-15T10:00",
+      plan: "unlimited",
+      delivery: "1",
+      addons: "fastag,child-seat,bogus",
+    });
+
+    expect(parsed.error).toBeNull();
+    expect(parsed.selection).toEqual({
+      type: "car",
+      id: "car-maruti-suzuki-swift",
+      start: "2026-11-13T10:00",
+      end: "2026-11-15T10:00",
+      plan: "unlimited",
+      delivery: true,
+      addons: ["fastag", "child-seat"],
+    });
+  });
+
+  it("defaults car delivery and add-ons when omitted", () => {
+    const parsed = parseBookingParams({
+      type: "car",
+      id: "car-maruti-suzuki-swift",
+      start: "2026-11-13T10:00",
+      end: "2026-11-15T10:00",
+      plan: "included",
+    });
+
+    expect(parsed.selection).toMatchObject({ delivery: false, addons: [] });
+  });
+
+  it("rejects invalid car windows and plans", () => {
+    expect(
+      parseBookingParams({
+        type: "car",
+        id: "car-maruti-suzuki-swift",
+        start: "2026-11-15T10:00",
+        end: "2026-11-13T10:00",
+        plan: "included",
+      }).error,
+    ).toBe("Drop-off needs to be after pick-up, within 30 days.");
+
+    expect(
+      parseBookingParams({
+        type: "car",
+        id: "car-maruti-suzuki-swift",
+        start: "2026-11-01T10:00",
+        end: "2026-12-15T10:00",
+        plan: "included",
+      }).error,
+    ).toBe("Drop-off needs to be after pick-up, within 30 days.");
+
+    expect(
+      parseBookingParams({
+        type: "car",
+        id: "car-maruti-suzuki-swift",
+        start: "2026-11-13T10:00",
+        end: "2026-11-15T10:00",
+        plan: "free",
+      }).error,
+    ).toBe("Choose a kilometre plan before reviewing this car.");
   });
 });

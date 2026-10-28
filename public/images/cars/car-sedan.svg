@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract illustration of a sedan at dusk">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbe7dc"/>
+      <stop offset="1" stop-color="#fff8f3"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c2410c"/>
+      <stop offset="1" stop-color="#7c2d12"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe4d6"/>
+      <stop offset="1" stop-color="#f7b99c"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <circle cx="170" cy="120" r="70" fill="#f6a96a" opacity="0.6"/>
+  <path d="M0 336c96-24 180-18 276 4s188 32 292 10 168-24 232-4v154H0z" fill="#f6cfb8"/>
+  <rect y="414" width="800" height="86" fill="#4a2a1f"/>
+  <path d="M40 462h720" stroke="#fff8f3" stroke-width="5" stroke-dasharray="34 28" opacity="0.55"/>
+  <g>
+    <ellipse cx="402" cy="418" rx="250" ry="24" fill="#3b1c12" opacity="0.2"/>
+    <path d="M190 374c0-30 18-46 50-50l96-10 56-46c10-8 22-12 36-12h74c16 0 29 5 40 16l50 52 60 10c26 5 40 22 40 46v8c0 10-7 17-17 17H207c-11 0-17-7-17-17z" fill="url(#body)"/>
+    <path d="M348 314l48-38c6-5 13-8 22-8h68c10 0 19 4 26 11l40 41z" fill="url(#glass)"/>
+    <path d="M452 268v46" stroke="#c2410c" stroke-width="6" opacity="0.5"/>
+    <rect x="206" y="354" width="58" height="13" rx="6.5" fill="#fde68a"/>
+    <rect x="560" y="354" width="46" height="13" rx="6.5" fill="#fca5a5"/>
+    <circle cx="302" cy="404" r="42" fill="#2a140d"/>
+    <circle cx="302" cy="404" r="22" fill="#fbe7dc"/>
+    <circle cx="302" cy="404" r="9" fill="#2a140d"/>
+    <circle cx="540" cy="404" r="42" fill="#2a140d"/>
+    <circle cx="540" cy="404" r="22" fill="#fbe7dc"/>
+    <circle cx="540" cy="404" r="9" fill="#2a140d"/>
+    <path d="M226 380h80" stroke="#fdba74" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
+  </g>
+  <g fill="#c2410c" opacity="0.35">
+    <rect x="640" y="210" width="8" height="90" rx="4"/>
+    <circle cx="644" cy="196" r="30"/>
+  </g>
+</svg>

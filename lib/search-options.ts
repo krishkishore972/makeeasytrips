@@ -223,22 +223,183 @@ export const HOLIDAY_PRICE_BAND_OPTIONS: {
 ];
 
 /* -------------------------------------------------------------------------- */
+/*  Rent a car                                                                */
+/* -------------------------------------------------------------------------- */
+
+export const carTypeValues = [
+  "Hatchback",
+  "Compact SUV",
+  "MUV/MPV",
+  "SUV",
+  "Compact Sedan",
+  "Sedan",
+] as const;
+export type CarType = (typeof carTypeValues)[number];
+
+export const CAR_TYPE_OPTIONS: { value: CarType; label: string }[] = [
+  { value: "Hatchback", label: "Hatchback" },
+  { value: "Compact SUV", label: "Compact SUV" },
+  { value: "MUV/MPV", label: "MUV/MPV" },
+  { value: "SUV", label: "SUV" },
+  { value: "Compact Sedan", label: "Compact sedan" },
+  { value: "Sedan", label: "Sedan" },
+];
+
+export const carTransmissionValues = ["Manual", "Automatic"] as const;
+export type CarTransmission = (typeof carTransmissionValues)[number];
+
+export const carFuelValues = ["Petrol", "Diesel", "Electric"] as const;
+export type CarFuel = (typeof carFuelValues)[number];
+
+export const carSeatBandValues = ["4-5", "6-7"] as const;
+export type CarSeatBand = (typeof carSeatBandValues)[number];
+
+export const CAR_SEAT_BAND_OPTIONS: { value: CarSeatBand; label: string }[] = [
+  { value: "4-5", label: "4/5 seater" },
+  { value: "6-7", label: "6/7 seater" },
+];
+
+export const carRatingValues = ["3.5", "4.0", "4.2", "4.5"] as const;
+export type CarRatingFilter = (typeof carRatingValues)[number];
+
+export const CAR_RATING_OPTIONS: { value: CarRatingFilter; label: string }[] = [
+  { value: "4.5", label: "4.5+ rated" },
+  { value: "4.2", label: "4.2+ rated" },
+  { value: "4.0", label: "4.0+ rated" },
+  { value: "3.5", label: "3.5+ rated" },
+];
+
+export const carBudgetValues = ["under-300", "300-600", "600-1000", "over-1000"] as const;
+export type CarBudget = (typeof carBudgetValues)[number];
+
+export const CAR_BUDGET_OPTIONS: { value: CarBudget; label: string; detail: string }[] = [
+  { value: "under-300", label: "Under ₹300", detail: "per hour" },
+  { value: "300-600", label: "₹300 – ₹600", detail: "per hour" },
+  { value: "600-1000", label: "₹600 – ₹1,000", detail: "per hour" },
+  { value: "over-1000", label: "Over ₹1,000", detail: "per hour" },
+];
+
+export const carSortValues = [
+  "recommended",
+  "price-asc",
+  "price-desc",
+  "rating",
+  "distance",
+] as const;
+export type CarSort = (typeof carSortValues)[number];
+
+export const CAR_SORT_OPTIONS: { value: CarSort; label: string }[] = [
+  { value: "recommended", label: "Relevance" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+  { value: "rating", label: "Ratings: high to low" },
+  { value: "distance", label: "Distance: nearest first" },
+];
+
+export const carModeValues = ["daily", "subscription", "weekday"] as const;
+export type CarMode = (typeof carModeValues)[number];
+
+export const CAR_MODE_OPTIONS: {
+  value: CarMode;
+  label: string;
+  detail: string;
+  minimumDays: number;
+}[] = [
+  {
+    value: "daily",
+    label: "Daily Drives",
+    detail: "Short trips, up to 7 days",
+    minimumDays: 1,
+  },
+  {
+    value: "subscription",
+    label: "Subscription",
+    detail: "Long-duration rentals, 7+ days",
+    minimumDays: 7,
+  },
+  {
+    value: "weekday",
+    label: "Weekday Pass",
+    detail: "Mon–Fri fixed-km rentals",
+    minimumDays: 5,
+  },
+];
+
+export const carKmPlanValues = ["included", "unlimited"] as const;
+export type CarKmPlan = (typeof carKmPlanValues)[number];
+
+export const CAR_KM_PLAN_OPTIONS: {
+  value: CarKmPlan;
+  label: string;
+  detail: string;
+  extraPerDay: number;
+}[] = [
+  {
+    value: "included",
+    label: "300 km included",
+    detail: "Then ₹12 per extra kilometre",
+    extraPerDay: 0,
+  },
+  {
+    value: "unlimited",
+    label: "Unlimited kilometres",
+    detail: "No distance anxiety for the long way round",
+    extraPerDay: 399,
+  },
+];
+
+export const carAddonValues = ["fastag", "child-seat", "additional-driver"] as const;
+export type CarAddon = (typeof carAddonValues)[number];
+
+export const CAR_ADDON_OPTIONS: {
+  value: CarAddon;
+  label: string;
+  detail: string;
+  price: number;
+  perDay: boolean;
+}[] = [
+  {
+    value: "fastag",
+    label: "Active FASTag",
+    detail: "Toll charges are still billed separately",
+    price: 149,
+    perDay: false,
+  },
+  {
+    value: "child-seat",
+    label: "Child seat",
+    detail: "A forward-facing seat for ages 2–5",
+    price: 199,
+    perDay: true,
+  },
+  {
+    value: "additional-driver",
+    label: "Additional driver",
+    detail: "Share the wheel with a verified co-driver",
+    price: 249,
+    perDay: true,
+  },
+];
+
+/* -------------------------------------------------------------------------- */
 /*  Offers                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export const offerServiceValues = ["flights", "hotels", "holidays", "trains", "cabs"] as const;
+export const offerServiceValues = ["flights", "hotels", "holidays", "trains", "cars"] as const;
 export type OfferService = (typeof offerServiceValues)[number];
+
+/** Flights and trains stay in the catalogue but are not promoted while the business has no supply. */
+export const visibleOfferServiceValues = ["hotels", "holidays", "cars"] as const;
+export type VisibleOfferService = (typeof visibleOfferServiceValues)[number];
 
 export const offerCategoryValues = ["all", ...offerServiceValues] as const;
 export type OfferCategory = (typeof offerCategoryValues)[number];
 
 export const OFFER_CATEGORY_OPTIONS: { value: OfferCategory; label: string }[] = [
   { value: "all", label: "All offers" },
-  { value: "flights", label: "Flights" },
   { value: "hotels", label: "Stays" },
   { value: "holidays", label: "Holidays" },
-  { value: "trains", label: "Trains" },
-  { value: "cabs", label: "Cabs" },
+  { value: "cars", label: "Rent a car" },
 ];
 
 export const offerToneValues = ["coral", "teal", "gold"] as const;

@@ -12,9 +12,7 @@ import {
   LogIn,
   MapPin,
   Palmtree,
-  Plane,
   Tag,
-  TrainFront,
   UserRound,
   type LucideIcon,
 } from "lucide-react";
@@ -26,10 +24,8 @@ import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const navIcons: Record<string, LucideIcon> = {
-  plane: Plane,
   bed: BedDouble,
   palmtree: Palmtree,
-  train: TrainFront,
   car: CarFront,
   tag: Tag,
 };

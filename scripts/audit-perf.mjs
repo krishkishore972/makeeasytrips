@@ -30,9 +30,19 @@ const ROUTES = [
   ["holidays", "/holidays"],
   ["holiday detail", "/holidays/susegad-by-the-sea?depart=2026-12-05&travellers=3"],
   ["offers", "/offers"],
+  ["rent a car", "/rent-a-car"],
+  [
+    "car search",
+    "/rent-a-car/search?city=GOI&start=2026-11-13T10:00&end=2026-11-15T10:00&mode=daily",
+  ],
+  ["car detail", "/rent-a-car/car-maruti-suzuki-swift?start=2026-11-13T10:00&end=2026-11-15T10:00"],
   [
     "booking review",
     "/booking/review?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy",
+  ],
+  [
+    "car booking review",
+    "/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=",
   ],
 ];
 

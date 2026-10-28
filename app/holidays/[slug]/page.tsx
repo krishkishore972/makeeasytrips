@@ -307,7 +307,7 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
                 </details>
                 <details className="group py-3">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-extrabold text-ink">
-                    Are flights included?
+                    Are transfers included?
                     <span
                       aria-hidden="true"
                       className="grid size-6 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700 transition-transform group-open:rotate-45"
@@ -317,8 +317,9 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
                   </summary>
                   <p className="mt-2 pr-8 text-xs leading-6 text-muted">
                     Only when the inclusion list says so. The itinerary assumes you arrive on day
-                    one and leave on the final day. Airport transfers are listed separately for each
-                    package.
+                    one and leave on the final day. Airport and station transfers are listed
+                    separately for each package, and a self-drive car can be added for the days
+                    between.
                   </p>
                 </details>
                 <details className="group py-3">

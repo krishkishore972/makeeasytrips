@@ -18,6 +18,16 @@ import {
   searchHolidays,
 } from "@/lib/data/holidays";
 import { buildHotelFacets, getHotelById, getHotels, searchHotels } from "@/lib/data/hotels";
+import {
+  buildCarFacets,
+  getCarById,
+  getCarCities,
+  getCars,
+  getFeaturedCars,
+  getSimilarCars,
+  searchCars,
+  type CarQuery,
+} from "@/lib/data/cars";
 import { getOfferCategoryCounts, getOffers, getOffersByCategory } from "@/lib/data/offers";
 import type { HolidayQuery } from "@/lib/data/holidays";
 import type { HotelQuery } from "@/lib/data/hotels";
@@ -61,6 +71,27 @@ const holidayQuery = (overrides: Partial<HolidayQuery> = {}): HolidayQuery => ({
   priceBands: [],
   sort: "recommended",
   travellers: 2,
+  ...overrides,
+});
+
+const carQuery = (overrides: Partial<CarQuery> = {}): CarQuery => ({
+  city: "GOI",
+  start: "2026-11-13T10:00",
+  end: "2026-11-15T10:00",
+  hours: 48,
+  days: 2,
+  mode: "daily",
+  sort: "recommended",
+  types: [],
+  transmissions: [],
+  fuels: [],
+  seatBands: [],
+  budgets: [],
+  minRating: null,
+  minYear: null,
+  maxDistance: null,
+  fastagOnly: false,
+  deliveryOnly: false,
   ...overrides,
 });
 
@@ -258,24 +289,102 @@ describe("holidays", () => {
   });
 });
 
-describe("offers", () => {
-  it("loads offers and filters by category", async () => {
-    const offers = await getOffers();
-    expect(offers.length).toBeGreaterThan(0);
+describe("cars", () => {
+  it("loads the fleet with unique ids and valid cities", async () => {
+    const cars = await getCars();
+    const cities = await getCityMap();
 
-    const flights = await getOffersByCategory("flights");
-    expect(flights.length).toBeGreaterThan(0);
-    expect(flights.every((offer) => offer.category === "flights")).toBe(true);
+    expect(cars.length).toBe(62);
+    expect(new Set(cars.map((car) => car.id)).size).toBe(cars.length);
+    expect(cars.every((car) => cities.has(car.city_code))).toBe(true);
+    expect(new Set(cars.map((car) => car.city_code)).size).toBe(12);
   });
 
-  it("counts every category, including all", async () => {
+  it("finds a car by id", async () => {
+    const cars = await getCars();
+    const car = await getCarById(cars[0].id);
+
+    expect(car?.id).toBe(cars[0].id);
+    expect(await getCarById("missing-car")).toBeUndefined();
+  });
+
+  it("searches within a city and applies filters", async () => {
+    const cars = await searchCars(carQuery());
+    expect(cars.length).toBeGreaterThan(0);
+    expect(cars.every((car) => car.city_code === "GOI")).toBe(true);
+
+    const automatic = await searchCars(carQuery({ transmissions: ["Automatic"] }));
+    expect(automatic.every((car) => car.transmission === "Automatic")).toBe(true);
+
+    const cheap = await searchCars(carQuery({ budgets: ["under-300"] }));
+    expect(cheap.every((car) => car.price_per_hour < 300)).toBe(true);
+  });
+
+  it("sorts by price when asked", async () => {
+    const cars = await searchCars(carQuery({ sort: "price-asc" }));
+    const prices = cars.map((car) => car.price_per_hour);
+    expect(prices).toEqual([...prices].sort((a, b) => a - b));
+  });
+
+  it("returns nothing without a city", async () => {
+    expect(await searchCars(carQuery({ city: null }))).toEqual([]);
+  });
+
+  it("builds facets from the city slice", async () => {
+    const cars = await getCars();
+    const facets = buildCarFacets(cars.filter((car) => car.city_code === "GOI"));
+
+    expect(facets.types.length).toBeGreaterThan(0);
+    expect(facets.minPrice).toBeGreaterThan(0);
+    expect(facets.maxPrice).toBeGreaterThanOrEqual(facets.minPrice);
+    expect(facets.delivery).toBeLessThanOrEqual(
+      cars.filter((car) => car.city_code === "GOI").length,
+    );
+  });
+
+  it("returns featured and similar cars", async () => {
+    const featured = await getFeaturedCars(4);
+    expect(featured).toHaveLength(4);
+    expect(featured.every((car) => car.featured)).toBe(true);
+
+    const cars = await getCars();
+    const similar = await getSimilarCars(cars[0], 3);
+    expect(similar).toHaveLength(3);
+    expect(similar.every((car) => car.id !== cars[0].id)).toBe(true);
+  });
+
+  it("lists only cities that have cars", async () => {
+    const cities = await getCarCities();
+    const cars = await getCars();
+    const codes = new Set(cars.map((car) => car.city_code));
+
+    expect(cities.length).toBe(12);
+    expect(cities.every((city) => codes.has(city.code))).toBe(true);
+  });
+});
+
+describe("offers", () => {
+  it("loads every row but hides flight and train rows from the public board", async () => {
+    const offers = await getOffers();
+    expect(offers.length).toBeGreaterThan(0);
+    expect(offers.some((offer) => offer.category === "flights")).toBe(true);
+
+    expect(await getOffersByCategory("flights")).toHaveLength(0);
+    expect(await getOffersByCategory("trains")).toHaveLength(0);
+
+    const cars = await getOffersByCategory("cars");
+    expect(cars.length).toBeGreaterThan(0);
+    expect(cars.every((offer) => offer.category === "cars")).toBe(true);
+  });
+
+  it("counts only visible categories, including all", async () => {
     const counts = await getOfferCategoryCounts();
     const total = counts.find((entry) => entry.value === "all")?.count;
 
     expect(counts[0]?.value).toBe("all");
-    expect(total).toBe((await getOffers()).length);
     expect(
       counts.reduce((sum, entry) => (entry.value === "all" ? sum : sum + entry.count), 0),
     ).toBe(total);
+    expect(counts.some((entry) => entry.value === "flights")).toBe(false);
   });
 });

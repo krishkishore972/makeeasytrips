@@ -1,4 +1,5 @@
 import { getCities } from "@/lib/data/cities";
+import { getCars } from "@/lib/data/cars";
 import { getHolidayCityStats, getHolidayDestinations, getHolidays } from "@/lib/data/holidays";
 import { getFeaturedHotels, getHotels } from "@/lib/data/hotels";
 import { getOffers } from "@/lib/data/offers";
@@ -41,6 +42,7 @@ export type HomeCounts = {
   cities: number;
   hotels: number;
   holidays: number;
+  cars: number;
   offers: number;
 };
 
@@ -151,8 +153,8 @@ function pickHomeOffers(offers: Offer[], limit: number): Offer[] {
 }
 
 export async function getHomePageData(): Promise<HomePageData> {
-  const [destinations, stays, holidays, cities, hotels, allHolidays, allOffers] = await Promise.all(
-    [
+  const [destinations, stays, holidays, cities, hotels, allHolidays, allOffers, cars] =
+    await Promise.all([
       getHomeDestinations(),
       getHomeStays(4),
       getHomeHolidays(4),
@@ -160,8 +162,8 @@ export async function getHomePageData(): Promise<HomePageData> {
       getHotels(),
       getHolidays(),
       getOffers(),
-    ],
-  );
+      getCars(),
+    ]);
 
   return {
     destinations,
@@ -172,6 +174,7 @@ export async function getHomePageData(): Promise<HomePageData> {
       cities: cities.length,
       hotels: hotels.length,
       holidays: allHolidays.length,
+      cars: cars.length,
       offers: allOffers.length,
     },
   };

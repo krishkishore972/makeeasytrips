@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  CarFront,
   Compass,
+  Fuel,
   HeartHandshake,
   Landmark,
   MapPin,
   Mountain,
+  Settings2,
   ShieldCheck,
   Sparkles,
   Star,
@@ -30,13 +34,15 @@ import { Carousel } from "@/components/shared/carousel";
 import { RevealGroup, RevealItem, ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { getHomePageData } from "@/lib/data/home";
+import { getCarCities, getFeaturedCars } from "@/lib/data/cars";
+import { getHotelCities } from "@/lib/data/hotels";
 import { HOME_FAQS, TRAVEL_NOTES } from "@/lib/home-content";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: { absolute: "TripNest — Travel that feels like yours." },
   description:
-    "Compare flights, find a stay with character, and shape a holiday that feels like yours. An original learning-purpose travel experience.",
+    "Find a stay with character, shape a holiday that feels like yours, or rent a self-drive car for the road between. An original learning-purpose travel experience.",
   alternates: {
     canonical: "/",
   },
@@ -83,7 +89,7 @@ const steps = [
     number: "02",
     title: "Compare the honest details",
     detail:
-      "See the full fare, the cancellation rules, and what is actually included before you choose.",
+      "See the full price, the cancellation rules, and what is actually included before you choose.",
     icon: ShieldCheck,
   },
   {
@@ -95,7 +101,9 @@ const steps = [
 ] as const;
 
 export default async function HomePage() {
-  const { destinations, stays, holidays, offers, counts } = await getHomePageData();
+  await connection();
+  const [{ destinations, stays, holidays, offers, counts }, cities, carCities, featuredCars] =
+    await Promise.all([getHomePageData(), getHotelCities(), getCarCities(), getFeaturedCars(3)]);
   const featuredDestination = destinations[0];
   const featuredStay = stays[0];
 
@@ -124,7 +132,7 @@ export default async function HomePage() {
               </h1>
 
               <p className="mt-6 max-w-xl text-base leading-7 text-white/70 sm:text-[1.0625rem] sm:leading-8">
-                Flights, stays, and holiday ideas gathered with a little more care. Compare what
+                Stays, holidays, and self-drive cars, gathered with a little more care. Compare what
                 matters, skip the noise, and build a trip that sounds like you.
               </p>
 
@@ -149,7 +157,7 @@ export default async function HomePage() {
                 {[
                   { value: formatCompactNumber(counts.cities), label: "cities on the map" },
                   { value: formatCompactNumber(counts.hotels), label: "demo stays" },
-                  { value: formatCompactNumber(counts.holidays), label: "holiday ideas" },
+                  { value: formatCompactNumber(counts.cars), label: "self-drive cars" },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <dt className="sr-only">{stat.label}</dt>
@@ -230,7 +238,7 @@ export default async function HomePage() {
       <section id="plan" className="relative z-10 scroll-mt-24">
         <div className="page-container -mt-20 lg:-mt-24">
           <ScrollReveal>
-            <HeroSearch />
+            <HeroSearch cities={cities} />
           </ScrollReveal>
         </div>
       </section>
@@ -335,6 +343,110 @@ export default async function HomePage() {
               </RevealItem>
             ))}
           </RevealGroup>
+        </div>
+      </section>
+
+      <section className="section-padding border-y border-line bg-surface">
+        <div className="page-container">
+          <ScrollReveal>
+            <SectionHeading
+              eyebrow="Rent a car"
+              title="Take the long way there."
+              description="A self-drive car turns the transfer into part of the trip. Choose a specific model, pick the hours, and see the whole total before you commit."
+              action={{ label: "Browse self-drive cars", href: "/rent-a-car" }}
+            />
+          </ScrollReveal>
+
+          <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.09}>
+            {featuredCars.map((car) => {
+              const cityName =
+                carCities.find((city) => city.code === car.city_code)?.name ?? car.city_code;
+
+              return (
+                <RevealItem key={car.id} className="h-full">
+                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xs transition-shadow hover:shadow-md">
+                    <Link
+                      href={`/rent-a-car/${car.id}`}
+                      className="relative block aspect-[16/10] overflow-hidden bg-brand-50"
+                    >
+                      <Image
+                        src={car.image}
+                        alt={`Abstract illustration of a ${car.brand} ${car.model}`}
+                        fill
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      />
+                      <span className="absolute top-3 left-3 rounded-full bg-surface/90 px-2.5 py-1 text-[10px] font-extrabold text-ink shadow-xs backdrop-blur">
+                        {car.year} · {car.car_type}
+                      </span>
+                      {car.guest_favorite ? (
+                        <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-gold-500 px-2.5 py-1 text-[10px] font-extrabold text-brand-950 shadow-xs">
+                          <Sparkles aria-hidden="true" className="size-3" />
+                          Guest favourite
+                        </span>
+                      ) : null}
+                    </Link>
+
+                    <div className="flex flex-1 flex-col p-4">
+                      <p className="text-[10px] font-extrabold tracking-[0.1em] text-muted-soft uppercase">
+                        {car.brand} · {cityName}
+                      </p>
+                      <h3 className="mt-1 text-lg leading-tight">
+                        <Link
+                          href={`/rent-a-car/${car.id}`}
+                          className="transition-colors hover:text-brand-700"
+                        >
+                          {car.model}
+                        </Link>
+                      </h3>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
+                        {car.tagline}
+                      </p>
+
+                      <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5">
+                        <li className="inline-flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
+                          <Settings2 aria-hidden="true" className="size-3.5 text-brand-600" />
+                          {car.transmission}
+                        </li>
+                        <li className="inline-flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
+                          <Fuel aria-hidden="true" className="size-3.5 text-brand-600" />
+                          {car.fuel}
+                        </li>
+                        <li className="inline-flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
+                          <CarFront aria-hidden="true" className="size-3.5 text-brand-600" />
+                          {car.seats} seats
+                        </li>
+                      </ul>
+
+                      <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-3">
+                        <p className="flex items-baseline gap-1.5">
+                          <span className="text-xl leading-none font-extrabold text-ink">
+                            {formatCurrency(car.price_per_hour)}
+                          </span>
+                          <span className="text-[10px] font-semibold text-muted">/ hour</span>
+                        </p>
+                        <Link
+                          href={`/rent-a-car/${car.id}`}
+                          className="inline-flex items-center gap-1 text-[11px] font-extrabold text-brand-700"
+                        >
+                          View car
+                          <ArrowRight
+                            aria-hidden="true"
+                            className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                          />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+
+          <p className="mt-6 text-center text-[11px] leading-5 text-muted-soft">
+            Every demo rental includes 300 km a day, a refundable deposit shown upfront, and 18% GST
+            in the total. No car is held and no payment is taken.
+          </p>
         </div>
       </section>
 

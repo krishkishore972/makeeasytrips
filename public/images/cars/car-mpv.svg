@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract illustration of a seven-seat MPV on a highway">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe6f7"/>
+      <stop offset="1" stop-color="#fbf8fe"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d28d9"/>
+      <stop offset="1" stop-color="#3b1080"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ede9fe"/>
+      <stop offset="1" stop-color="#c4b5fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <circle cx="126" cy="106" r="52" fill="#f6c768" opacity="0.6"/>
+  <path d="M0 330c110-30 196-20 300 6s200 34 304 8 150-24 196-8v164H0z" fill="#ddd0f0" opacity="0.8"/>
+  <rect y="414" width="800" height="86" fill="#2e2440"/>
+  <path d="M40 462h720" stroke="#fbf8fe" stroke-width="5" stroke-dasharray="34 28" opacity="0.6"/>
+  <g>
+    <ellipse cx="402" cy="422" rx="256" ry="26" fill="#1d1430" opacity="0.22"/>
+    <path d="M176 362c0-30 18-48 52-52l58-8 56-64c10-11 24-18 40-18h104c17 0 31 6 42 17l52 65 62 10c28 5 44 24 44 48v22c0 10-7 17-17 17H193c-11 0-17-7-17-17z" fill="url(#body)"/>
+    <path d="M318 300l46-54c6-6 15-10 25-10h34v64zM438 236h32c12 0 21 4 29 12l42 52h-103z" fill="url(#glass)"/>
+    <path d="M430 236v64" stroke="#6d28d9" stroke-width="7" opacity="0.55"/>
+    <rect x="192" y="340" width="54" height="15" rx="7.5" fill="#fde68a"/>
+    <rect x="562" y="340" width="46" height="15" rx="7.5" fill="#fca5a5"/>
+    <circle cx="296" cy="408" r="46" fill="#180f28"/>
+    <circle cx="296" cy="408" r="24" fill="#efe6f7"/>
+    <circle cx="296" cy="408" r="9" fill="#180f28"/>
+    <circle cx="540" cy="408" r="46" fill="#180f28"/>
+    <circle cx="540" cy="408" r="24" fill="#efe6f7"/>
+    <circle cx="540" cy="408" r="9" fill="#180f28"/>
+    <path d="M214 376h96M524 376h72" stroke="#c4b5fd" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <rect x="368" y="280" width="42" height="6" rx="3" fill="#ede9fe" opacity="0.8"/>
+  </g>
+</svg>

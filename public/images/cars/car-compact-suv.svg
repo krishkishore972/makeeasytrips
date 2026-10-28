@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Abstract illustration of a compact SUV in the hills">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0ecfb"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe"/>
+      <stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <path d="M0 300l120-96 94 70 86-58 120 84 110-70 120 82 150-64v252H0z" fill="#bfd4ee" opacity="0.75"/>
+  <path d="M0 354l140-70 110 48 120-52 140 70 130-44 160 48v146H0z" fill="#93b4dc" opacity="0.7"/>
+  <rect y="414" width="800" height="86" fill="#26364d"/>
+  <path d="M40 462h720" stroke="#f8fbff" stroke-width="5" stroke-dasharray="34 28" opacity="0.6"/>
+  <g>
+    <ellipse cx="402" cy="420" rx="244" ry="24" fill="#12233a" opacity="0.22"/>
+    <path d="M202 366c0-28 18-44 50-48l62-8 52-52c10-10 23-16 38-16h76c17 0 30 5 41 16l48 52 58 10c28 5 43 22 43 46v18c0 10-7 17-17 17H219c-11 0-17-7-17-17z" fill="url(#body)"/>
+    <path d="M334 306l44-44c6-6 14-9 24-9h70c11 0 20 4 27 11l38 42z" fill="url(#glass)"/>
+    <path d="M406 253v53" stroke="#1d4ed8" stroke-width="6" opacity="0.5"/>
+    <rect x="218" y="346" width="54" height="14" rx="7" fill="#fde68a"/>
+    <rect x="552" y="346" width="46" height="14" rx="7" fill="#fca5a5"/>
+    <path d="M232 382h64M536 382h44" stroke="#93c5fd" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <circle cx="304" cy="406" r="44" fill="#101f33"/>
+    <circle cx="304" cy="406" r="23" fill="#e0ecfb"/>
+    <circle cx="304" cy="406" r="9" fill="#101f33"/>
+    <circle cx="526" cy="406" r="44" fill="#101f33"/>
+    <circle cx="526" cy="406" r="23" fill="#e0ecfb"/>
+    <circle cx="526" cy="406" r="9" fill="#101f33"/>
+    <rect x="366" y="286" width="42" height="5" rx="2.5" fill="#bfdbfe" opacity="0.8"/>
+  </g>
+  <path d="M700 96l16 32 34 5-25 24 6 34-31-17-31 17 6-34-25-24 34-5z" fill="#f6c768" opacity="0.85"/>
+</svg>

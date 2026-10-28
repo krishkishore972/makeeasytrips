@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   keywords: [
     "TripNest",
     "travel planning",
-    "flights",
     "hotels",
     "holiday packages",
+    "self-drive car rental",
     "India travel",
     "Next.js travel app",
   ],

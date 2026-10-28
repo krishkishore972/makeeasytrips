@@ -51,3 +51,55 @@ export function holidayPriceBreakdown(
     travellers,
   };
 }
+
+export type CarRentalBreakdown = FareBreakdown & {
+  perDay: number;
+  days: number;
+  kmFee: number;
+  deliveryFee: number;
+  addonFee: number;
+  deposit: number;
+};
+
+export type CarRentalPricing = {
+  days: number;
+  kmPlanExtraPerDay: number;
+  delivery: boolean;
+  deliveryFee: number;
+  addons: { price: number; perDay: boolean }[];
+  taxPercent?: number;
+  deposit?: number;
+};
+
+/**
+ * Self-drive rentals are billed in 24-hour blocks. The card rate is hourly, but
+ * the trip total uses the derived day rate so a 30-hour booking is two days.
+ */
+export function carRentalBreakdown(
+  pricePerHour: number,
+  pricing: CarRentalPricing,
+): CarRentalBreakdown {
+  const days = Math.max(1, pricing.days);
+  const perDay = pricePerHour * 24;
+  const base = perDay * days;
+  const kmFee = pricing.kmPlanExtraPerDay * days;
+  const deliveryFee = pricing.delivery ? pricing.deliveryFee : 0;
+  const addonFee = pricing.addons.reduce(
+    (total, addon) => total + (addon.perDay ? addon.price * days : addon.price),
+    0,
+  );
+  const taxable = base + kmFee + deliveryFee + addonFee;
+  const taxes = Math.round((taxable * (pricing.taxPercent ?? 18)) / 100);
+
+  return {
+    base,
+    taxes,
+    total: taxable + taxes,
+    perDay,
+    days,
+    kmFee,
+    deliveryFee,
+    addonFee,
+    deposit: pricing.deposit ?? 0,
+  };
+}

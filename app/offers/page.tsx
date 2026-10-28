@@ -25,7 +25,7 @@ import { parseOfferSearchParams } from "@/lib/validation/search";
 export const metadata: Metadata = {
   title: "Offers",
   description:
-    "Demo-only travel offers across flights, stays, holidays, trains, and cabs. No card is ever charged.",
+    "Demo-only travel offers across stays, holidays, and self-drive car rentals. No card is ever charged.",
   alternates: {
     canonical: "/offers",
   },
@@ -112,9 +112,9 @@ async function OffersExperience({ searchParams }: OffersPageProps) {
         >
           <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-extrabold">That category does not exist.</p>
+            <p className="font-extrabold">That category is not available.</p>
             <p className="mt-1 text-xs leading-5">
-              Showing every offer instead. Pick a category above to narrow the board.
+              Showing every current offer instead. Pick a category above to narrow the board.
             </p>
           </div>
           <Link
@@ -222,7 +222,7 @@ async function OffersExperience({ searchParams }: OffersPageProps) {
           <EmptyState
             className="mt-5"
             title="No offers in this category yet."
-            description="The demo board has offers across flights, stays, holidays, trains, and cabs. Try another category."
+            description="The demo board has offers across stays, holidays, and self-drive car rentals. Try another category."
             actions={
               <Link
                 href="/offers"

@@ -6,8 +6,8 @@ import {
   AlertTriangle,
   ArrowRight,
   BedDouble,
+  CarFront,
   MapPin,
-  Plane,
   RotateCcw,
   Sparkles,
 } from "lucide-react";
@@ -62,11 +62,11 @@ export default function HotelsPage({ searchParams }: HotelsPageProps) {
               </p>
             </div>
             <Link
-              href="/flights"
+              href="/rent-a-car"
               className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface px-4 py-2.5 text-xs font-bold text-ink-soft transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
             >
-              <Plane aria-hidden="true" className="size-4 text-brand-600" />
-              Still need a flight?
+              <CarFront aria-hidden="true" className="size-4 text-brand-600" />
+              Need a car for the road?
               <ArrowRight aria-hidden="true" className="size-3.5" />
             </Link>
           </div>

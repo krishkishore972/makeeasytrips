@@ -1,10 +1,30 @@
-import { addDaysISO, isValidISODate, nightsBetween, todayISO } from "@/lib/dates";
+import {
+  addDaysISO,
+  defaultRentalEnd,
+  defaultRentalStart,
+  isMonday,
+  isValidISODate,
+  isValidISODateTime,
+  nightsBetween,
+  rentalDaysFor,
+  rentalHoursBetween,
+  todayISO,
+} from "@/lib/dates";
+import type { CarQuery } from "@/lib/data/cars";
 import type { FlightQuery } from "@/lib/data/flights";
 import type { HolidayQuery } from "@/lib/data/holidays";
 import type { HotelQuery } from "@/lib/data/hotels";
 import {
   amenityFilterValues,
   cabinValues,
+  carFuelValues,
+  carBudgetValues,
+  carModeValues,
+  carRatingValues,
+  carSeatBandValues,
+  carSortValues,
+  carTransmissionValues,
+  carTypeValues,
   departureWindowValues,
   durationBandValues,
   flightSortValues,
@@ -13,12 +33,19 @@ import {
   holidaySortValues,
   holidayThemeValues,
   hotelSortValues,
-  offerCategoryValues,
+  OFFER_CATEGORY_OPTIONS,
   priceBandValues,
   starValues,
   stopValues,
   type AmenityFilter,
   type Cabin,
+  type CarBudget,
+  type CarFuel,
+  type CarMode,
+  type CarSeatBand,
+  type CarSort,
+  type CarTransmission,
+  type CarType,
   type FlightSort,
   type HolidayDuration,
   type HolidayPriceBand,
@@ -49,6 +76,20 @@ export type StayQuery = {
 
 export type ParsedHotelSearch = {
   query: HotelQuery;
+  hasCity: boolean;
+  error: string | null;
+};
+
+export type RentalQuery = {
+  start: string;
+  end: string;
+  hours: number;
+  days: number;
+  error: string | null;
+};
+
+export type ParsedCarSearch = {
+  query: CarQuery;
   hasCity: boolean;
   error: string | null;
 };
@@ -215,6 +256,100 @@ export function parseHotelSearchParams(params: RawSearchParams): ParsedHotelSear
   };
 }
 
+export function parseRentalParams(params: RawSearchParams): RentalQuery {
+  const startRaw = raw(params, "start");
+  const endRaw = raw(params, "end");
+
+  const start = isValidISODateTime(startRaw) ? startRaw : defaultRentalStart();
+  const end = isValidISODateTime(endRaw) ? endRaw : defaultRentalEnd(start);
+
+  let error: string | null = null;
+  let hours = rentalHoursBetween(start, end);
+
+  if (startRaw && !isValidISODateTime(startRaw)) {
+    error = "Choose a valid pick-up date and time.";
+  } else if (endRaw && !isValidISODateTime(endRaw)) {
+    error = "Choose a valid drop-off date and time.";
+  } else if (hours === null) {
+    error = "Drop-off needs to be after pick-up.";
+  }
+
+  if (hours !== null && hours > 30 * 24) {
+    error = "This demo caps a single rental at 30 days.";
+  }
+
+  if (hours === null) hours = 48;
+
+  return {
+    start,
+    end,
+    hours,
+    days: rentalDaysFor(hours),
+    error,
+  };
+}
+
+export function parseCarSearchParams(params: RawSearchParams): ParsedCarSearch {
+  const city = cityCode(raw(params, "city"));
+  const rental = parseRentalParams(params);
+  const mode: CarMode = oneOf(raw(params, "mode")?.toLowerCase(), carModeValues, "daily");
+  const sort: CarSort = oneOf(raw(params, "sort"), carSortValues, "recommended");
+  const types = listOf(raw(params, "type"), carTypeValues);
+  const transmissions = listOf(raw(params, "transmission"), carTransmissionValues);
+  const fuels = listOf(raw(params, "fuel"), carFuelValues);
+  const seatBands = listOf(raw(params, "seats"), carSeatBandValues);
+  const budgets = listOf(raw(params, "budget"), carBudgetValues);
+  const ratingRaw = raw(params, "rating");
+  const minRating =
+    ratingRaw && carRatingValues.includes(ratingRaw as (typeof carRatingValues)[number])
+      ? Number(ratingRaw)
+      : null;
+  const yearRaw = raw(params, "year");
+  const minYear = yearRaw && /^\d{4}$/.test(yearRaw) ? Number(yearRaw) : null;
+  const distanceRaw = raw(params, "distance");
+  const maxDistance = distanceRaw ? boundedInt(distanceRaw, 30, 1, 100) : null;
+  const fastagOnly = ["1", "true"].includes(raw(params, "fastag") ?? "");
+  const deliveryOnly = ["1", "true"].includes(raw(params, "delivery") ?? "");
+
+  let error: string | null = null;
+
+  if (raw(params, "city") && !city) error = "That city code is not valid.";
+  else if (rental.error) error = rental.error;
+  else if (mode === "subscription" && rental.days < 7) {
+    error = "Subscription rentals need at least 7 days. Choose a later drop-off or Daily Drives.";
+  } else if (mode === "weekday") {
+    if (!isMonday(rental.start.slice(0, 10))) {
+      error = "Weekday Pass pick-ups start on a Monday.";
+    } else if (rental.days < 5) {
+      error = "Weekday Pass needs Monday to Friday, so at least 5 days.";
+    }
+  }
+
+  return {
+    query: {
+      city,
+      start: rental.start,
+      end: rental.end,
+      hours: rental.hours,
+      days: rental.days,
+      mode,
+      sort,
+      types: types as CarType[],
+      transmissions: transmissions as CarTransmission[],
+      fuels: fuels as CarFuel[],
+      seatBands: seatBands as CarSeatBand[],
+      budgets: budgets as CarBudget[],
+      minRating,
+      minYear,
+      maxDistance,
+      fastagOnly,
+      deliveryOnly,
+    },
+    hasCity: Boolean(city),
+    error,
+  };
+}
+
 export function parseHolidaySearchParams(params: RawSearchParams): ParsedHolidaySearch {
   const destination = cityCode(raw(params, "destination"));
   const sort: HolidaySort = oneOf(raw(params, "sort"), holidaySortValues, "recommended");
@@ -247,13 +382,14 @@ export function parseHolidaySearchParams(params: RawSearchParams): ParsedHoliday
 
 export function parseOfferSearchParams(params: RawSearchParams): ParsedOfferSearch {
   const requested = raw(params, "category")?.toLowerCase();
-  const category: OfferCategory = oneOf(requested, offerCategoryValues, "all");
+  const visibleCategories = OFFER_CATEGORY_OPTIONS.map((option) => option.value);
+  const category: OfferCategory = oneOf(requested, visibleCategories, "all");
 
   return {
     category,
     error:
-      requested && !offerCategoryValues.includes(requested as OfferCategory)
-        ? "That offer category does not exist."
+      requested && !visibleCategories.includes(requested as OfferCategory)
+        ? "That offer category is not available right now."
         : null,
   };
 }
