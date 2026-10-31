@@ -34,7 +34,6 @@ export const siteConfig = {
     support: [
       { label: "Help centre", href: "/info/help" },
       { label: "Cancellation guide", href: "/info/cancellations" },
-      { label: "Payment security", href: "/info/payment-security" },
       { label: "Contact us", href: "/info/contact" },
       { label: "Accessibility", href: "/info/accessibility" },
     ],

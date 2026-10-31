@@ -1,17 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarClock,
-  Check,
-  Gauge,
-  Info,
-  MapPin,
-  ShieldCheck,
-  Truck,
-} from "lucide-react";
+import { CalendarClock, Check, Gauge, Info, MapPin, ShieldCheck, Truck } from "lucide-react";
 import { useState } from "react";
+import { EnquiryDialog } from "@/components/enquiry/enquiry-dialog";
 import {
   formatDateTimeShort,
   formatRentalDuration,
@@ -27,7 +18,7 @@ import {
   type CarAddon,
   type CarKmPlan,
 } from "@/lib/search-options";
-import { cn, formatCurrency, toQueryString } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 type CarBookingPanelProps = {
   car: Car;
@@ -58,16 +49,6 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
     addons: selectedAddons,
     deposit: car.deposit,
   });
-
-  const reviewHref = `/booking/review${toQueryString({
-    type: "car",
-    id: car.id,
-    start,
-    end,
-    plan,
-    delivery: delivery && car.home_delivery ? "1" : "0",
-    addons: addons.join(","),
-  })}`;
 
   return (
     <div className="rounded-2xl border border-line bg-surface p-4 shadow-sm">
@@ -308,24 +289,20 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
         </p>
       </div>
 
-      {validTimes ? (
-        <Link
-          href={reviewHref}
-          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-4 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
-        >
-          Continue to review
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
-      ) : (
-        <button
-          type="button"
-          disabled
-          className="mt-3 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-line px-4 py-3 text-sm font-extrabold text-muted-soft"
-        >
-          Continue to review
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </button>
-      )}
+      <EnquiryDialog
+        target={{
+          service: "car",
+          title: `${car.brand} ${car.model}`,
+          context: [
+            `Pick-up: ${start}`,
+            `Drop-off: ${end}`,
+            `Kilometre plan: ${selectedPlan?.label ?? plan}`,
+            `Home delivery: ${delivery && car.home_delivery ? "Yes" : "No"}`,
+          ],
+        }}
+        label="Enquire about this car"
+        className="mt-3 w-full"
+      />
 
       <p className="mt-2 flex items-center justify-center gap-1.5 text-[10px] font-semibold text-muted-soft">
         <MapPin aria-hidden="true" className="size-3" />

@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight, CalendarDays, Minus, Plus, ShieldCheck, UsersRound } from "lucide-react";
+import { CalendarDays, Minus, Plus, ShieldCheck, UsersRound } from "lucide-react";
 import { useState } from "react";
+import { EnquiryDialog } from "@/components/enquiry/enquiry-dialog";
 import { formatDateLong, formatDateShort } from "@/lib/dates";
 import { holidayPriceBreakdown } from "@/lib/pricing";
-import { formatCurrency, toQueryString } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 type HolidayBookingPanelProps = {
-  slug: string;
   title: string;
   pricePerPerson: number;
   departures: string[];
@@ -18,7 +17,6 @@ type HolidayBookingPanelProps = {
 };
 
 export function HolidayBookingPanel({
-  slug,
   title,
   pricePerPerson,
   departures,
@@ -139,33 +137,23 @@ export function HolidayBookingPanel({
         {departure ? summary : "Choose a departure date to see the full trip summary."}
       </p>
 
-      {departure ? (
-        <Link
-          href={`/booking/review${toQueryString({
-            type: "holiday",
-            slug,
-            depart: departure,
-            travellers,
-          })}`}
-          aria-label={`Reserve this holiday: ${title}`}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
-        >
-          Reserve this holiday
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
-      ) : (
-        <button
-          type="button"
-          disabled
-          className="mt-4 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white opacity-50"
-        >
-          Choose a departure first
-        </button>
-      )}
+      <EnquiryDialog
+        target={{
+          service: "holiday",
+          title,
+          context: [
+            `Destination: ${cityName}`,
+            departure ? `Departure: ${formatDateLong(departure)}` : "Departure: on request",
+            `Travellers: ${travellers}`,
+          ],
+        }}
+        label="Enquire about this holiday"
+        className="mt-4 w-full"
+      />
 
       <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-4 text-muted-soft">
         <ShieldCheck aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-brand-500" />
-        Demo only. No payment, account, or booking is created.
+        Share your details and enquiry directly with our business WhatsApp.
       </p>
     </div>
   );

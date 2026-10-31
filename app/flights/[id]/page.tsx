@@ -16,6 +16,7 @@ import {
   UtensilsCrossed,
   X,
 } from "lucide-react";
+import { EnquiryDialog } from "@/components/enquiry/enquiry-dialog";
 import { AirlineMark } from "@/components/flights/airline-mark";
 import { FlightCard } from "@/components/flights/flight-card";
 import { FlightDetailSkeleton } from "@/components/flights/flight-skeletons";
@@ -389,26 +390,26 @@ async function FlightDetailContent({ params, searchParams }: FlightDetailProps) 
                 </div>
               </dl>
 
-              <Link
-                href={`/booking/review${toQueryString({
-                  type: "flight",
-                  id: flight.id,
-                  depart: departDate,
-                  pax,
-                  cabin,
-                })}`}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition-colors hover:bg-accent-600"
-              >
-                Continue with this fare
-                <ArrowRight aria-hidden="true" className="size-4" />
-              </Link>
+              <EnquiryDialog
+                target={{
+                  service: "flight",
+                  title: `${flight.from_code} → ${flight.to_code} · ${flight.airline} ${flight.flight_number}`,
+                  context: [
+                    `Departure: ${formatDateLong(departDate)}`,
+                    `Travellers: ${pax}`,
+                    `Cabin: ${cabinLabel}`,
+                  ],
+                }}
+                label="Enquire about this flight"
+                className="mt-4 w-full"
+              />
 
               <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-4 text-muted-soft">
                 <ShieldCheck
                   aria-hidden="true"
                   className="mt-0.5 size-3.5 shrink-0 text-brand-500"
                 />
-                Demo only. No payment, account, or inventory hold is created.
+                Share your details and enquiry directly with our business WhatsApp.
               </p>
             </div>
 

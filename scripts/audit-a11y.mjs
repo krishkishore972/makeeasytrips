@@ -38,22 +38,6 @@ const ROUTES = [
     "/rent-a-car/search?city=GOI&start=2026-11-13T10:00&end=2026-11-15T10:00&mode=daily",
   ],
   ["car detail", "/rent-a-car/car-maruti-suzuki-swift?start=2026-11-13T10:00&end=2026-11-15T10:00"],
-  [
-    "booking review",
-    "/booking/review?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy",
-  ],
-  [
-    "car booking review",
-    "/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=",
-  ],
-  [
-    "car booking confirmation",
-    "/booking/confirmation?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=&confirmed=1",
-  ],
-  [
-    "booking confirmation",
-    "/booking/confirmation?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy&confirmed=1",
-  ],
   ["about", "/info/about"],
   ["my trips", "/my-trips"],
   ["trains", "/trains"],

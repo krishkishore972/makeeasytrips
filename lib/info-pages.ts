@@ -163,27 +163,6 @@ export const infoPages = {
       },
     ],
   },
-  "payment-security": {
-    title: "Payment security",
-    eyebrow: "Trust",
-    description:
-      "TripNest does not process payments. This page explains the mock checkout boundary and what a real implementation would need.",
-    sections: [
-      {
-        heading: "The demo boundary",
-        body: [
-          "The review step deliberately collects no traveller details. It asks only for a demo acknowledgement, then generates a reference from the URL params.",
-          "The confirmation page is generated from the same local demo data. No card number, UPI ID, or bank detail is ever requested.",
-        ],
-      },
-      {
-        heading: "What a real build needs",
-        body: [
-          "A PCI-compliant payment provider, server-side price recalculation, idempotent booking creation, fraud checks, and a clear refund policy. None of those are in scope for this learning project.",
-        ],
-      },
-    ],
-  },
   contact: {
     title: "Contact us",
     eyebrow: "Say hello",

@@ -374,7 +374,6 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
 
           <aside className="space-y-4 lg:sticky lg:top-28">
             <HolidayBookingPanel
-              slug={holiday.slug}
               title={holiday.title}
               pricePerPerson={holiday.price_per_person}
               departures={holiday.departure_dates}

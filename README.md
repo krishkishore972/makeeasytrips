@@ -75,7 +75,7 @@ npm run start
 | ------------------------ | --------------------------------------------------------------------------------------- |
 | `/`                      | Full home composition with data-driven carousels, destinations, stays, and FAQ          |
 | `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states                   |
-| `/flights/[id]`          | Flight detail with fare breakdown and a review hand-off                                 |
+| `/flights/[id]`          | Flight detail with fare breakdown and WhatsApp enquiry form                             |
 | `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
 | `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box             |
 | `/rent-a-car`            | Self-drive landing: hero search, rental plans, featured cars, body styles, cities, FAQ  |
@@ -83,8 +83,6 @@ npm run start
 | `/rent-a-car/[id]`       | Car detail: specs, kilometre plans, add-ons, host, policies, reviews, price panel       |
 | `/holidays`              | Holiday catalogue: destination strip, theme/length/budget filters, sort, featured trips |
 | `/holidays/[slug]`       | Package detail: gallery, itinerary, inclusions, departure picker, live total, similar   |
-| `/booking/review`        | Shared mock review for a car, stay, or holiday selection                                |
-| `/booking/confirmation`  | Mock confirmation with a deterministic reference and next steps                         |
 | `/trains`, `/flights`    | Retained routes, hidden from the navigation and offers in this phase                    |
 | `/cabs`                  | Permanent redirect to `/rent-a-car`                                                     |
 | `/offers`                | Offer board with category tabs, featured offer, copyable codes, and terms               |
@@ -111,10 +109,8 @@ and the server renders the matching set:
   `budget`, `type`, `transmission`, `fuel`, `seats`, `rating`, `year`, `distance`, `fastag`,
   `delivery`
 - Offers: `category` (`all`, `hotels`, `holidays`, `cars`)
-- Booking review: `type` (`car`, `hotel`, `holiday`) plus the selected product params
-  (`id`/`slug`, dates, `pax`/`travellers`, `cabin`, `rooms`, `guests`, `plan`, `start`, `end`,
-  `delivery`, `addons`)
-- Booking confirmation: the same params plus `confirmed=1`
+- Enquiries: each service detail page opens a WhatsApp form for name, phone number, and enquiry
+  details, with the selected service context pre-filled.
 
 Example:
 
@@ -124,9 +120,6 @@ Example:
 /rent-a-car/search?city=GOI&start=2026-11-13T10:00&end=2026-11-15T10:00&mode=daily&transmission=Automatic
 /holidays?destination=GOI&theme=beach,food&duration=short&price=under-20k&travellers=3
 /offers?category=holidays
-/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&plan=flex
-/booking/review?type=holiday&slug=susegad-by-the-sea&depart=2026-11-14&travellers=3
-/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=
 ```
 
 ## Structure
@@ -243,20 +236,6 @@ curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/flights?from
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/cars?city=GO"     # 400
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/offers?category=nope" # 400
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/cabs"                # 308 → /rent-a-car
-```
-
-Booking hand-offs are URL-driven, so they can be checked directly:
-
-```bash
-curl -s "http://localhost:3000/booking/review?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy" | grep -o "Review your demo trip"
-curl -s "http://localhost:3000/booking/confirmation?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy&confirmed=1" | grep -o "TN-FL-[A-Z0-9]*"
-curl -s "http://localhost:3000/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-13&checkout=2026-11-17&rooms=1&guests=2&plan=flex" | grep -o "Stay total"
-curl -s "http://localhost:3000/booking/review?type=holiday&slug=susegad-by-the-sea&depart=2026-11-14&travellers=3" | grep -o "Package total"
-curl -s "http://localhost:3000/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=" | grep -o "Rental total"
-curl -s "http://localhost:3000/booking/confirmation?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=&confirmed=1" | grep -o "TN-CR-[A-Z0-9]*"
-curl -s "http://localhost:3000/booking/review?type=hotel&id=htl-bom-harbour-and-hush&checkin=2026-11-17&checkout=2026-11-13&rooms=1&guests=2&plan=flex" | grep -o "Check-out needs to be after check-in"
-curl -s "http://localhost:3000/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-15T10:00&end=2026-11-13T10:00&plan=included" | grep -o "Drop-off needs to be after pick-up"
-curl -s "http://localhost:3000/booking/confirmation?type=flight&id=fl-blr-bom-03&depart=2026-11-13&pax=2&cabin=economy" | grep -o "Confirm your demo booking first"
 ```
 
 On the home page, the offer and holiday carousels use previous/next controls with a polite slide
