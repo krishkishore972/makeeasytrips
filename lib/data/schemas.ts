@@ -15,7 +15,15 @@ import {
   flightSortValues,
 } from "@/lib/search-options";
 
-const csvBoolean = z.enum(["true", "false"]).transform((value) => value === "true");
+/**
+ * Seed fixtures are typed JSON, while the original CSV export stored every
+ * cell as a string. These helpers accept both so the same schema validates
+ * fixtures, Mongo documents, and legacy CSV rows.
+ */
+const booleanish = z.union([
+  z.boolean(),
+  z.enum(["true", "false"]).transform((value) => value === "true"),
+]);
 
 const csvList = z.string().transform((value) =>
   value
@@ -24,25 +32,30 @@ const csvList = z.string().transform((value) =>
     .filter(Boolean),
 );
 
-/** Parse a CSV cell that holds a JSON array, reporting row-level issues cleanly. */
-function csvJsonArray<T>(itemSchema: z.ZodType<T>) {
-  return z.string().transform((value, ctx): T[] => {
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(value);
-    } catch {
-      ctx.addIssue({ code: "custom", message: "Expected valid JSON" });
-      return z.NEVER;
-    }
+const stringList = z.union([z.array(z.string().trim().min(1)), csvList]);
 
-    const result = z.array(itemSchema).safeParse(parsed);
-    if (!result.success) {
-      ctx.addIssue({ code: "custom", message: "JSON array has the wrong shape" });
-      return z.NEVER;
-    }
+/** Parse either a JSON array or a string cell that holds one. */
+function jsonArray<T>(itemSchema: z.ZodType<T>) {
+  return z.union([
+    z.array(itemSchema),
+    z.string().transform((value, ctx): T[] => {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(value);
+      } catch {
+        ctx.addIssue({ code: "custom", message: "Expected valid JSON" });
+        return z.NEVER;
+      }
 
-    return result.data;
-  });
+      const result = z.array(itemSchema).safeParse(parsed);
+      if (!result.success) {
+        ctx.addIssue({ code: "custom", message: "JSON array has the wrong shape" });
+        return z.NEVER;
+      }
+
+      return result.data;
+    }),
+  ]);
 }
 
 const clockTime = z.string().regex(/^\d{2}:\d{2}$/, "Expected HH:MM");
@@ -61,7 +74,7 @@ export const citySchema = z.object({
   airport: z.string().trim().min(1),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
-  popular: csvBoolean,
+  popular: booleanish,
   tagline: z.string().trim().min(1),
   description: z.string().trim().min(1),
 });
@@ -93,16 +106,17 @@ export const flightSchema = z.object({
   via: z
     .string()
     .trim()
-    .transform((value) => (value === "" ? null : value.toUpperCase())),
+    .nullable()
+    .transform((value) => (value === null || value === "" ? null : value.toUpperCase())),
   aircraft: z.string().trim().min(1),
   fare_economy: z.coerce.number().int().positive(),
   fare_premium: z.coerce.number().int().positive(),
   fare_business: z.coerce.number().int().positive(),
-  refundable: csvBoolean,
+  refundable: booleanish,
   fare_brand: z.enum(["Saver", "Flex"]),
   baggage_checkin: z.coerce.number().int().positive(),
   baggage_cabin: z.coerce.number().int().positive(),
-  meal_included: csvBoolean,
+  meal_included: booleanish,
   on_time: z.coerce.number().int().min(0).max(100),
   seats_left: z.coerce.number().int().nonnegative(),
   carbon_kg: z.coerce.number().int().nonnegative(),
@@ -124,16 +138,16 @@ export const hotelSchema = z.object({
   price_per_night: z.coerce.number().int().positive(),
   tax_percent: z.coerce.number().int().min(0).max(30),
   image: z.string().trim().min(1),
-  amenities: csvList,
+  amenities: stringList,
   room_type: z.string().trim().min(1),
-  breakfast: csvBoolean,
-  free_cancellation: csvBoolean,
+  breakfast: booleanish,
+  free_cancellation: booleanish,
   check_in: clockTime,
   check_out: clockTime,
   distance_km: z.coerce.number().nonnegative(),
   tagline: z.string().trim().min(1),
   description: z.string().trim().min(1),
-  featured: csvBoolean,
+  featured: booleanish,
 });
 
 export const flightSortSchema = z.enum(flightSortValues);
@@ -162,15 +176,15 @@ export const carSchema = z.object({
   distance_km: z.coerce.number().nonnegative(),
   host_name: z.string().trim().min(1),
   host_type: z.enum(["Professional", "Individual"]),
-  fastag: csvBoolean,
-  home_delivery: csvBoolean,
+  fastag: booleanish,
+  home_delivery: booleanish,
   delivery_fee: z.coerce.number().int().nonnegative(),
   deposit: z.coerce.number().int().nonnegative(),
   image: z.string().trim().min(1),
   tagline: z.string().trim().min(1),
   description: z.string().trim().min(1),
-  featured: csvBoolean,
-  guest_favorite: csvBoolean,
+  featured: booleanish,
+  guest_favorite: booleanish,
 });
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
@@ -200,15 +214,15 @@ export const holidaySchema = z.object({
   rating: z.coerce.number().min(0).max(5),
   review_count: z.coerce.number().int().nonnegative(),
   image: z.string().trim().min(1),
-  gallery: csvJsonArray(z.string().trim().min(1)),
-  themes: csvList.pipe(z.array(z.enum(holidayThemeValues))),
+  gallery: jsonArray(z.string().trim().min(1)),
+  themes: stringList.pipe(z.array(z.enum(holidayThemeValues))),
   summary: z.string().trim().min(1),
-  highlights: csvJsonArray(z.string().trim().min(1)),
-  inclusions: csvJsonArray(z.string().trim().min(1)),
-  exclusions: csvJsonArray(z.string().trim().min(1)),
-  itinerary: csvJsonArray(holidayDaySchema),
-  departure_dates: csvJsonArray(isoDate),
-  featured: csvBoolean,
+  highlights: jsonArray(z.string().trim().min(1)),
+  inclusions: jsonArray(z.string().trim().min(1)),
+  exclusions: jsonArray(z.string().trim().min(1)),
+  itinerary: jsonArray(holidayDaySchema),
+  departure_dates: jsonArray(isoDate),
+  featured: booleanish,
 });
 
 export const offerSchema = z.object({
@@ -228,7 +242,7 @@ export const offerSchema = z.object({
   cta_href: z.string().trim().min(1),
   valid_until: isoDate,
   terms: z.string().trim().min(1),
-  featured: csvBoolean,
+  featured: booleanish,
 });
 
 export const holidaySortSchema = z.enum(holidaySortValues);

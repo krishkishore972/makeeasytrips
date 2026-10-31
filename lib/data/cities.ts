@@ -1,8 +1,9 @@
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { citySchema, type City } from "@/lib/data/schemas";
+import { CityModel } from "@/lib/models";
 
-export function getCities(): Promise<City[]> {
-  return readCsvOnce("cities.csv", citySchema);
+export async function getCities(): Promise<City[]> {
+  return readCollection(CityModel, citySchema);
 }
 
 export async function getCityMap(): Promise<Map<string, City>> {

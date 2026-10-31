@@ -29,6 +29,44 @@ export function CarsPageSkeleton() {
   );
 }
 
+export function CarsLandingSkeleton() {
+  return (
+    <div aria-hidden="true">
+      <div className="border-b border-line bg-brand-950">
+        <div className="page-container py-8 sm:py-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end">
+            <div className="space-y-4">
+              <div className="shimmer-surface h-6 w-40 rounded-full bg-white/10" />
+              <div className="shimmer-surface h-16 w-full max-w-xl rounded-xl bg-white/10" />
+              <div className="shimmer-surface h-5 w-full max-w-lg rounded bg-white/10" />
+              <div className="shimmer-surface h-5 w-3/4 max-w-md rounded bg-white/10" />
+            </div>
+            <div className="shimmer-surface h-72 rounded-2xl" />
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-3 border-t border-white/10 pt-6 sm:grid-cols-4">
+            {Array.from({ length: 4 }, (_, index) => (
+              <div key={index} className="shimmer-surface h-11 rounded bg-white/10" />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="page-container space-y-14 py-10 sm:py-14">
+        <div className="grid gap-3 md:grid-cols-3">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div key={index} className="shimmer-surface h-44 rounded-2xl border border-line" />
+          ))}
+        </div>
+        <div className="grid gap-3 xl:grid-cols-2">
+          {Array.from({ length: 4 }, (_, index) => (
+            <div key={index} className="shimmer-surface h-48 rounded-2xl border border-line" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CarDetailSkeleton() {
   return (
     <div aria-hidden="true" className="page-container py-8">

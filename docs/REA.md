@@ -6,7 +6,8 @@
 > copyrighted marketing copy, or proprietary code.
 >
 > **Status:** Step 0 complete. Phase 1 foundation complete; implementation notes are in
-> `README.md`.
+> `README.md`. Sections 5 and 11 preserve the original CSV data-layer analysis; the current
+> runtime has since moved the catalogue to MongoDB (see the README's **Data layer** section).
 
 ---
 
@@ -1438,9 +1439,10 @@ datetime inputs drop to 12px in narrow cards so the picker icon keeps its paddin
 
 ### 16.9 Next.js 16 notes
 
-- `/rent-a-car` and `/` call `await connection()` before reading the current date for their default
-  rental and stay windows. Without it, `next build` fails with
-  `blocking-prerender-current-time` because `new Date()` is unstable during prerender.
+- `/rent-a-car` calls `await connection()` inside a `<Suspense>` boundary before reading the
+  current date for its default rental window, and `/` calls it at the top of the page. Without
+  `connection()`, `next build` fails with `blocking-prerender-current-time` because `new Date()`
+  is unstable during prerender.
 - Search and detail pages keep the established pattern: static shell, `<Suspense>`, and
   `await connection()` inside the query-reading component.
 - Container queries are used instead of viewport breakpoints wherever a component is reused at

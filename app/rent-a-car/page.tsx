@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
+import { Suspense } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 import { CarSearchForm } from "@/components/cars/car-search-form";
 import { CarCard } from "@/components/cars/car-card";
+import { CarsLandingSkeleton } from "@/components/cars/car-skeletons";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { Faq } from "@/components/home/faq";
 import { SectionHeading } from "@/components/shared/section-heading";
@@ -128,7 +130,23 @@ function modeWindow(mode: CarMode) {
   return { start: base, end: defaultRentalEnd(base) };
 }
 
-export default async function RentACarPage() {
+export default function RentACarPage() {
+  return (
+    <>
+      <div className="border-b border-line bg-surface">
+        <div className="page-container py-3">
+          <Breadcrumbs items={[{ label: "Rent a car" }]} />
+        </div>
+      </div>
+
+      <Suspense fallback={<CarsLandingSkeleton />}>
+        <RentACarContent />
+      </Suspense>
+    </>
+  );
+}
+
+async function RentACarContent() {
   await connection();
   const [cities, cars, featured, cityStats] = await Promise.all([
     getCarCities(),
@@ -168,12 +186,6 @@ export default async function RentACarPage() {
 
   return (
     <>
-      <div className="border-b border-line bg-surface">
-        <div className="page-container py-3">
-          <Breadcrumbs items={[{ label: "Rent a car" }]} />
-        </div>
-      </div>
-
       <section className="relative overflow-hidden border-b border-line bg-brand-950 text-white">
         <div
           aria-hidden="true"

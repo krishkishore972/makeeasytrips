@@ -1,6 +1,7 @@
 import { getCities } from "@/lib/data/cities";
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { flightSchema, type City, type Flight } from "@/lib/data/schemas";
+import { FlightModel } from "@/lib/models";
 import {
   type Cabin,
   type DepartureWindow,
@@ -53,8 +54,8 @@ export type FlightFacets = {
   maxFare: number;
 };
 
-export function getFlights(): Promise<Flight[]> {
-  return readCsvOnce("flights.csv", flightSchema);
+export async function getFlights(): Promise<Flight[]> {
+  return readCollection(FlightModel, flightSchema);
 }
 
 export async function getFlightById(id: string): Promise<Flight | undefined> {

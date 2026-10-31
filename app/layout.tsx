@@ -66,7 +66,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${fontSans.variable} ${fontDisplay.variable}`}>
+    <html
+      lang="en-IN"
+      data-scroll-behavior="smooth"
+      className={`${fontSans.variable} ${fontDisplay.variable}`}
+    >
       <body className="flex min-h-dvh flex-col bg-canvas text-ink">
         <a
           href="#main-content"

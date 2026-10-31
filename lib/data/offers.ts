@@ -1,5 +1,6 @@
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { offerSchema, type Offer } from "@/lib/data/schemas";
+import { OfferModel } from "@/lib/models";
 import {
   visibleOfferServiceValues,
   type OfferCategory,
@@ -17,8 +18,8 @@ function isVisible(offer: Offer) {
   return visibleCategories.has(offer.category);
 }
 
-export function getOffers(): Promise<Offer[]> {
-  return readCsvOnce("offers.csv", offerSchema);
+export async function getOffers(): Promise<Offer[]> {
+  return readCollection(OfferModel, offerSchema);
 }
 
 export async function getOfferById(id: string): Promise<Offer | undefined> {

@@ -13,7 +13,7 @@ are complete.**
 ## What is in this build
 
 - Next.js App Router with React Server Components by default and small client leaves
-- TypeScript in strict mode with Zod for environment validation and CSV row parsing
+- TypeScript in strict mode with Zod for environment validation and catalogue row validation
 - Tailwind CSS v4 theme with an original lagoon-teal, coral, and gold palette
 - Fraunces display serif and Manrope UI sans via `next/font`
 - Lenis smooth scrolling with `prefers-reduced-motion` support
@@ -22,7 +22,7 @@ are complete.**
 - Full home composition: hero with catalogue counts, tabbed GET search widget, trust strip,
   offer and holiday carousels, curated destinations, trending stays, featured self-drive cars,
   how-it-works, field notes, newsletter, FAQ, and a final call to action
-- A typed, cached CSV data layer with 16 cities, 540 flights, 32 stays, 12 holidays, 12 offers,
+- A typed, cached MongoDB data layer with 16 cities, 540 flights, 32 stays, 12 holidays, 12 offers,
   and 62 self-drive cars
 - Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
   result cards, and a detail page with fare breakdown and review hand-off
@@ -153,42 +153,68 @@ components/
   search/             Shared filter group, flag, sort, drawer, chips, URL hook
   shared/             Logo, breadcrumbs, rating, amenities, empty state, reveals, carousel
   ui/                 Small primitives (buttons, dialogs, popovers, selects)
-data/                 CSV catalogue: cities, flights, hotels, holidays, cars, offers
+data/                 JSON seed fixtures: cities, flights, hotels, holidays, cars, offers
 docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 docs/rent-a-car.md    Rent-a-car routes, data, pricing, plans, and deliberate gaps
 hooks/                Small client hooks (scroll state, media query)
 lib/
   booking.ts          Selection resolver, price summary, links, demo reference
-  data/               Cached CSV loader, Zod schemas, query and facet helpers
+  data/               Cached MongoDB collection loader, Zod schemas, query and facet helpers
+  models/             Mongoose models for cities, flights, hotels, cars, holidays, offers
+  mongodb.ts          Cached Mongoose connection
   validation/         URL search-param and booking parsing with Zod
   pricing.ts          Fare, stay, holiday, and car-rental totals with tax bands
   search-options.ts   Filter, sort, cabin, amenity, holiday, car, and offer option tables
   dates.ts            Date parsing, labels, night counts, and rental windows
   home-content.ts     Original home FAQ and field-note copy
 public/images/        Original abstract SVG placeholders, including six car body styles
-scripts/              axe-core accessibility and lab performance audits
+scripts/              MongoDB seed, axe-core accessibility, and lab performance audits
 tests/                Vitest suites for dates, pricing, validation, booking, and data
 types/                Shared TypeScript types
-vitest.config.ts      Vitest config with the @ alias
+vitest.config.ts      Vitest config with the @ alias and Mongo fixture mock
 ```
 
 ## Data layer
 
-CSV files are read once per process, parsed with PapaParse, validated row by row with Zod, and
-cached as a promise in `lib/data/csv.ts`. Server Components and the API route handlers share the
-same typed helpers, so there is no second source of truth.
+Catalogue reads come from MongoDB. `lib/data/mongo.ts` loads each collection once per server
+process, validates every document with the same Zod schemas the app uses, strips internal fields,
+and caches the typed promise. Server Components and the API route handlers share the same helpers,
+so there is no second source of truth.
 
-| File                | Rows | Notes                                                                |
-| ------------------- | ---- | -------------------------------------------------------------------- |
-| `data/cities.csv`   | 16   | 10 flight cities and 8 hotel cities, with airport and tagline        |
-| `data/flights.csv`  | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins     |
-| `data/hotels.csv`   | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies    |
-| `data/cars.csv`     | 62   | 12 car cities, 6 body styles, 12 fictional hosts, hourly demo rates  |
-| `data/holidays.csv` | 12   | 10 destinations, 10 themes, day-by-day JSON itineraries, departures  |
-| `data/offers.csv`   | 12   | 7 visible rows across stays, holidays, and cars; flights/trains kept |
+### MongoDB setup
 
-All fares, taxes, ratings, and availability are fictional demo values. Nothing is held, charged,
-or persisted.
+```bash
+# .env.local
+MONGODB_URI=mongodb+srv://...
+MONGODB_DB=tripnest
+
+npm run db:seed        # validate the JSON fixtures, then upsert every row
+npm run db:seed:fresh  # clear the six collections first, then seed
+```
+
+The seed fixtures in `data/*.json` are the authored catalogue. The seed script validates them with
+Zod before writing, so the database cannot drift from the TypeScript contract. Each document also
+stores a private `sort_order` so the original authoring order survives; reads sort by it and
+project it back out.
+
+Because collection reads are cached per process, restart the dev server after re-seeding to pick up
+changes (or run the seed before starting it).
+
+| Collection | Rows | Notes                                                                |
+| ---------- | ---- | -------------------------------------------------------------------- |
+| `cities`   | 16   | 10 flight cities and 8 hotel cities, with airport and tagline        |
+| `flights`  | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins     |
+| `hotels`   | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies    |
+| `cars`     | 62   | 12 car cities, 6 body styles, 12 fictional hosts, hourly demo rates  |
+| `holidays` | 12   | 10 destinations, 10 themes, day-by-day itineraries, departure dates  |
+| `offers`   | 12   | 7 visible rows across stays, holidays, and cars; flights/trains kept |
+
+All fares, taxes, ratings, and availability are fictional demo values. Nothing is held or charged,
+and no booking is persisted.
+
+The models in `lib/models/` mirror the Zod row shapes, use the existing snake_case field names, and
+add unique indexes on `id` (and `code` for cities). `lib/mongodb.ts` caches one connection across
+requests and dev reloads.
 
 ## Verification
 
@@ -253,17 +279,19 @@ shared links behave as expected.
 `npm test` runs Vitest in a Node environment with the `@` alias. The suite targets the logic that
 is easy to get quietly wrong and hard to see in the UI:
 
-| File                               | Coverage                                                                                 |
-| ---------------------------------- | ---------------------------------------------------------------------------------------- |
-| `tests/dates.test.ts`              | ISO validation, leap years, rollover, night clamping, rental windows, India-time labels  |
-| `tests/pricing.test.ts`            | Flight, stay, holiday, and car breakdowns, tax rounding, per-room and per-day scaling    |
-| `tests/utils.test.ts`              | INR formatting, compaction, pluralisation, query strings, class merging                  |
-| `tests/validation-search.test.ts`  | Flight, hotel, holiday, car, and offer URL parsing, defaults, clamping, error copy       |
-| `tests/validation-booking.test.ts` | All four booking types, bounds, repeated params, plain-language errors                   |
-| `tests/booking.test.ts`            | Selection serialisation, references, review/confirmation links, totals, missing products |
-| `tests/data.test.ts`               | CSV counts, lookup, filters, sorts, facets, popular routes, similar packages and cars    |
+| File                               | Coverage                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| `tests/dates.test.ts`              | ISO validation, leap years, rollover, night clamping, rental windows, India-time labels     |
+| `tests/pricing.test.ts`            | Flight, stay, holiday, and car breakdowns, tax rounding, per-room and per-day scaling       |
+| `tests/utils.test.ts`              | INR formatting, compaction, pluralisation, query strings, class merging                     |
+| `tests/validation-search.test.ts`  | Flight, hotel, holiday, car, and offer URL parsing, defaults, clamping, error copy          |
+| `tests/validation-booking.test.ts` | All four booking types, bounds, repeated params, plain-language errors                      |
+| `tests/booking.test.ts`            | Selection serialisation, references, review/confirmation links, totals, missing products    |
+| `tests/data.test.ts`               | Catalogue counts, lookup, filters, sorts, facets, popular routes, similar packages and cars |
+| `tests/fixtures.test.ts`           | Every JSON seed fixture validated against the same Zod schemas used for MongoDB reads       |
 
-115 tests across 7 files. They run in about 300 ms and need no browser, server, or database.
+121 tests across 8 files. They run in about 300 ms and need no browser, server, or database: the
+Mongo collection loader is mocked with the same seed fixtures.
 
 ### Accessibility
 
@@ -330,9 +358,9 @@ Latest run on the production build:
 | Total transfer | 277–400 kB       |
 | DOM nodes      | 479–1,736        |
 
-The main levers: Server Components by default, the cached CSV loader, `next/image` with explicit
-`sizes`, `priority` only on above-the-fold art, `display: swap` fonts, Suspense boundaries around
-search-param work, and animations limited to `transform`/`opacity`.
+The main levers: Server Components by default, the cached MongoDB collection loader, `next/image`
+with explicit `sizes`, `priority` only on above-the-fold art, `display: swap` fonts, Suspense
+boundaries around search-param work, and animations limited to `transform`/`opacity`.
 
 ## Design system
 
@@ -350,16 +378,16 @@ and `shadow-glow` rather than raw hex values.
 
 ## Data roadmap
 
-`cities.csv`, `flights.csv`, `hotels.csv`, `cars.csv`, `holidays.csv`, and `offers.csv` are
-implemented (see **Data layer** above). They share the same cached loader and Zod row schemas, so
-every consumer keeps one typed source of truth. Flights and trains keep their data and routes but
-are hidden from the navigation in this phase; trains remain a static shell.
+`cities`, `flights`, `hotels`, `cars`, `holidays`, and `offers` are implemented (see **Data layer**
+above). They share the same cached collection loader and Zod row schemas, so every consumer keeps
+one typed source of truth. Flights and trains keep their data and routes but are hidden from the
+navigation in this phase; trains remain a static shell.
 
 ## Reverse-engineering notes
 
 `docs/REA.md` records the Step 0 analysis and the Phase 2–7 implementation records: observed
-sitemap and layout patterns, inferred flows, CSV schemas, responsive behaviour, design decisions,
-verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
+sitemap and layout patterns, inferred flows, catalogue schemas, responsive behaviour, design
+decisions, verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
 analysis relies on archived snapshots and public page structure. Phase 7 uses REA browser captures
 of Zoomcar's public pages plus its published `llms-full.txt` to model a self-drive rental flow.
 No proprietary code, logos, photography, or marketing copy was reused.
@@ -368,8 +396,8 @@ No proprietary code, logos, photography, or marketing copy was reused.
 
 1. **Phase 1 — Foundation (done):** setup, tokens, layout shell, motion, home preview, route
    scaffolding, error/loading states.
-2. **Phase 2 — Flights and hotels (done):** CSV data layer, search widgets, URL-driven results,
-   filters, sorting, result cards, detail shells.
+2. **Phase 2 — Flights and hotels (done):** catalogue data layer, search widgets, URL-driven
+   results, filters, sorting, result cards, detail shells.
 3. **Phase 3 — Holidays, offers, and APIs (done):** holiday catalogue and detail pages, offer
    board, route handlers, Zod query validation.
 4. **Phase 4 — Home and editorial polish (done):** full home composition, accessible carousels,
@@ -378,7 +406,7 @@ No proprietary code, logos, photography, or marketing copy was reused.
    holidays, deterministic demo references, and no payment or persistence.
 6. **Phase 6 — Quality (done):** accessibility audit, performance pass, tests, documentation.
 7. **Phase 7 — Rent a car (done):** Zoomcar-style self-drive landing, search, and detail pages,
-   a 62-car CSV catalogue, car pricing with GST and kilometre plans, shared booking integration,
+   a 62-car catalogue, car pricing with GST and kilometre plans, shared booking integration,
    flights/trains hidden from the navigation, and `/cabs` redirects to `/rent-a-car`.
 
 ## Disclaimer

@@ -1,6 +1,7 @@
 import { getCities } from "@/lib/data/cities";
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { holidaySchema, type City, type Holiday } from "@/lib/data/schemas";
+import { HolidayModel } from "@/lib/models";
 import {
   HOLIDAY_DURATION_OPTIONS,
   HOLIDAY_PRICE_BAND_OPTIONS,
@@ -35,8 +36,8 @@ export type HolidayFacets = {
   maxPrice: number;
 };
 
-export function getHolidays(): Promise<Holiday[]> {
-  return readCsvOnce("holidays.csv", holidaySchema);
+export async function getHolidays(): Promise<Holiday[]> {
+  return readCollection(HolidayModel, holidaySchema);
 }
 
 export async function getHolidayBySlug(slug: string): Promise<Holiday | undefined> {

@@ -1,6 +1,7 @@
 import { getCities } from "@/lib/data/cities";
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { carSchema, type Car, type City } from "@/lib/data/schemas";
+import { CarModel } from "@/lib/models";
 import {
   carFuelValues,
   carTransmissionValues,
@@ -55,8 +56,8 @@ export type CarFacets = {
   maxDistance: number;
 };
 
-export function getCars(): Promise<Car[]> {
-  return readCsvOnce("cars.csv", carSchema);
+export async function getCars(): Promise<Car[]> {
+  return readCollection(CarModel, carSchema);
 }
 
 export async function getCarById(id: string): Promise<Car | undefined> {

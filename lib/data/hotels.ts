@@ -1,6 +1,7 @@
 import { getCities } from "@/lib/data/cities";
-import { readCsvOnce } from "@/lib/data/csv";
+import { readCollection } from "@/lib/data/mongo";
 import { hotelSchema, type City, type Hotel } from "@/lib/data/schemas";
+import { HotelModel } from "@/lib/models";
 import { type AmenityFilter, type HotelSort, type PriceBand } from "@/lib/search-options";
 
 export type HotelQuery = {
@@ -34,8 +35,8 @@ export type HotelFacets = {
   maxPrice: number;
 };
 
-export function getHotels(): Promise<Hotel[]> {
-  return readCsvOnce("hotels.csv", hotelSchema);
+export async function getHotels(): Promise<Hotel[]> {
+  return readCollection(HotelModel, hotelSchema);
 }
 
 export async function getHotelById(id: string): Promise<Hotel | undefined> {
