@@ -34,6 +34,7 @@ const carSchema = new Schema<Ordered<Car>>(
     delivery_fee: { type: Number, required: true, min: 0 },
     deposit: { type: Number, required: true, min: 0 },
     image: { type: String, required: true, trim: true },
+    gallery: { type: [String], default: undefined },
     tagline: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     featured: { type: Boolean, required: true, default: false },

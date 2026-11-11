@@ -11,7 +11,7 @@ type ErrorPageProps = {
 
 export default function ErrorPage({ error, retry }: ErrorPageProps) {
   useEffect(() => {
-    console.error("TripNest route error:", error);
+    console.error("Makeasytrips route error:", error);
   }, [error]);
 
   return (

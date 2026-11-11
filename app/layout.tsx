@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
 import { AppProviders } from "@/components/providers/app-providers";
 import { fontDisplay, fontSans } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site";
@@ -10,14 +8,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "TripNest — Travel that feels like yours.",
-    template: "%s · TripNest",
+    default: "Makeasytrips — Travel that feels like yours.",
+    template: "%s · Makeasytrips",
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
-  authors: [{ name: "TripNest Travel Labs" }],
+  authors: [{ name: "Makeasytrips" }],
   keywords: [
-    "TripNest",
+    "Makeasytrips",
     "travel planning",
     "hotels",
     "holiday packages",
@@ -33,7 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: siteConfig.name,
-    title: "TripNest — Travel that feels like yours.",
+    title: "Makeasytrips — Travel that feels like yours.",
     description: siteConfig.description,
     url: "/",
     images: [
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TripNest — Travel that feels like yours.",
+    title: "Makeasytrips — Travel that feels like yours.",
     description: siteConfig.description,
     images: ["/images/hero-coast.svg"],
   },
@@ -84,13 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
 
-        <AppProviders>
-          <Navbar />
-          <main id="main-content" tabIndex={-1} className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </AppProviders>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

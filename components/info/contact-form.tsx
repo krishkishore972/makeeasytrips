@@ -95,8 +95,8 @@ export function ContactForm() {
         <CheckCircle2 aria-hidden="true" className="mx-auto size-8 text-success" />
         <p className="mt-3 text-base font-extrabold text-ink">Thanks — your message is saved.</p>
         <p className="mx-auto mt-1 max-w-md text-xs leading-5 text-muted">
-          The TripNest team can now read it and reply to the email address you gave. Nothing else
-          was stored.
+          The Makeasytrips team can now read it and reply to the email address you gave. Nothing
+          else was stored.
         </p>
         <button
           type="button"
@@ -115,8 +115,8 @@ export function ContactForm() {
         Send a message
       </h2>
       <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">
-        This form is saved to the TripNest database so the team can follow up. Add a phone number if
-        you would rather be called.
+        This form is saved to the Makeasytrips database so the team can follow up. Add a phone
+        number if you would rather be called.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="mt-5 grid gap-4 sm:grid-cols-2">

@@ -60,7 +60,7 @@ export function NewsletterForm() {
         <div>
           <p className="text-sm font-bold text-brand-800">You&apos;re on the list.</p>
           <p className="mt-1 text-xs leading-5 text-muted">
-            We saved your email for the TripNest letter. No email has been sent yet.
+            We saved your email for the Makeasytrips letter. No email has been sent yet.
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={saving}
-          aria-label="Subscribe to the TripNest letter"
+          aria-label="Subscribe to the Makeasytrips letter"
           className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-700 text-white transition-colors hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {saving ? (

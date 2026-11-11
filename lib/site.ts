@@ -1,8 +1,8 @@
 export const siteConfig = {
-  name: "TripNest",
+  name: "Makeasytrips",
   tagline: "Travel that feels like yours.",
   description:
-    "TripNest is a learning-purpose travel experience for finding stays, planning holiday packages, and renting self-drive cars across India. Built with Next.js, TypeScript, and a local CSV data layer.",
+    "Makeasytrips is a learning-purpose travel experience for finding stays, planning holiday packages, and renting self-drive cars across India. Built with Next.js, TypeScript, and a local CSV data layer.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_IN",
   currency: "INR",
@@ -12,11 +12,7 @@ export const siteConfig = {
     { label: "Rent a car", href: "/rent-a-car", icon: "car" },
     { label: "Offers", href: "/offers", icon: "tag" },
   ],
-  utilityNavigation: [
-    { label: "List your property", href: "/info/list-your-property" },
-    { label: "My trips", href: "/my-trips" },
-    { label: "Wishlist", href: "/wishlist" },
-  ],
+  utilityNavigation: [{ label: "List your property", href: "/info/list-your-property" }],
   footer: {
     explore: [
       { label: "Hotels", href: "/hotels" },
@@ -25,7 +21,7 @@ export const siteConfig = {
       { label: "Offers", href: "/offers" },
     ],
     company: [
-      { label: "About TripNest", href: "/info/about" },
+      { label: "About Makeasytrips", href: "/info/about" },
       { label: "How it works", href: "/info/how-it-works" },
       { label: "Careers", href: "/info/careers" },
       { label: "Press", href: "/info/press" },

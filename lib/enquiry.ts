@@ -65,6 +65,10 @@ export type EnquiryTarget = {
   service: EnquiryService;
   title: string;
   context?: readonly string[];
+  /** Catalogue row id, so stats can group repeat enquiries for one item. */
+  itemId?: string;
+  /** Internal detail-page path shown in the admin dashboard. */
+  itemHref?: string;
 };
 
 export type EnquiryMessageInput = EnquiryFormValues & {
@@ -80,7 +84,7 @@ export function buildWhatsAppEnquiryMessage({ target, name, phone }: EnquiryMess
   const context = (target.context ?? []).map((line) => line.trim()).filter(Boolean);
 
   const lines = [
-    `Hi TripNest, I would like to enquire about this ${serviceLabel.toLowerCase()}.`,
+    `Hi Makeasytrips, I would like to enquire about this ${serviceLabel.toLowerCase()}.`,
     "",
     `Interested item: *${target.title.trim()}*`,
     ...context.map((line) => `• ${line}`),
@@ -88,7 +92,7 @@ export function buildWhatsAppEnquiryMessage({ target, name, phone }: EnquiryMess
     `Name: ${name.trim()}`,
     `Phone: +91 ${normaliseIndianMobile(phone)}`,
     "",
-    "Sent from the TripNest website.",
+    "Sent from the Makeasytrips website.",
   ];
 
   return lines.join("\n");

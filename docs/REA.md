@@ -1,5 +1,23 @@
 # REA: MakeMyTrip → TripNest
 
+## Catalogue editor implementation
+
+The standalone media workspace described in the historical Phase 11 notes below was later removed.
+Uploads now take place in the catalogue editors; existing Cloudinary assets and audit records remain.
+
+The protected hotel, holiday, car and offer editors use a shared configuration-driven form,
+server-side validation and authenticated actions. Each save records an audit event, clears the
+shared process catalogue cache and revalidates public routes. Photos are uploaded through the
+server-side Cloudinary route; the main image plus up to four additional photos are supported.
+Legacy image URLs are retained, and removing an image from an editor does not destroy the asset.
+Offers can omit artwork and retain the icon/tone fallback. Extra photos are exposed in catalogue
+data and displayed in hotel, holiday and car detail galleries and on offer cards.
+Catalogue entries can be deleted from their editors, with unshared managed Cloudinary images
+deleted first and shared images retained. A failure may leave some images deleted while the listing
+remains; the operation can be retried. Enquiries are managed separately under `/admin/enquiries`,
+with uncached paginated search, service, status and IST date filters, detail pages, and authenticated
+audited status changes. Legacy rows without status are treated as new.
+
 > **Purpose.** This document records the reverse-engineering analysis used to build a
 > learning-only, original clone called **TripNest**. We reproduce structure, layout,
 > flows, and UX patterns. We do **not** copy logos, brand assets, photography,
@@ -1550,3 +1568,366 @@ and how to ask for removal.
 - Newsletter sign-ups are stored but no letter is actually sent, and no unsubscribe mechanism
   exists.
 - Phone normalisation is India-specific, matching the rest of the demo.
+
+## 18. Phase 9 implementation record (admin authentication and protected shell)
+
+### 18.1 Scope and identity model
+
+The dashboard is an admin tool, not a customer feature. Public visitors keep browsing, searching,
+and enquiring without an account. Phase 9 therefore adds:
+
+- one administrator, identified by `ADMIN_EMAIL` and a password hash in the environment;
+- no user collection, no roles table, no customer session, and no stored user state;
+- a stateless signed token in an HttpOnly cookie, so there is no server-side session store;
+- a protected `/admin` shell with a real login and logout.
+
+This supersedes the Phase 8 note that there was no admin surface or authentication. The Phase 8
+decision not to expose `GET` handlers for lead collections still stands; Phase 9 does not add one.
+
+### 18.2 Environment contract
+
+| Variable              | Purpose                                                   |
+| --------------------- | --------------------------------------------------------- |
+| `ADMIN_EMAIL`         | The only email allowed to sign in; trimmed and lowercased |
+| `ADMIN_PASSWORD_HASH` | scrypt hash in `scrypt:N:r:p:salt:hash` form              |
+| `ADMIN_JWT_SECRET`    | HMAC key for session tokens; at least 32 characters       |
+
+`npm run admin:hash-password` prompts twice with hidden input, enforces a 12-character minimum,
+and prints the `ADMIN_PASSWORD_HASH=...` line. The parser also accepts `$` separators, but the
+generator writes colons because Next's env loader expands `$name` inside `.env` values. During
+verification the first `$`-separated hash loaded as 75 characters instead of 126 and every login
+failed; switching the format fixed it. `isAdminConfigured()` fails closed, and the login action
+returns a configuration error instead of crashing the build when a variable is missing.
+
+### 18.3 Token, cookie, and enforcement
+
+`lib/admin/jwt.ts` signs and verifies a compact HS256 token with Web Crypto, so the same code runs
+in the proxy, Server Components, Server Actions, and tests. Claims are `sub: "admin"`, the admin
+email, `iat`, `exp`, and a random `jti`. Verification checks the algorithm and type, the HMAC
+signature, the admin subject, the configured email, the eight-hour expiry, and a five-minute clock
+skew on `iat`. A missing or short secret makes verification return null rather than trusting input.
+
+The cookie is `tripnest_admin`, `HttpOnly`, `SameSite=Strict`, `Path=/`, and `Secure` in
+production. Sign-out deletes it; changing the secret invalidates every outstanding token.
+
+Authorization is layered on purpose:
+
+1. `proxy.ts` matches `/admin` and `/admin/:path*`, verifies the token, and redirects
+   unauthenticated requests to `/admin/login?next=...` with `Cache-Control: no-store`.
+2. The `(dashboard)` layout calls `requireAdminSession()` behind `<Suspense>` so the session read
+   is not a Cache Components build error.
+3. The overview page calls it again.
+4. Every future admin Server Action and route handler must call it too; the proxy is only an
+   optimistic gate and never the authorization boundary.
+
+### 18.4 Login flow and throttling
+
+`lib/admin/actions.ts` validates the payload with Zod, then verifies the email with a constant-time
+comparison and the password with scrypt and `timingSafeEqual`. Both checks always run, even when
+the email is wrong, so the response does not advertise whether an address is the configured admin.
+Failures return one generic message; malformed input gets a separate format message.
+
+Five failed attempts per `IP:email` are allowed in a 15-minute window. The counter lives in a
+process-local `Map`: enough to slow a single-instance demo, not a substitute for a shared rate
+limiter. Successful sign-in clears the bucket. The `next` parameter is restricted to `/admin`
+paths, rejects control characters, backslashes, protocol-relative URLs, and the login page, so the
+form cannot become an open redirect or a loop.
+
+### 18.5 Route-group split and robots
+
+The public navbar, footer, and newsletter belonged in the root layout until this phase. Keeping
+them there would have wrapped every admin page in marketing chrome and a customer sign-in dialog.
+The routes moved into `app/(site)/` with the public shell in `app/(site)/layout.tsx`. The root
+layout now owns only `<html>`, `<body>`, the skip link, providers, and global styles; `app/admin/`
+provides its own shell. The root `not-found.tsx` renders the public chrome explicitly because
+route-group layouts do not run for unmatched URLs, while `app/(site)/not-found.tsx` covers
+`notFound()` calls inside the public group.
+
+The admin metadata is `noindex`, `nofollow`, and `nocache`, and `robots.txt` disallows `/admin`
+and `/api`. The existing root metadata already set `index: false`; the segment-level rule keeps
+the admin intent explicit if that changes later.
+
+### 18.6 Files
+
+| File                             | Role                                                     |
+| -------------------------------- | -------------------------------------------------------- |
+| `lib/admin/constants.ts`         | Cookie name, login/home paths, eight-hour TTL            |
+| `lib/admin/config.ts`            | Environment reads, email normalisation, configured check |
+| `lib/admin/jwt.ts`               | HS256 sign/verify with Web Crypto                        |
+| `lib/admin/password.ts`          | scrypt hash/verify, constant-time string comparison      |
+| `lib/admin/session.ts`           | Cookie set/clear, session read, `requireAdminSession()`  |
+| `lib/admin/actions.ts`           | Login and logout Server Actions                          |
+| `lib/admin/rate-limit.ts`        | In-memory login throttle                                 |
+| `lib/admin/redirect.ts`          | Safe `next` handling                                     |
+| `proxy.ts`                       | Optimistic admin gate                                    |
+| `app/admin/login/`               | Sign-in page, client form, metadata                      |
+| `app/admin/(dashboard)/`         | Protected layout and overview page                       |
+| `components/admin/`              | Admin shell and overview panels                          |
+| `scripts/hash-admin-password.ts` | Hidden prompt, piped input, hash output                  |
+| `tests/admin-auth.test.ts`       | Token, password, redirect, and throttle coverage         |
+| `tests/admin-session.test.ts`    | Cookie flags and session verification coverage           |
+
+### 18.7 Verification
+
+- `npm run typecheck`, `npm run lint`, and `npm run format:check` are clean.
+- `npm test`: 124 tests across 9 files, including JWT tampering and expiry, scrypt verification,
+  open-redirect rejection, throttle windows, and cookie options.
+- `npm run build`: 45 routes; `/admin` and `/admin/login` are partial-prerender with static
+  shells, and the proxy is registered.
+- Browser run against `next start`: unauthenticated `/admin` returned `307` to
+  `/admin/login?next=%2Fadmin`; a tampered cookie did the same; the correct credentials reached
+  the overview; `document.cookie` stayed empty; sign-out returned to the login page; and a direct
+  `/admin` visit afterwards redirected again.
+- The login POST returned `200` with no redirect loop, the expected email, and a generic error for
+  a wrong password before the successful attempt.
+- `npm run audit:a11y`: 17/17 routes clean under WCAG 2.2 AA, now including `/admin/login`.
+
+### 18.8 Deliberate gaps
+
+- Stats, Cloudinary uploads, and catalogue CRUD are not built yet. The overview names them as the
+  next phases.
+- There is one admin from environment variables. There is no user list, password reset, 2FA,
+  account lockout persistence, or audit log.
+- The login throttle is process-local and resets on restart. A shared store is needed for
+  multi-instance deployments.
+- Only `/admin/login` is in the accessibility audit. The authenticated overview needs a generated
+  session cookie before it can join the script; that is part of the hardening phase.
+- The proxy fixes the common unauthenticated case, but it is not the security boundary. Future
+  admin actions must call `requireAdminSession()` themselves.
+
+## 19. Phase 10 implementation record (enquiry stats dashboard)
+
+### 19.1 Scope
+
+Phase 10 turns the protected `/admin` placeholder into a live operations view. It deliberately does
+not add catalogue editing or media upload; those remain the next phases. The dashboard answers four
+questions:
+
+1. How many enquiries, newsletter sign-ups, and contact messages arrived in 7, 30, or 90 days?
+2. Which services and catalogue items attract the most interest?
+3. How is the 30-day enquiry volume trending?
+4. Which leads are new, and how do we contact them?
+
+### 19.2 Enquiry identity and status
+
+The enquiry dialog previously sent only `service`, `title`, and context lines, so two enquiries for
+one hotel grouped only by display title. `EnquiryTarget` now accepts optional `itemId` and
+`itemHref`, and the dialog posts both. Every detail page supplies them:
+
+| Service | `itemId`     | `itemHref`                 |
+| ------- | ------------ | -------------------------- |
+| Hotel   | `hotel.id`   | `/hotels/{hotel.id}`       |
+| Holiday | `holiday.id` | `/holidays/{holiday.slug}` |
+| Car     | `car.id`     | `/rent-a-car/{car.id}`     |
+| Flight  | `flight.id`  | `/flights/{flight.id}`     |
+
+`enquirySubmissionSchema` keeps both fields optional, so an older client cannot be broken by the
+new contract. `itemHref` must match an internal `/hotels`, `/holidays`, `/rent-a-car`, or `/flights`
+path; the stats layer validates it again before rendering a link, because database content is not
+trusted input.
+
+The enquiry model also gained `status`, constrained to `new`, `contacted`, or `closed` and defaulting
+to `new`. Existing rows have no status, so the aggregator treats a missing value as `new`. Phase 7
+(the lead inbox) will edit this field; Phase 10 only reports the split.
+
+### 19.3 Backfill
+
+`scripts/backfill-enquiry-items.ts` matches historical rows by unique catalogue title per service,
+then writes the missing `itemId`, `itemHref`, and `status`. Ambiguous titles are removed from the
+lookup and reported instead of being guessed. The script supports `--dry-run`, uses one
+`bulkWrite`, and is idempotent. On the local database it matched all four existing enquiries:
+`holiday 1`, `car 3`, with no misses.
+
+### 19.4 Aggregation rules
+
+`lib/admin/stats.ts` separates a pure aggregator from the Mongo reads:
+
+- `parseStatsRange` accepts `7`, `30`, or `90` and defaults to `30`.
+- Range boundaries and trend keys use Indian calendar days at a fixed `+05:30` offset, so the
+  dashboard does not drift with the server timezone.
+- The query fetches `max(range, 30)` days so the 30-day trend stays complete even when the selected
+  range is 7 days.
+- Service and status slices always include zero entries, which keeps the layout stable.
+- Popular items group by `itemId`, then `itemHref`, then a lowercased title. Sorting is count
+  descending, then most recent, then title. The list is capped at 10.
+- Recent enquiries are capped at 8 and rendered with a `tel:` link and an internal item link only
+  when `itemHref` passes the same path check.
+- Newsletter and contact totals come from `countDocuments`; no lead query is cached. This is the
+  important difference from `lib/data/mongo.ts`, whose catalogue reads are cached per process.
+
+### 19.5 UI and routing
+
+`/admin` is the stats page. The range is URL state (`/admin?range=7`), with links rather than a
+client component, and the selected link carries `aria-current`. The page reads the session again,
+calls `connection()` to mark the read as dynamic, and is wrapped in `<Suspense>` with a skeleton
+fallback. A failed Mongo read renders an `AdminStatsUnavailable` panel instead of crashing the admin
+shell.
+
+The page shows four metric cards, a 30-day bar chart with an sr-only data table, service mix and
+status tiles, a busiest-service callout, a top-items table, a recent-leads table, and a compact
+workspace status strip. Empty ranges get explicit empty states. No charting dependency was added;
+the bars are CSS with a percentage height.
+
+### 19.6 Files
+
+| File                                    | Role                                                        |
+| --------------------------------------- | ----------------------------------------------------------- |
+| `lib/admin/stats.ts`                    | Range parsing, IST helpers, pure aggregation, live reads    |
+| `components/admin/admin-stats.tsx`      | Dashboard, chart, tables, empty and error states            |
+| `app/admin/(dashboard)/page.tsx`        | Session check, search-param parsing, dynamic read, Suspense |
+| `scripts/backfill-enquiry-items.ts`     | Idempotent `itemId`/`itemHref`/`status` backfill            |
+| `lib/models/enquiry.ts`                 | Optional item fields plus the `status` enum and index       |
+| `lib/validation/forms.ts`               | Item id/path validation for new submissions                 |
+| `components/enquiry/enquiry-dialog.tsx` | Posts the item identity with the lead                       |
+| `tests/admin-stats.test.ts`             | Range, timezone, grouping, trend, empty state, link safety  |
+
+### 19.7 Verification
+
+- `npm run typecheck`, `npm run lint`, and `npm run format:check` are clean.
+- `npm test`: 133 tests across 10 files, including new stats and item-link validation tests.
+- `npm run build` succeeds; `/admin` remains a partial-prerender route behind the proxy.
+- `npm run db:backfill-enquiries -- --dry-run` matched 4 of 4 existing enquiries; the real run
+  updated all four.
+- Browser run against `next start`: sign-in reached the dashboard, which showed 4 enquiries, 4 new
+  leads, 3 car enquiries, 1 holiday enquiry, the correct top items, and the latest leads. The 7-day
+  link changed the label, counts, and `aria-current` without a console error.
+- The public 17-route accessibility audit still passes under WCAG 2.2 AA and best practice.
+
+### 19.8 Deliberate gaps
+
+- The lead status is displayed but not editable. The inbox and status actions belong to Phase 7.
+- Newsletter and contact counts are aggregate only; there is no subscriber or message list yet.
+- The 30-day chart has no hover/focus tooltip beyond the native `title`; the sr-only table is the
+  accessible source of the same values.
+- Authenticated admin pages are not yet in the automated axe route list. The stats page needs a
+  generated session cookie in the audit script, which remains part of the hardening phase.
+- There is still no export, CSV download, pagination, or per-item drill-down.
+
+## 20. Phase 11 implementation record (Cloudinary media foundation)
+
+### 20.1 Scope
+
+This admin phase adds the media foundation the catalogue editors will use: a signed upload route,
+strict raster validation, shared admin form controls, an audit trail, and a media workspace. It does
+not edit hotels, holidays, cars, or offers yet. The public site is unchanged apart from allowing the
+configured Cloudinary cloud through `next/image`.
+
+The upload path is deliberately server-side. `cloudinary@2.11.0` is already installed, and the
+existing `.env.local` carries both the separate credentials and `CLOUDINARY_URL`. The browser never
+receives the API secret or an unsigned upload preset.
+
+### 20.2 Upload contract
+
+`POST /api/admin/uploads` accepts multipart form data with `file` and an optional `folder`. It
+returns JSON only, always with `Cache-Control: no-store`:
+
+| Condition                                      | Status        | Audit outcome |
+| ---------------------------------------------- | ------------- | ------------- |
+| No admin session                               | `401`         | none          |
+| `Origin` missing or not the request host       | `403`         | rejected      |
+| `Content-Length` above the request ceiling     | `413`         | rejected      |
+| Missing file part or unknown folder            | `400`         | rejected      |
+| Empty or over-5-MB file                        | `400` / `413` | rejected      |
+| Unsupported declared type, bad bytes, mismatch | `415`         | rejected      |
+| Cloudinary unavailable or rejects the file     | `502` / `503` | failed        |
+
+`lib/admin/uploads.ts` contains the pure rules shared by the route and tests:
+
+- JPEG (`FF D8 FF`), PNG (`89 50 4E 47 0D 0A 1A 0A`), and WebP (`RIFF`/`WEBP`) are detected from
+  bytes, not the multipart `Content-Type`.
+- The declared type must agree with the detected type. SVG and GIF are never accepted, so an
+  image can no longer carry script content through the media path.
+- The file limit is 5 MB, with a 5 MB + 64 KB multipart precheck before parsing the body.
+- Folder names are an enum: `media`, `hotels`, `holidays`, `cars`, and `offers`. Requests cannot
+  choose an arbitrary Cloudinary path.
+- File names are sanitised to an 80-character lower-case public-id prefix; Cloudinary adds a random
+  suffix and the real extension.
+- The upload `Origin` must match `Host` (or `X-Forwarded-Host`), which complements the
+  `SameSite=Strict` admin cookie instead of relying on it alone.
+
+### 20.3 Cloudinary and delivery
+
+`lib/admin/cloudinary.ts` prefers the three separate environment variables and falls back to
+parsing `CLOUDINARY_URL`. Uploads are streamed from memory with `upload_stream`, so no request body
+is written to application disk. Each asset is tagged `tripnest` and `tripnest-<folder>`.
+
+The stored URL is built with `f_auto,q_auto`, and Cloudinary reports the final width, height,
+format, and byte size back to the audit log. `next.config.ts` allows only
+`https://res.cloudinary.com/<configured-cloud>/**`; a missing cloud name produces an empty list
+rather than a wildcard. The preview and recent-upload thumbnails use `next/image` with
+`unoptimized`, because Cloudinary has already negotiated format and quality.
+
+### 20.4 Audit log and cache foundation
+
+`lib/models/audit-log.ts` adds an append-only `audit_logs` collection with `action`, `outcome`,
+`actor`, `ip`, optional `userAgent`, `target`, `message`, and typed `metadata`. Records are trimmed
+to safe lengths, and `recordAuditEvent` swallows write failures so a broken audit write cannot turn
+a successful upload into an error for the operator. `listRecentUploads` reads the eight newest
+successful uploads for the media page.
+
+`lib/data/mongo.ts` now exposes `clearCollectionCache(modelName?)`. `lib/admin/cache.ts` pairs that
+with `revalidatePath` for `/`, `/hotels`, `/holidays`, `/rent-a-car`, and `/offers`, using layout
+revalidation so detail routes are included. No editor calls it yet; the next phase will call it
+after each catalogue save.
+
+### 20.5 UI
+
+`/admin/media` is protected by the same layout and repeats `requireAdminSession()` in the page. It
+uses `connection()` and `<Suspense>` for the dynamic audit read. `components/admin/` gained:
+
+- `admin-nav.tsx`: a client navigation using `usePathname` and `aria-current`; unfinished sections
+  stay visible with a `Soon` label.
+- `form-controls.tsx`: labelled `Field`, `TextInput`, `TextArea`, `Select`, `CheckboxField`, and
+  `FormMessage` primitives for the upcoming editors.
+- `image-uploader.tsx`: click or drag files, client-side type/size feedback, signed `fetch`, progress
+  and error states, replace/remove controls, an optional hidden URL input for future forms, and a
+  `router.refresh()` callback for the recent-upload list.
+- `media-workspace.tsx`: folder selection plus the uploader.
+
+The page also lists recent uploads from the audit log with thumbnails, dimensions, folder, and IST
+timestamps. Empty and database-error states are explicit.
+
+### 20.6 Files
+
+| File                                   | Role                                                   |
+| -------------------------------------- | ------------------------------------------------------ |
+| `lib/admin/uploads.ts`                 | Size, MIME, magic-byte, folder, origin, and name rules |
+| `lib/admin/cloudinary.ts`              | Credential resolution, streamed upload, delivery URL   |
+| `lib/admin/audit.ts`                   | Best-effort audit writes, request context, recent list |
+| `lib/admin/cache.ts`                   | Catalogue cache clear plus public route revalidation   |
+| `lib/models/audit-log.ts`              | Append-only `audit_logs` model and typed metadata      |
+| `app/api/admin/uploads/route.ts`       | Session/origin/size checks and JSON upload responses   |
+| `app/admin/(dashboard)/media/page.tsx` | Media page, recent uploads, Suspense fallback          |
+| `components/admin/image-uploader.tsx`  | Signed uploader and preview                            |
+| `components/admin/form-controls.tsx`   | Shared admin field primitives                          |
+| `components/admin/admin-nav.tsx`       | Path-aware admin navigation                            |
+| `tests/admin-uploads.test.ts`          | Validation, origin, folder, sizing, URL parsing        |
+
+### 20.7 Verification
+
+- `npm run typecheck`, `npm run lint`, and `npm run format:check` are clean.
+- `npm test`: 152 tests across 11 files, including 19 upload tests.
+- Signed in through the browser on the dev server and uploaded a 1200×800 PNG to the media and
+  hotels folders. Both returned `201`, appeared immediately in the recent-upload list after
+  `router.refresh()`, and loaded from `res.cloudinary.com` with `f_auto,q_auto`.
+- Browser checks returned `415` for SVG, SVG disguised as PNG, and PNG bytes declared as JPEG;
+  `400` for `../../private`; `401` without a cookie; and `403` with a valid cookie but no
+  `Origin` or a foreign `Origin`.
+- The audit collection contained the matching `upload.created` and `upload.rejected` rows.
+- The Next image optimizer returned `200` and a 640 px JPEG for a configured
+  `res.cloudinary.com` URL, confirming the `remotePatterns` restriction works.
+- Lighthouse on `/admin/media`: accessibility 1.0, best practices 1.0, SEO 1.0. The first run
+  flagged the visually hidden file input, which now carries an explicit `aria-label`.
+- The test assets were removed from Cloudinary and their test audit rows were deleted after
+  verification; later operator uploads remain in the log.
+
+### 20.8 Deliberate gaps
+
+- No delete/rename/tagging UI and no Cloudinary asset browser; the page lists only uploads recorded
+  in `audit_logs`.
+- The returned URL must be pasted into a catalogue editor until the next phase wires the uploader
+  into hotel, holiday, car, and offer forms.
+- `invalidateCatalogueCache` is implemented but unused until those editors exist.
+- Audit retention, export, and pagination are not implemented; the list is capped at eight.
+- There is no per-user quota or upload rate limit. The single admin account and 5 MB cap are the
+  current guardrails.

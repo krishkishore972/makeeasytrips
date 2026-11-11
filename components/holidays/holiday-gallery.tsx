@@ -8,17 +8,14 @@ type HolidayGalleryProps = {
 
 export function HolidayGallery({ images, title }: HolidayGalleryProps) {
   const [main, ...rest] = images;
-  const secondary = rest.slice(0, 2);
+  const secondary = rest;
 
   return (
-    <section
-      aria-label={`Illustrated gallery for ${title}`}
-      className="grid gap-2 sm:grid-cols-[1.7fr_1fr]"
-    >
+    <section aria-label={`Gallery for ${title}`} className="grid gap-2 sm:grid-cols-[1.7fr_1fr]">
       <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-line bg-brand-950">
         <Image
           src={main}
-          alt={`${title} — illustrated view 1`}
+          alt={`${title} — view 1`}
           fill
           priority
           sizes="(min-width: 1024px) 60vw, 100vw"
@@ -31,15 +28,15 @@ export function HolidayGallery({ images, title }: HolidayGalleryProps) {
       </div>
 
       {secondary.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:grid-rows-2">
+        <div className={`grid gap-2 ${secondary.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
           {secondary.map((src, index) => (
             <div
               key={`${src}-${index}`}
-              className="relative aspect-[16/10] min-h-0 overflow-hidden rounded-2xl border border-line bg-brand-50 sm:aspect-auto"
+              className="relative aspect-[16/10] min-h-0 overflow-hidden rounded-2xl border border-line bg-brand-50"
             >
               <Image
                 src={src}
-                alt={`${title} — illustrated view ${index + 2}`}
+                alt={`${title} — view ${index + 2}`}
                 fill
                 sizes="(min-width: 1024px) 24vw, 50vw"
                 className="object-cover"

@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const cloudinaryCloudName =
+  process.env.CLOUDINARY_CLOUD_NAME?.trim() ||
+  process.env.CLOUDINARY_URL?.match(/@([^/@]+)\/?$/)?.[1];
+
 const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
@@ -7,6 +11,17 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    remotePatterns: cloudinaryCloudName
+      ? [
+          {
+            protocol: "https",
+            hostname: "res.cloudinary.com",
+            pathname: `/${cloudinaryCloudName}/**`,
+          },
+        ]
+      : [],
+  },
   async redirects() {
     return [
       {

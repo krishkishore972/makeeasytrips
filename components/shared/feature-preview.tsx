@@ -127,7 +127,7 @@ export function FeaturePreview({
               href="/info/how-it-works"
               className="mt-3 inline-flex items-center gap-1.5 text-xs font-extrabold text-accent-700 underline-offset-4 hover:underline"
             >
-              How TripNest is being built
+              How Makeasytrips is being built
               <ArrowRight aria-hidden="true" className="size-3.5" />
             </Link>
           </div>

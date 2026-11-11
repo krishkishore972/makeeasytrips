@@ -10,7 +10,7 @@ type LogoProps = {
 };
 
 /**
- * Original TripNest mark: a horizon line cradled by two nest arcs with a coral
+ * Original Makeasytrips mark: a horizon line cradled by two nest arcs with a coral
  * sun. No third-party logo or sprite is used.
  */
 export function Logo({
@@ -24,7 +24,7 @@ export function Logo({
     <Link
       href={href}
       onClick={onClick}
-      aria-label="TripNest home"
+      aria-label="Makeasytrips home"
       className={cn(
         "group inline-flex items-center gap-2.5 rounded-xl focus-visible:outline-offset-4",
         className,
@@ -65,7 +65,7 @@ export function Logo({
             tone === "dark" ? "text-ink" : "text-white",
           )}
         >
-          TripNest
+          Makeasytrips
           <span className="text-accent-500">.</span>
         </span>
       ) : null}

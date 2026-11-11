@@ -16,28 +16,28 @@ export type InfoPageContent = {
  */
 export const infoPages = {
   about: {
-    title: "About TripNest",
+    title: "About Makeasytrips",
     eyebrow: "The project",
     description:
-      "TripNest is an independent learning project that studies how a modern travel product is structured, then rebuilds those patterns with original design and copy.",
+      "Makeasytrips is an independent learning project that studies how a modern travel product is structured, then rebuilds those patterns with original design and copy.",
     sections: [
       {
         heading: "Why it exists",
         body: [
-          "Travel planning is a good design problem: it combines search, comparison, trust, and a lot of small decisions. TripNest is a place to practise those patterns end to end without copying a brand or pretending to sell real inventory.",
+          "Travel planning is a good design problem: it combines search, comparison, trust, and a lot of small decisions. Makeasytrips is a place to practise those patterns end to end without copying a brand or pretending to sell real inventory.",
           "The build uses Next.js, TypeScript, Tailwind CSS, Motion, and a local CSV data layer. Every route, component, and line of copy is written for this project.",
         ],
       },
       {
         heading: "What it is not",
         body: [
-          "TripNest is not affiliated with, endorsed by, or connected to any travel company. It does not process payments, create accounts, or store personal information. Prices and inventory are fictional demo data.",
+          "Makeasytrips is not affiliated with, endorsed by, or connected to any travel company. It does not process payments, create accounts, or store personal information. Prices and inventory are fictional demo data.",
         ],
       },
     ],
   },
   "how-it-works": {
-    title: "How TripNest works",
+    title: "How Makeasytrips works",
     eyebrow: "The approach",
     description:
       "A calmer planning flow: start with a feeling, compare the details that matter, and keep the plan together.",
@@ -62,7 +62,7 @@ export const infoPages = {
     title: "Careers",
     eyebrow: "Work with us",
     description:
-      "TripNest is a solo learning project, so there are no open roles. This page is a placeholder for the kind of team the product would need.",
+      "Makeasytrips is a solo learning project, so there are no open roles. This page is a placeholder for the kind of team the product would need.",
     sections: [
       {
         heading: "The team we would build",
@@ -88,7 +88,7 @@ export const infoPages = {
       {
         heading: "About the build",
         body: [
-          "TripNest is a learning-purpose clone that studies travel-product structure, layout, and flows. It uses original branding, original copy, and local abstract illustrations.",
+          "Makeasytrips is a learning-purpose clone that studies travel-product structure, layout, and flows. It uses original branding, original copy, and local abstract illustrations.",
           "The project deliberately avoids third-party logos, photography, and copyrighted text. The footer carries a standing disclaimer for readers who arrive without context.",
         ],
       },
@@ -167,7 +167,7 @@ export const infoPages = {
     title: "Contact us",
     eyebrow: "Say hello",
     description:
-      "Send a message and it is saved for the TripNest team. Enquiries from service pages are saved too, with the item you were looking at.",
+      "Send a message and it is saved for the Makeasytrips team. Enquiries from service pages are saved too, with the item you were looking at.",
     sections: [
       {
         heading: "Trip questions",
@@ -210,7 +210,7 @@ export const infoPages = {
     title: "Privacy",
     eyebrow: "Your data",
     description:
-      "TripNest stores the contact details you choose to send so enquiries and the newsletter can work. There are no accounts, payments, analytics, or advertising trackers.",
+      "Makeasytrips stores the contact details you choose to send so enquiries and the newsletter can work. There are no accounts, payments, analytics, or advertising trackers.",
     sections: [
       {
         heading: "What is collected",
@@ -250,7 +250,7 @@ export const infoPages = {
       {
         heading: "Demo use",
         body: [
-          "TripNest is provided as-is for learning and portfolio review. Prices, availability, ratings, and offers are fictional. Nothing on the site constitutes a real travel offer or a promise of service.",
+          "Makeasytrips is provided as-is for learning and portfolio review. Prices, availability, ratings, and offers are fictional. Nothing on the site constitutes a real travel offer or a promise of service.",
           "You may read the code and learn from it. Do not present the demo as a real travel agency or use it to collect payments or personal data.",
         ],
       },
@@ -287,7 +287,7 @@ export const infoPages = {
     title: "Demo disclaimer",
     eyebrow: "Please read",
     description:
-      "TripNest is an independent learning project. It is not a travel agency and is not affiliated with any travel brand.",
+      "Makeasytrips is an independent learning project. It is not a travel agency and is not affiliated with any travel brand.",
     sections: [
       {
         heading: "No real bookings",
@@ -299,7 +299,7 @@ export const infoPages = {
       {
         heading: "Original work",
         body: [
-          "TripNest uses original branding, copy, and local abstract illustrations. It does not include third-party logos, photography, or copyrighted marketing text. The project studies structure, layout, and interaction patterns only.",
+          "Makeasytrips uses original branding, copy, and local abstract illustrations. It does not include third-party logos, photography, or copyrighted marketing text. The project studies structure, layout, and interaction patterns only.",
         ],
       },
     ],

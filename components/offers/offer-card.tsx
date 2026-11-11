@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { CopyCodeButton } from "@/components/offers/copy-code-button";
@@ -41,6 +42,7 @@ type OfferCardProps = {
 
 export function OfferCard({ offer, className }: OfferCardProps) {
   const tone = tones[offer.tone];
+  const additionalImages = [...new Set(offer.gallery ?? [])].filter((url) => url !== offer.image);
 
   return (
     <article
@@ -51,11 +53,27 @@ export function OfferCard({ offer, className }: OfferCardProps) {
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <span
-          className={cn("grid size-11 shrink-0 place-items-center rounded-xl shadow-xs", tone.icon)}
-        >
-          <OfferIcon name={offer.icon} className="size-5" />
-        </span>
+        {offer.image ? (
+          <span className="relative size-11 shrink-0 overflow-hidden rounded-xl border border-line/60 bg-surface shadow-xs">
+            <Image
+              src={offer.image}
+              alt=""
+              fill
+              sizes="44px"
+              unoptimized
+              className="object-cover"
+            />
+          </span>
+        ) : (
+          <span
+            className={cn(
+              "grid size-11 shrink-0 place-items-center rounded-xl shadow-xs",
+              tone.icon,
+            )}
+          >
+            <OfferIcon name={offer.icon} className="size-5" />
+          </span>
+        )}
         <div className="flex flex-wrap items-center justify-end gap-1.5">
           {offer.featured ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-brand-950 px-2 py-1 text-[10px] font-extrabold text-white">
@@ -73,6 +91,25 @@ export function OfferCard({ offer, className }: OfferCardProps) {
           </span>
         </div>
       </div>
+
+      {additionalImages.length ? (
+        <div aria-label={`More photos for ${offer.title}`} className="mt-4 flex flex-wrap gap-2">
+          {additionalImages.map((url, index) => (
+            <span
+              key={url}
+              className="relative size-16 overflow-hidden rounded-xl border border-line/60 bg-surface"
+            >
+              <Image
+                src={url}
+                alt={`${offer.title} — view ${index + 2}`}
+                fill
+                sizes="64px"
+                className="object-cover"
+              />
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       <p className="mt-4 text-[10px] font-extrabold tracking-[0.14em] text-muted-soft uppercase">
         {offer.eyebrow}

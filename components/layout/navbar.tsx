@@ -8,15 +8,11 @@ import {
   CarFront,
   Globe2,
   Headphones,
-  Heart,
-  LogIn,
   MapPin,
   Palmtree,
   Tag,
-  UserRound,
   type LucideIcon,
 } from "lucide-react";
-import { LoginDialog } from "@/components/layout/login-dialog";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Logo } from "@/components/shared/logo";
 import { useScrolled } from "@/hooks/use-scrolled";
@@ -85,38 +81,6 @@ export function Navbar() {
             >
               INR
             </span>
-
-            <Link
-              href="/wishlist"
-              aria-label="Wishlist"
-              className="hidden size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-brand-50 hover:text-brand-700 sm:grid"
-            >
-              <Heart aria-hidden="true" className="size-[19px]" />
-            </Link>
-
-            <LoginDialog
-              trigger={
-                <button
-                  type="button"
-                  className="hidden items-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-brand-800 sm:inline-flex"
-                >
-                  <UserRound aria-hidden="true" className="size-4" />
-                  Sign in
-                </button>
-              }
-            />
-
-            <LoginDialog
-              trigger={
-                <button
-                  type="button"
-                  aria-label="Sign in"
-                  className="grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink transition-colors hover:bg-brand-50 sm:hidden"
-                >
-                  <LogIn aria-hidden="true" className="size-[18px]" />
-                </button>
-              }
-            />
 
             <MobileNav />
           </div>

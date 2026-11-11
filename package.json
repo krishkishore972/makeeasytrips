@@ -11,6 +11,8 @@
     "test:watch": "vitest",
     "audit:a11y": "node scripts/audit-a11y.mjs",
     "audit:perf": "node scripts/audit-perf.mjs",
+    "admin:hash-password": "tsx scripts/hash-admin-password.ts",
+    "db:backfill-enquiries": "tsx scripts/backfill-enquiry-items.ts",
     "db:seed": "tsx scripts/seed-mongo.ts",
     "db:seed:fresh": "tsx scripts/seed-mongo.ts --fresh",
     "verify": "npm run typecheck && npm run lint && npm test && npm run format:check && npm run build",

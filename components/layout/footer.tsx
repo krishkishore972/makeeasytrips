@@ -25,7 +25,7 @@ export function Footer() {
 
             <div className="mt-6">
               <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-ink uppercase">
-                The TripNest letter
+                The Makeasytrips letter
               </p>
               <NewsletterForm />
             </div>
@@ -73,7 +73,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-6 border-t border-line pt-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted">
-            <span>© 2026 TripNest Travel Labs</span>
+            <span>© 2026 Makeasytrips</span>
             <span aria-hidden="true" className="hidden h-3 w-px bg-line sm:block" />
             <span>Built for learning, not for booking.</span>
           </div>
@@ -95,8 +95,8 @@ export function Footer() {
             </ul>
             <span aria-hidden="true" className="hidden h-3 w-px bg-line sm:block" />
             <p className="max-w-md text-[11px] leading-5 text-muted-soft">
-              TripNest is an independent learning project. It is not affiliated with, endorsed by,
-              or connected to any travel brand.
+              Makeasytrips is an independent learning project. It is not affiliated with, endorsed
+              by, or connected to any travel brand.
             </p>
           </div>
         </div>

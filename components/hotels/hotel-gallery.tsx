@@ -33,7 +33,7 @@ export function HotelGallery({ images, name, area }: HotelGalleryProps) {
   return (
     <section
       aria-roledescription="carousel"
-      aria-label={`Illustrated gallery for ${name}`}
+      aria-label={`Gallery for ${name}`}
       className="relative overflow-hidden rounded-2xl border border-line bg-brand-950"
     >
       <div ref={emblaRef} className="overflow-hidden">
@@ -48,7 +48,7 @@ export function HotelGallery({ images, name, area }: HotelGalleryProps) {
             >
               <Image
                 src={src}
-                alt={`${name} in ${area} — illustrated view ${imageIndex + 1}`}
+                alt={`${name} in ${area} — view ${imageIndex + 1}`}
                 fill
                 priority={imageIndex === 0}
                 sizes="(min-width: 1024px) 60vw, 100vw"

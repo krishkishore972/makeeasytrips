@@ -1,14 +1,16 @@
-# TripNest
+# Makeasytrips
 
-TripNest is an original, learning-purpose travel experience inspired by the structure and
+Makeasytrips is an original, learning-purpose travel experience inspired by the structure and
 flows of modern travel-booking products. It is **not** affiliated with, endorsed by, or
-connected to any travel brand. There are no real bookings, payments, or accounts. Enquiries,
-contact messages, and newsletter sign-ups are stored so the team can follow up.
+connected to any travel brand. There are no real bookings, payments, or customer accounts.
+Enquiries, contact messages, and newsletter sign-ups are stored so the team can follow up, and a
+single admin account protects the content dashboard. Catalogue photography is stored in Cloudinary.
 
 The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), 3
 (holidays, offers, and APIs), 4 (home and editorial polish), 5 (mock booking review and
-confirmation), 6 (quality pass: tests, accessibility, and performance), 7 (rent a car), and 8
-(enquiries, newsletter, and contact persistence) are complete.**
+confirmation), 6 (quality pass: tests, accessibility, and performance), 7 (rent a car), 8
+(enquiries, newsletter, and contact persistence), 9 (admin authentication and protected shell),
+10 (enquiry stats dashboard), and 11 (Cloudinary media foundation) are complete.**
 
 ## What is in this build
 
@@ -18,7 +20,7 @@ confirmation), 6 (quality pass: tests, accessibility, and performance), 7 (rent 
 - Fraunces display serif and Manrope UI sans via `next/font`
 - Lenis smooth scrolling with `prefers-reduced-motion` support
 - Motion (Framer Motion) shared variants, scroll reveals, and reduced-motion handling
-- Responsive two-tier navbar, mobile navigation sheet, demo login dialog, and footer
+- Responsive two-tier navbar, mobile navigation sheet, and footer
 - Full home composition: hero with catalogue counts, tabbed GET search widget, trust strip,
   offer and holiday carousels, curated destinations, trending stays, featured self-drive cars,
   how-it-works, field notes, newsletter, FAQ, and a final call to action
@@ -39,13 +41,38 @@ confirmation), 6 (quality pass: tests, accessibility, and performance), 7 (rent 
   validated with Zod and written to MongoDB; enquiries still open a pre-filled WhatsApp message
 - Contact page form for name, email, optional phone, and message, with inline validation and a
   saved-state confirmation
+- Admin-only authentication: a single environment-configured account, scrypt password hash,
+  eight-hour HS256 JWT in an HttpOnly cookie, optimistic proxy gate, and a protected `/admin`
+  shell. Public visitors still browse without an account
+- Live admin stats: range-filtered enquiry totals, new-lead count, newsletter and contact totals,
+  a 30-day trend, service and status splits, the top 10 enquired items, and the latest leads, all
+  read directly from MongoDB. Enquiries now store the catalogue item id and detail-page path so
+  repeat interest groups correctly
+- Protected enquiry management at `/admin/enquiries`: uncached, paginated search with service,
+  status, and India-time date filters; enquiry details and audited new/contacted/closed status updates.
+  Older enquiries without a status are treated as new.
+- Cloudinary uploads in catalogue editors: server-signed uploads, 5 MB raster-only validation
+  by magic bytes, per-catalogue folders, delivery URLs with `f_auto,q_auto`, and an append-only
+  audit log. The API secret never reaches the browser
+- Admin catalogue editors at `/admin/hotels`, `/admin/holidays`, `/admin/cars`, and `/admin/offers`
+  create and edit records with audited saves and public catalogue cache invalidation. Editors accept
+  one main image and up to four additional Cloudinary uploads; existing image URLs remain usable.
+  Offer artwork is optional, with its icon and tone as a fallback. Removing a photo from a record
+  does not delete the Cloudinary asset. Public cards use the main image; additional photos are
+  shown in the hotel, holiday and car detail galleries and on offer cards.
+- Admins can delete a listing from its editor after confirmation. Its unshared Cloudinary photos
+  in managed upload folders are deleted too; photos still used by another listing are retained.
+  Cloudinary and MongoDB cannot be deleted atomically, so a failed operation can leave the listing
+  in place with some photos already removed; retry the deletion in that case.
+- Route-group split between the public site shell and the admin shell, plus `/admin` noindex and
+  a `robots.txt` disallow rule
 - Offer board: category tabs with counts, a featured banner, copyable demo codes, validity dates,
   and expandable terms
 - JSON APIs at `/api/flights`, `/api/hotels`, `/api/holidays`, `/api/cars`, `/api/offers`,
   `/api/cities`, `/api/enquiries`, `/api/newsletter`, and `/api/contact`, validated with Zod
 - Flights and trains stay in the codebase and remain routable, but are no longer linked from the
   navigation, home page, offers, or enquiry flow
-- Editorial, legal, and demo account pages (my trips, wishlist, login)
+- Editorial and legal information pages
 - Root `loading.tsx`, `error.tsx`, `not-found.tsx`, and an SVG app icon
 - Local abstract SVG artwork under `public/images`; no third-party brand assets
 
@@ -73,36 +100,38 @@ npm run start
 
 ## Routes
 
-| Route                    | State                                                                                   |
-| ------------------------ | --------------------------------------------------------------------------------------- |
-| `/`                      | Full home composition with data-driven carousels, destinations, stays, and FAQ          |
-| `/flights`               | Flight search, URL-driven results, filters, sorting, and empty states                   |
-| `/flights/[id]`          | Flight detail with fare breakdown and WhatsApp enquiry form                             |
-| `/hotels`                | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
-| `/hotels/[id]`           | Hotel detail: gallery, amenities, rate plans, policies, location, price box             |
-| `/rent-a-car`            | Self-drive landing: hero search, rental plans, featured cars, body styles, cities, FAQ  |
-| `/rent-a-car/search`     | URL-driven car results with filters, sorting, plan tabs, and empty states               |
-| `/rent-a-car/[id]`       | Car detail: specs, kilometre plans, add-ons, host, policies, reviews, price panel       |
-| `/holidays`              | Holiday catalogue: destination strip, theme/length/budget filters, sort, featured trips |
-| `/holidays/[slug]`       | Package detail: gallery, itinerary, inclusions, departure picker, live total, similar   |
-| `/trains`, `/flights`    | Retained routes, hidden from the navigation and offers in this phase                    |
-| `/cabs`                  | Permanent redirect to `/rent-a-car`                                                     |
-| `/offers`                | Offer board with category tabs, featured offer, copyable codes, and terms               |
-| `/my-trips`, `/wishlist` | Static empty-state demos                                                                |
-| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, disclaimer, and contact form           |
-| `/api/flights`           | JSON search API (query validation, `400` on invalid input)                              |
-| `/api/flights/[id]`      | JSON flight detail (`404` when unknown)                                                 |
-| `/api/hotels`            | JSON hotel search API                                                                   |
-| `/api/hotels/[id]`       | JSON hotel detail with the stay price breakdown                                         |
-| `/api/holidays`          | JSON holiday search API with per-person and traveller totals                            |
-| `/api/holidays/[slug]`   | JSON holiday detail with itinerary and price breakdown                                  |
-| `/api/cars`              | JSON car search API with plan and rental-window validation                              |
-| `/api/cars/[id]`         | JSON car detail with the rental price breakdown                                         |
-| `/api/offers`            | JSON offer list, category filter, and category counts                                   |
-| `/api/cities`            | City list, optionally scoped to `flights` or `hotels`                                   |
-| `/api/enquiries`         | `POST` an enquiry, validated and saved; `201` with the record id                        |
-| `/api/newsletter`        | `POST` an email, saved once per address; duplicate sign-ups stay idempotent             |
-| `/api/contact`           | `POST` a contact message, validated and saved; `201` with the record id                 |
+| Route                  | State                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| `/`                    | Full home composition with data-driven carousels, destinations, stays, and FAQ          |
+| `/flights`             | Flight search, URL-driven results, filters, sorting, and empty states                   |
+| `/flights/[id]`        | Flight detail with fare breakdown and WhatsApp enquiry form                             |
+| `/hotels`              | Hotel landing, URL-driven results, filters, sorting, and featured stays                 |
+| `/hotels/[id]`         | Hotel detail: gallery, amenities, rate plans, policies, location, price box             |
+| `/rent-a-car`          | Self-drive landing: hero search, rental plans, featured cars, body styles, cities, FAQ  |
+| `/rent-a-car/search`   | URL-driven car results with filters, sorting, plan tabs, and empty states               |
+| `/rent-a-car/[id]`     | Car detail: specs, kilometre plans, add-ons, host, policies, reviews, price panel       |
+| `/holidays`            | Holiday catalogue: destination strip, theme/length/budget filters, sort, featured trips |
+| `/holidays/[slug]`     | Package detail: gallery, itinerary, inclusions, departure picker, live total, similar   |
+| `/trains`, `/flights`  | Retained routes, hidden from the navigation and offers in this phase                    |
+| `/cabs`                | Permanent redirect to `/rent-a-car`                                                     |
+| `/offers`              | Offer board with category tabs, featured offer, copyable codes, and terms               |
+| `/info/[slug]`         | About, how-it-works, help, legal, accessibility, disclaimer, and contact form           |
+| `/admin`               | Protected admin overview; unauthenticated requests redirect to sign-in                  |
+| `/admin/login`         | Single admin email/password sign-in; public visitors never need an account              |
+| `/api/admin/uploads`   | Session- and origin-protected `POST` upload; JSON only, never cached                    |
+| `/api/flights`         | JSON search API (query validation, `400` on invalid input)                              |
+| `/api/flights/[id]`    | JSON flight detail (`404` when unknown)                                                 |
+| `/api/hotels`          | JSON hotel search API                                                                   |
+| `/api/hotels/[id]`     | JSON hotel detail with the stay price breakdown                                         |
+| `/api/holidays`        | JSON holiday search API with per-person and traveller totals                            |
+| `/api/holidays/[slug]` | JSON holiday detail with itinerary and price breakdown                                  |
+| `/api/cars`            | JSON car search API with plan and rental-window validation                              |
+| `/api/cars/[id]`       | JSON car detail with the rental price breakdown                                         |
+| `/api/offers`          | JSON offer list, category filter, and category counts                                   |
+| `/api/cities`          | City list, optionally scoped to `flights` or `hotels`                                   |
+| `/api/enquiries`       | `POST` an enquiry, validated and saved; `201` with the record id                        |
+| `/api/newsletter`      | `POST` an email, saved once per address; duplicate sign-ups stay idempotent             |
+| `/api/contact`         | `POST` a contact message, validated and saved; `201` with the record id                 |
 
 Search and filter state lives entirely in URL search params, so every results view is linkable
 and the server renders the matching set:
@@ -132,14 +161,18 @@ Example:
 ## Structure
 
 ```text
-app/                  Routes, layouts, loading/error/not-found, APIs, global styles
-  api/                JSON route handlers: catalogue reads plus enquiry, newsletter, and contact writes
-  flights/            Retained search/results and detail pages (hidden from navigation)
-  holidays/           Catalogue page, package detail, loading skeletons
-  hotels/             Landing/results page, detail page, loading skeletons
-  rent-a-car/         Self-drive landing, search/results, detail, loading skeletons
-  offers/             Offer board and loading skeleton
+app/                  Root layout, providers, global styles, robots
+  (site)/             Public route group with the navbar and footer shell
+    flights/          Retained search/results and detail pages (hidden from navigation)
+    holidays/         Catalogue page, package detail, loading skeletons
+    hotels/           Landing/results page, detail page, loading skeletons
+    info/             Editorial and legal pages, including the contact form
+    rent-a-car/       Self-drive landing, search/results, detail, loading skeletons
+    offers/           Offer board and loading skeleton
+  admin/              Sign-in page, protected dashboard shell, and media workspace
+  api/                JSON route handlers: catalogue reads, lead writes, and admin uploads
 components/
+  admin/              Admin shell, navigation, live stats, media workspace, form controls
   cars/               Search form, filters, cards, gallery, enquiry panel, skeletons
   enquiry/            Shared WhatsApp enquiry dialog and saved-state feedback
   flights/            Search form, filters, cards, popular routes, skeletons
@@ -147,7 +180,7 @@ components/
   home/               Home search widget, destination/stay cards, FAQ, field notes
   hotels/             Search form, filters, cards, gallery, skeletons
   info/               Contact form for the contact page
-  layout/             Navbar, mobile nav, login dialog, footer, newsletter
+  layout/             Navbar, mobile nav, footer, newsletter
   offers/             Offer card, category tabs, copy-code button, icon mapper, skeletons
   providers/          Motion and Lenis providers
   search/             Shared filter group, flag, sort, drawer, chips, URL hook
@@ -158,6 +191,7 @@ docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 docs/rent-a-car.md    Rent-a-car routes, data, pricing, plans, and deliberate gaps
 hooks/                Small client hooks (scroll state, media query)
 lib/
+  admin/              JWT, scrypt password check, session, rate limit, stats, Cloudinary, audit
   enquiry.ts          Enquiry form schema, WhatsApp message builder, and number config
   data/               Cached MongoDB collection loader, Zod schemas, query and facet helpers
   models/             Mongoose models for catalogues plus enquiries, subscribers, and contact
@@ -168,10 +202,11 @@ lib/
   dates.ts            Date parsing, labels, night counts, and rental windows
   home-content.ts     Original home FAQ and field-note copy
 public/images/        Original abstract SVG placeholders, including six car body styles
-scripts/              MongoDB seed, axe-core accessibility, and lab performance audits
-tests/                Vitest suites for dates, pricing, validation, lead forms, and data
+scripts/              MongoDB seed and enquiry backfill, axe-core accessibility, lab performance audits
+tests/                Vitest suites for dates, pricing, validation, leads, admin auth, stats, and data
 types/                Shared TypeScript types
 vitest.config.ts      Vitest config with the @ alias and Mongo fixture mock
+proxy.ts              Optimistic /admin gate that checks the JWT before rendering
 ```
 
 ## Data layer
@@ -228,6 +263,56 @@ The models in `lib/models/` mirror the Zod row shapes, use the existing snake_ca
 add unique indexes on `id` (and `code` for cities). The lead models add a descending `createdAt`
 index for triage and make `email` unique for newsletter sign-ups. `lib/mongodb.ts` caches one
 connection across requests and dev reloads.
+
+### Admin access
+
+The dashboard belongs to one administrator and is configured entirely through environment
+variables. Public visitors never sign in, and there is no customer-account collection.
+
+```bash
+# .env.local
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD_HASH=scrypt:16384:8:1:...
+ADMIN_JWT_SECRET=<at least 32 random characters>
+
+# Cloudinary — either the three separate values or the single URL
+CLOUDINARY_CLOUD_NAME=your-cloud
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+# CLOUDINARY_URL=cloudinary://api-key:api-secret@your-cloud
+
+npm run admin:hash-password   # prompts twice with hidden input
+```
+
+The hash script prints the complete `ADMIN_PASSWORD_HASH=...` line to paste into `.env.local`.
+The colons are deliberate: Next's env loader expands `$name`, so a `$`-separated hash would be
+corrupted before the app reads it. Passwords must be at least 12 characters. To rotate, generate a
+new hash and restart; changing `ADMIN_JWT_SECRET` invalidates every existing session. If all three
+`CLOUDINARY_*` credentials are present they win; otherwise the app parses `CLOUDINARY_URL`.
+
+Open `/admin/login`. The session lasts eight hours in an HttpOnly, SameSite=Strict cookie
+(`Secure` when `NODE_ENV` is production). `proxy.ts` performs the optimistic redirect, and the
+admin layout, pages, actions, and upload route verify the token again. Five failed attempts per IP
+and email are throttled for 15 minutes in memory. Uploads and later catalogue edits append to the
+`audit_logs` collection; there is still no password reset, 2FA, or user list. This is a
+single-operator demo, and the login throttle resets when the process restarts.
+
+`/admin` is the live stats dashboard. Use the 7/30/90-day links to change the range
+(`?range=7`); the URL is the only state. Counts come from MongoDB on every request rather than the
+public catalogue's process cache, so a new enquiry appears on the next load. The page shows totals
+and range counts, new leads, newsletter and contact volume, a 30-day IST trend, service and status
+splits, the ten most enquired items, and the eight latest leads with call links. Lead rows are
+private admin data; the `/api/enquiries` route is write-only and the dashboard is behind the session
+check.
+
+Catalogue editors upload images directly. The browser posts multipart data to
+`/api/admin/uploads`; the route handler checks the admin JWT and the request `Origin`, enforces a
+5 MB limit, then verifies the file's magic bytes rather than trusting its MIME type. JPEG, PNG,
+and WebP are accepted; SVG, GIF, and spoofed extensions are rejected. Successful files land in
+`tripnest/{media|hotels|holidays|cars|offers}`, and the returned URL uses `f_auto,q_auto` so
+Cloudinary negotiates the best format. `next.config.ts` allows only this cloud name on
+`res.cloudinary.com`. Immutable uploads are not cache-busted; catalogue cache invalidation lives in
+`lib/admin/cache.ts` and runs after catalogue mutations.
 
 ## Verification
 
@@ -300,15 +385,19 @@ is easy to get quietly wrong and hard to see in the UI:
 | `tests/validation-forms.test.ts`  | Enquiry, newsletter, and contact payloads, phone normalisation, caps, invalid services      |
 | `tests/data.test.ts`              | Catalogue counts, lookup, filters, sorts, facets, popular routes, similar packages and cars |
 | `tests/fixtures.test.ts`          | Every JSON seed fixture validated against the same Zod schemas used for MongoDB reads       |
+| `tests/admin-auth.test.ts`        | JWT signing, tamper and expiry rejection, scrypt hashing, redirect safety, login throttle   |
+| `tests/admin-session.test.ts`     | Cookie flags, session verification, tampered-token rejection, and sign-out clearing         |
+| `tests/admin-stats.test.ts`       | Range parsing, IST day boundaries, service/status splits, item grouping, trend, safe links  |
+| `tests/admin-uploads.test.ts`     | Magic bytes, MIME spoofing, size limits, folders, origin guard, Cloudinary URL parsing      |
 
-106 tests across 7 files. They run in about 400 ms and need no browser, server, or database: the
+152 tests across 11 files. They run in about 600 ms and need no browser, server, or database: the
 Mongo collection loader is mocked with the same seed fixtures. The lead schemas are exercised by
 `tests/validation-forms.test.ts`; the route handlers themselves are verified against MongoDB
-manually.
+manually. The admin token, cookie, and stats tests run entirely in Node.
 
 ### Accessibility
 
-The app targets WCAG 2.2 AA. Automated checks use axe-core over 16 routes:
+The app targets WCAG 2.2 AA. Automated checks use axe-core over 17 routes:
 
 ```bash
 npm run build && npm run start   # in one terminal
@@ -316,13 +405,13 @@ npm run audit:a11y               # WCAG 2.2 AA
 npm run audit:a11y -- --best-practice
 ```
 
-Both audits currently report **16/16 pages clean**. They need a running app and a local Chrome;
+Both audits currently report **17/17 pages clean**. They need a running app and a local Chrome;
 set `CHROME_PATH` if Chrome is not in a standard location, and `BASE_URL` to point at another
 origin.
 
 The route set covers home, flight search and detail, hotel search and detail, the holiday
 catalogue and detail, offers, the rent-a-car landing, car search and detail, about, the contact
-form, my trips, trains, and the not-found page.
+form, the admin sign-in page, trains, and the not-found page.
 
 Keyboard behaviour verified in the browser:
 
@@ -397,12 +486,21 @@ one typed source of truth. Flights and trains keep their data and routes but are
 navigation in this phase; trains remain a static shell.
 
 `enquiries`, `newsletter_subscribers`, and `contact_messages` are the write side of the data layer.
-They are intentionally small, append-only records with no catalogue relationship beyond the stored
-service name and item title.
+They are intentionally small, append-only records. Enquiries also store the catalogue `itemId` and
+`itemHref`, plus a `status` (`new`, `contacted`, or `closed`) for the dashboard's item popularity and
+lead split. Older rows that only had a title can be linked once with:
+
+```bash
+npm run db:backfill-enquiries -- --dry-run   # preview matches and misses
+npm run db:backfill-enquiries                # write itemId, itemHref, and status
+```
+
+The backfill matches unique catalogue titles per service and is idempotent; ambiguous titles and
+unmatched rows are reported and left untouched.
 
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2–8 implementation records: observed
+`docs/REA.md` records the Step 0 analysis and the Phase 2–10 implementation records: observed
 sitemap and layout patterns, inferred flows, catalogue schemas, responsive behaviour, design
 decisions, verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
 analysis relies on archived snapshots and public page structure. Phase 7 uses REA browser captures
@@ -429,8 +527,18 @@ No proprietary code, logos, photography, or marketing copy was reused.
 8. **Phase 8 — Lead persistence (done):** service enquiries, newsletter sign-ups, and contact
    messages are validated with Zod and saved in MongoDB, with idempotent newsletter sign-ups and
    a contact form on `/info/contact`.
+9. **Phase 9 — Admin authentication (done):** one environment-configured admin account, a scrypt
+   password hash, an eight-hour HS256 JWT in an HttpOnly cookie, an optimistic proxy gate, login
+   throttling, and a protected `/admin` shell.
+10. **Phase 10 — Enquiry stats (done):** `itemId`/`itemHref` capture on every detail page, an
+    idempotent backfill for existing rows, a lead `status` field, and a live `/admin` dashboard with
+    7/30/90-day ranges, service and status splits, a 30-day IST trend, top items, and recent leads.
+11. **Phase 11 — Cloudinary media foundation (done):** a signed admin upload route, 5 MB
+    raster-only validation by magic bytes, per-catalogue Cloudinary folders, `f_auto,q_auto`
+    delivery URLs, an append-only audit log, and shared admin form controls. The standalone media
+    workspace was later removed in favour of uploading directly in the catalogue editors.
 
 ## Disclaimer
 
-TripNest is an independent learning project. It is not a travel agency. All prices, inventory,
+Makeasytrips is an independent learning project. It is not a travel agency. All prices, inventory,
 ratings, and offers are fictional. Nothing on the site creates a booking or charges a card.

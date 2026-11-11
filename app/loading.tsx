@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div role="status" aria-live="polite" className="page-container py-10 sm:py-14">
-      <span className="sr-only">Loading TripNest</span>
+      <span className="sr-only">Loading Makeasytrips</span>
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="shimmer-surface h-[22rem] rounded-2xl border border-line sm:h-[26rem]" />

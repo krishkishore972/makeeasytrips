@@ -33,7 +33,7 @@ export function CarGallery({ images, name, city }: CarGalleryProps) {
   return (
     <section
       aria-roledescription="carousel"
-      aria-label={`Illustrated gallery for the ${name}`}
+      aria-label={`Gallery for the ${name}`}
       className="relative overflow-hidden rounded-2xl border border-line bg-brand-950"
     >
       <div ref={emblaRef} className="overflow-hidden">
@@ -48,7 +48,7 @@ export function CarGallery({ images, name, city }: CarGalleryProps) {
             >
               <Image
                 src={src}
-                alt={`${name} in ${city} — illustrated view ${imageIndex + 1}`}
+                alt={`${name} in ${city} — view ${imageIndex + 1}`}
                 fill
                 priority={imageIndex === 0}
                 sizes="(min-width: 1024px) 60vw, 100vw"

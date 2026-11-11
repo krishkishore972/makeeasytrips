@@ -9,6 +9,8 @@ import { formatCurrency } from "@/lib/utils";
 
 type HolidayBookingPanelProps = {
   title: string;
+  itemId: string;
+  itemHref: string;
   pricePerPerson: number;
   departures: string[];
   initialDeparture: string;
@@ -18,6 +20,8 @@ type HolidayBookingPanelProps = {
 
 export function HolidayBookingPanel({
   title,
+  itemId,
+  itemHref,
   pricePerPerson,
   departures,
   initialDeparture,
@@ -141,6 +145,8 @@ export function HolidayBookingPanel({
         target={{
           service: "holiday",
           title,
+          itemId,
+          itemHref,
           context: [
             `Destination: ${cityName}`,
             departure ? `Departure: ${formatDateLong(departure)}` : "Departure: on request",

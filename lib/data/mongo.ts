@@ -3,7 +3,23 @@ import type { ZodType } from "zod";
 import type { Ordered } from "@/lib/models/ordered";
 import dbConnect from "@/lib/mongodb";
 
-const cache = new Map<string, Promise<unknown>>();
+type CatalogueCache = Map<string, Promise<unknown>>;
+
+/**
+ * Next can evaluate this module once per server bundle (pages, route handlers,
+ * server actions). A module-level Map would then produce one cache per bundle,
+ * so an admin save would clear the action's copy while the public route kept a
+ * stale one. Storing the Map on globalThis gives the whole server process a
+ * single cache.
+ */
+const globalCache = globalThis as typeof globalThis & {
+  __tripnestCatalogueCache?: CatalogueCache;
+};
+
+const cache: CatalogueCache =
+  globalCache.__tripnestCatalogueCache ?? new Map<string, Promise<unknown>>();
+
+globalCache.__tripnestCatalogueCache = cache;
 
 const projection = {
   _id: 0,
@@ -60,4 +76,18 @@ export function readCollection<T extends object>(
   });
 
   return promise;
+}
+
+/**
+ * Drop one catalogue collection from the process cache, or every collection
+ * when no model name is supplied. Admin mutations call this before revalidating
+ * the public routes so the next request reads the new MongoDB document.
+ */
+export function clearCollectionCache(modelName?: string): void {
+  if (modelName) {
+    cache.delete(modelName);
+    return;
+  }
+
+  cache.clear();
 }

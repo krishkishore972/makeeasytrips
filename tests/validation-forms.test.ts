@@ -52,6 +52,28 @@ describe("enquirySubmissionSchema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("accepts a catalogue item identity and rejects external links", () => {
+    const parsed = enquirySubmissionSchema.parse({
+      ...base,
+      itemId: "htl-bom-harbour-and-hush",
+      itemHref: "/hotels/htl-bom-harbour-and-hush",
+    });
+
+    expect(parsed.itemId).toBe("htl-bom-harbour-and-hush");
+    expect(parsed.itemHref).toBe("/hotels/htl-bom-harbour-and-hush");
+    expect(enquirySubmissionSchema.parse(base).itemHref).toBeUndefined();
+
+    for (const itemHref of [
+      "https://example.com/hotels/stay-1",
+      "//example.com/hotels/stay-1",
+      "/admin",
+      "/hotels/../admin",
+      "/hotels/stay 1",
+    ]) {
+      expect(enquirySubmissionSchema.safeParse({ ...base, itemHref }).success).toBe(false);
+    }
+  });
 });
 
 describe("newsletterSubmissionSchema", () => {

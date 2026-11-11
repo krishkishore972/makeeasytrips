@@ -32,6 +32,8 @@ export async function GET(request: Request) {
         eyebrow: offer.eyebrow,
         title: offer.title,
         description: offer.description,
+        image: offer.image,
+        gallery: offer.gallery ?? [],
         code: offer.code,
         discountLabel: offer.discount_label,
         icon: offer.icon,

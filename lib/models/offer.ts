@@ -12,6 +12,8 @@ const offerSchema = new Schema<Ordered<Offer>>(
     eyebrow: { type: String, required: true, trim: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
+    image: { type: String, trim: true },
+    gallery: { type: [String], default: undefined },
     code: {
       type: String,
       required: true,

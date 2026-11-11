@@ -11,9 +11,9 @@ export type HomeFaq = {
  */
 export const HOME_FAQS: HomeFaq[] = [
   {
-    question: "Is TripNest a real booking site?",
+    question: "Is Makeasytrips a real booking site?",
     answer:
-      "No. TripNest is an original, learning-purpose travel experience. The catalogue, prices, and offers are demo content, and there is no payment, account, or inventory behind any of it. Nothing you do here reserves a real seat or room.",
+      "No. Makeasytrips is an original, learning-purpose travel experience. The catalogue, prices, and offers are demo content, and there is no payment, account, or inventory behind any of it. Nothing you do here reserves a real seat or room.",
   },
   {
     question: "Do the prices include taxes and fees?",

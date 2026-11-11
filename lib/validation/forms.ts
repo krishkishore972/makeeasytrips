@@ -21,6 +21,16 @@ export const enquirySubmissionSchema = enquiryFormSchema
       .min(1, "The selected item is missing.")
       .max(200, "The selected item name is too long."),
     context: z.array(z.string().trim().min(1).max(300)).max(8).default([]),
+    // Older clients and existing rows may omit these, so they stay optional.
+    itemId: z.string().trim().min(1).max(120).optional(),
+    itemHref: z
+      .string()
+      .trim()
+      .max(300)
+      .regex(/^\/(?:hotels|holidays|rent-a-car|flights)\/[a-z0-9][a-z0-9-]*$/i, {
+        error: "Expected an internal catalogue path.",
+      })
+      .optional(),
   })
   .transform((value) => ({
     ...value,

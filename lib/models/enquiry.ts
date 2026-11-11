@@ -2,18 +2,34 @@ import { Schema, model, models, type Model } from "mongoose";
 import { enquiryServiceValues } from "@/lib/enquiry";
 import type { EnquirySubmission } from "@/lib/validation/forms";
 
+import { enquiryStatusValues, type EnquiryStatus } from "@/lib/admin/enquiry-status";
+export { enquiryStatusValues, type EnquiryStatus } from "@/lib/admin/enquiry-status";
+
+type EnquiryRecord = EnquirySubmission & {
+  itemId?: string;
+  itemHref?: string;
+  status?: EnquiryStatus;
+};
+
 /**
  * One row per enquiry submitted from a service detail page. The WhatsApp
  * message is still the delivery channel; this collection is the durable copy
  * the team can follow up on if WhatsApp is missed.
  */
-const enquirySchema = new Schema<EnquirySubmission>(
+const enquirySchema = new Schema<EnquiryRecord>(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
     phone: { type: String, required: true, match: /^[6-9]\d{9}$/ },
     service: { type: String, required: true, enum: enquiryServiceValues },
     title: { type: String, required: true, trim: true, maxlength: 200 },
     context: { type: [String], required: true, default: [] },
+    itemId: { type: String, trim: true, maxlength: 120 },
+    itemHref: { type: String, trim: true, maxlength: 300 },
+    status: {
+      type: String,
+      enum: enquiryStatusValues,
+      default: "new",
+    },
   },
   {
     collection: "enquiries",
@@ -25,7 +41,8 @@ const enquirySchema = new Schema<EnquirySubmission>(
 
 enquirySchema.index({ createdAt: -1 });
 enquirySchema.index({ service: 1, createdAt: -1 });
+enquirySchema.index({ status: 1, createdAt: -1 });
 
-export const EnquiryModel: Model<EnquirySubmission> =
-  (models.Enquiry as Model<EnquirySubmission> | undefined) ??
-  model<EnquirySubmission>("Enquiry", enquirySchema);
+export const EnquiryModel: Model<EnquiryRecord> =
+  (models.Enquiry as Model<EnquiryRecord> | undefined) ??
+  model<EnquiryRecord>("Enquiry", enquirySchema);

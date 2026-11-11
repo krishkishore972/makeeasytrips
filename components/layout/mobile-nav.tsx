@@ -10,7 +10,6 @@ import {
   CarFront,
   ChevronRight,
   Headphones,
-  Heart,
   MapPin,
   Menu,
   Palmtree,
@@ -47,7 +46,7 @@ export function MobileNav() {
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay fixed inset-0 z-[70] bg-brand-950/55 backdrop-blur-[2px]" />
         <Dialog.Content className="dialog-sheet fixed inset-y-0 right-0 z-[80] flex w-[min(88vw,24rem)] flex-col overflow-y-auto bg-surface p-5 shadow-lg">
-          <Dialog.Title className="sr-only">TripNest navigation</Dialog.Title>
+          <Dialog.Title className="sr-only">Makeasytrips navigation</Dialog.Title>
           <Dialog.Description className="sr-only">
             Browse hotels, holidays, rent a car, and offers.
           </Dialog.Description>
@@ -70,7 +69,7 @@ export function MobileNav() {
           </nav>
 
           <div className="mt-6 rounded-xl border border-line bg-canvas p-4">
-            <p className="text-xs font-bold tracking-wide text-muted uppercase">Your account</p>
+            <p className="text-xs font-bold tracking-wide text-muted uppercase">Quick links</p>
             <ul className="mt-3 space-y-1">
               {siteConfig.utilityNavigation.map((item) => (
                 <li key={item.href}>
@@ -93,16 +92,8 @@ export function MobileNav() {
               24/7 demo support · India · INR
             </div>
             <p className="text-[11px] leading-5 text-muted-soft">
-              TripNest is a learning project. No bookings, payments, or accounts are real.
+              Makeasytrips is a learning project. No bookings, payments, or accounts are real.
             </p>
-            <Link
-              href="/wishlist"
-              onClick={close}
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand-700 underline-offset-4 hover:underline"
-            >
-              <Heart aria-hidden="true" className="size-4" />
-              View your wishlist
-            </Link>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

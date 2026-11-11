@@ -293,6 +293,8 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
         target={{
           service: "car",
           title: `${car.brand} ${car.model}`,
+          itemId: car.id,
+          itemHref: `/rent-a-car/${car.id}`,
           context: [
             `Pick-up: ${start}`,
             `Drop-off: ${end}`,

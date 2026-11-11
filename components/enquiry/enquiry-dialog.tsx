@@ -137,6 +137,8 @@ export function EnquiryDialog({
           service: target.service,
           title: target.title,
           context,
+          itemId: target.itemId,
+          itemHref: target.itemHref,
         }),
       });
 
@@ -210,7 +212,7 @@ export function EnquiryDialog({
                 <Dialog.Description className="mt-1 text-xs leading-5 text-muted">
                   {sent
                     ? "WhatsApp should have opened with your message. Press send there to deliver it."
-                    : "Tell us who you are and what you need. We save the enquiry and open WhatsApp so you can send it to the TripNest business number."}
+                    : "Tell us who you are and what you need. We save the enquiry and open WhatsApp so you can send it to the Makeasytrips business number."}
                 </Dialog.Description>
               </div>
             </div>
@@ -381,9 +383,9 @@ export function EnquiryDialog({
                   aria-hidden="true"
                   className="mt-0.5 size-3.5 shrink-0 text-brand-500"
                 />
-                Your name, phone number, and this enquiry are saved so the TripNest team can follow
-                up. They are not shared with anyone else. WhatsApp opens with the same details so
-                you can send the message.
+                Your name, phone number, and this enquiry are saved so the Makeasytrips team can
+                follow up. They are not shared with anyone else. WhatsApp opens with the same
+                details so you can send the message.
               </p>
             </>
           )}

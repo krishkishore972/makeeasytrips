@@ -138,6 +138,7 @@ export const hotelSchema = z.object({
   price_per_night: z.coerce.number().int().positive(),
   tax_percent: z.coerce.number().int().min(0).max(30),
   image: z.string().trim().min(1),
+  gallery: z.array(z.string().trim().min(1)).optional(),
   amenities: stringList,
   room_type: z.string().trim().min(1),
   breakfast: booleanish,
@@ -181,6 +182,7 @@ export const carSchema = z.object({
   delivery_fee: z.coerce.number().int().nonnegative(),
   deposit: z.coerce.number().int().nonnegative(),
   image: z.string().trim().min(1),
+  gallery: z.array(z.string().trim().min(1)).optional(),
   tagline: z.string().trim().min(1),
   description: z.string().trim().min(1),
   featured: booleanish,
@@ -231,6 +233,8 @@ export const offerSchema = z.object({
   eyebrow: z.string().trim().min(1),
   title: z.string().trim().min(1),
   description: z.string().trim().min(1),
+  image: z.string().trim().min(1).optional(),
+  gallery: z.array(z.string().trim().min(1)).optional(),
   code: z
     .string()
     .trim()

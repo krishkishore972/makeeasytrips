@@ -25,6 +25,7 @@ const hotelSchema = new Schema<Ordered<Hotel>>(
     price_per_night: { type: Number, required: true, min: 1 },
     tax_percent: { type: Number, required: true, min: 0, max: 30 },
     image: { type: String, required: true, trim: true },
+    gallery: { type: [String], default: undefined },
     amenities: { type: [String], required: true, default: [] },
     room_type: { type: String, required: true, trim: true },
     breakfast: { type: Boolean, required: true, default: false },
