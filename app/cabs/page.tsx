@@ -17,7 +17,7 @@ export default function CabsPage() {
       title="A good ride at either end."
       description="Airport transfers and intercity cabs are a static shell for now. The route exists to complete the travel taxonomy and to give the shared components a home later."
       icon={CarFront}
-      phase="Static shell · booking flow not in the current roadmap"
+      phase="Static shell · no cab booking or enquiry flow"
       highlights={[
         "Airport pickup and drop with flight-aware timing",
         "Clear vehicle categories, luggage space, and fare estimates",

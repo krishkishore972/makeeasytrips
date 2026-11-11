@@ -23,7 +23,7 @@ export const HOME_FAQS: HomeFaq[] = [
   {
     question: "Can I change or cancel something I found?",
     answer:
-      "The demo has a mock review and confirmation step for stays, holidays, and car rentals. Confirming creates a reference from the URL only; nothing is saved, charged, or held. Cancellation rules are shown on detail pages so you can compare them, but they are illustrative and no real reservation exists.",
+      "The demo does not take bookings, so there is nothing to change or cancel. To ask about dates or availability, use the enquiry button on a stay, holiday, or car page. It saves your details and opens WhatsApp so you can send the question. Cancellation rules are shown on detail pages for comparison, but they are illustrative and no reservation exists.",
   },
   {
     question: "Why are the hotel, package, and car names unfamiliar?",

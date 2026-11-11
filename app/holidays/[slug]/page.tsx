@@ -333,9 +333,10 @@ async function HolidayDetailContent({ params, searchParams }: HolidayDetailProps
                     </span>
                   </summary>
                   <p className="mt-2 pr-8 text-xs leading-6 text-muted">
-                    The departure buttons update the demo summary and total. Choosing one opens a
-                    mock review, and confirming creates a demo reference only. Nothing is held, no
-                    account is created, and no payment is taken.
+                    The departure buttons update the demo summary and total. Sending an enquiry
+                    saves your name, phone number, chosen departure, and traveller count, then opens
+                    WhatsApp with the same details. Nothing is held, no account is created, and no
+                    payment is taken.
                   </p>
                 </details>
               </div>

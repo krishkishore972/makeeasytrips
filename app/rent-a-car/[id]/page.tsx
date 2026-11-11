@@ -483,7 +483,7 @@ async function CarDetailExperience({ params, searchParams }: CarDetailPageProps)
             {car.model} specifications, host names, ratings, prices, and policies are fictional. The
             two-day estimate is {formatCurrency(price.total)} including 18% GST, for{" "}
             {formatRentalDuration(rental.hours)} from {formatDateTimeLong(rental.start)}. No vehicle
-            is held, no payment is taken, and nothing is stored.
+            is held and no payment is taken. An enquiry is saved only when you choose to send one.
           </p>
         </div>
       </div>

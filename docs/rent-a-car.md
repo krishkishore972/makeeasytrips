@@ -5,8 +5,9 @@ self-drive marketplace (city + time window + specific car) rather than a taxi fl
 driver, no per-kilometre fare, and no dispatch. Every listing is a named model in a named city with
 its own host, kilometre plan, and handover point.
 
-All inventory is fictional. No car is held, no licence or identity document is collected, no
-payment is taken, and nothing is stored.
+All inventory is fictional. No car is held, no licence or identity document is collected, and no
+payment is taken. No rental is booked; an enquiry is saved only when the visitor chooses to send
+one.
 
 ## Routes
 
@@ -96,9 +97,9 @@ ids.
 7. show the refundable deposit separately — it is never added to the total
 
 The detail panel recalculates locally as the guest changes times, plan, delivery, and extras. The
-review and confirmation steps recompute the same breakdown on the server, so the two never
-disagree. Card totals on search results use the selected window with the included plan and no
-extras.
+enquiry dialog attaches the selected window, kilometre plan, and delivery choice as context lines,
+so the saved enquiry and the WhatsApp message describe the same rental. Card totals on search
+results use the selected window with the included plan and no extras.
 
 Example from the test fixture (`car-maruti-suzuki-swift`, ₹219/hour, two days, included km, no
 delivery): base ₹10,512 + GST ₹1,892 = ₹12,404, deposit ₹4,000 shown separately.
@@ -119,21 +120,23 @@ breakpoints: the same component sits in a narrow hero card on the landing page a
 results width, and switches from one column to two to five columns based on its own width. Native
 `datetime-local` inputs step down a font size in narrow cards so the picker icon keeps its space.
 
-## Booking integration
+## Enquiry integration
 
-Cars are the fourth booking type:
+Cars use the shared enquiry dialog rather than a booking hand-off:
 
 ```text
-/booking/review?type=car&id=car-maruti-suzuki-swift&start=2026-11-13T10:00&end=2026-11-15T10:00&plan=included&delivery=0&addons=child-seat
+Pick-up: 13 Nov, 10:00
+Drop-off: 15 Nov, 10:00
+Kilometre plan: Included 300 km/day
+Home delivery: No
 ```
 
-- `lib/validation/booking.ts` adds a `car` branch to the discriminated union: `id`, `start`, `end`,
-  `plan`, `delivery` (`0`/`1`), `addons` (comma-separated).
-- `lib/booking.ts` adds `resolveCarBooking`, the `Car rental` label, the `CR` reference prefix, and
-  the breadcrumb/product labels.
-- Review shows the full split (rental, km plan, delivery, extras, GST), the refundable deposit as a
-  separate note, and three next steps: handover city, driving licence, fuel/return rules.
-- Confirmation uses `TN-CR-XXXXXX` and links back to the car and to `/rent-a-car`.
+- `components/cars/car-booking-panel.tsx` builds those context lines from the live panel state and
+  passes them to `EnquiryDialog` with `service: "car"`.
+- The dialog validates the name and phone number, posts to `/api/enquiries`, and only then opens
+  WhatsApp with the same details.
+- The saved record keeps the car title and context lines, so a missed WhatsApp message can still be
+  followed up. No price, reservation, or deposit is stored.
 
 ## Navigation and visibility changes
 
@@ -142,19 +145,19 @@ Cars are the fourth booking type:
 - The home hero is a hotel search with Hotels / Holidays / Rent a car tabs; the car tab links to
   `/rent-a-car`.
 - The home page has a featured self-drive section above the holiday ideas.
-- `data/offers.csv` keeps its flight and train rows; `lib/data/offers.ts` filters public queries to
+- `data/offers.json` keeps its flight and train rows; `lib/data/offers.ts` filters public queries to
   `hotels`, `holidays`, and `cars`, and the offer board only shows those categories.
 - `/cabs` and `/cabs/*` permanently redirect to `/rent-a-car` in `next.config.ts`.
-- Hotel, holiday, my-trips, and booking empty states now point at the car section instead of cabs.
+- Hotel, holiday, and my-trips empty states now point at the car section instead of cabs.
 
 ## Verification
 
-- `npm test`: 115 tests, including car date windows, pricing, URL parsing, booking resolution,
+- `npm test`: 106 tests, including car date windows, pricing, URL parsing, form validation,
   facet building, and the offer visibility filter.
-- `npm run audit:a11y`: 19/19 routes clean under WCAG 2.2 AA, including the car landing, search,
-  detail, review, and confirmation pages.
+- `npm run audit:a11y`: 16/16 routes clean under WCAG 2.2 AA, including the car landing, search,
+  and detail pages and the contact form.
 - `npm run audit:perf`: 13 routes, worst LCP 704 ms, CLS 0, largest JS bundle 289 kB.
-- `npm run build`: 42 routes; the car routes are partial-prerender with static shells.
+- `npm run build`: succeeds; the car routes are partial-prerender with static shells.
 
 ## Deliberate gaps
 

@@ -53,7 +53,7 @@ export const infoPages = {
         heading: "Show the honest details",
         body: [
           "Stays show location, breakfast, taxes, and check-in details. Holiday packages show what is included and what is not. Self-drive cars show transmission, fuel, seats, kilometre plans, and the refundable deposit.",
-          "The checkout is a mock review step. It validates the form with Zod, shows a clear price summary, and then lands on a confirmation page. No card is charged and no personal data is persisted.",
+          "On a detail page, the enquiry form validates your name and phone number with Zod, saves the enquiry, and opens WhatsApp with the same details so you can send them on. No card is charged and no booking is created.",
         ],
       },
     ],
@@ -130,8 +130,8 @@ export const infoPages = {
       {
         heading: "Using the demo",
         body: [
-          "Search fields submit a query to the stays, holidays, or rent-a-car route, and the filters and results all live in the URL. Choosing a rate, package, or car opens a mock review step. Confirming creates a reference from the URL only; there is no account, payment, or saved trip.",
-          "The sign-in and newsletter forms are intentionally non-functional. They show the interaction pattern and then explain that nothing was sent or stored.",
+          "Search fields submit a query to the stays, holidays, or rent-a-car route, and the filters and results all live in the URL. Choosing a rate, package, or car opens an enquiry form. Sending it saves the enquiry and opens WhatsApp with the same details; there is no account, payment, or saved trip.",
+          "The sign-in dialog is intentionally non-functional and stores nothing. The newsletter saves only your email address, and the contact page saves the message you write so the team can reply.",
         ],
       },
       {
@@ -158,7 +158,7 @@ export const infoPages = {
       {
         heading: "In this demo",
         body: [
-          "The review step repeats the selected fare or rate rules before confirmation. Confirming creates a demo reference from the URL only, so there is still nothing to cancel and no refund to process.",
+          "Cancellation rules are shown on each fare, rate, package, and car page. The enquiry form saves the item you were viewing and its context, so a reply can refer to the same rules. No reservation exists, so there is nothing to cancel and no refund to process.",
         ],
       },
     ],
@@ -167,19 +167,20 @@ export const infoPages = {
     title: "Contact us",
     eyebrow: "Say hello",
     description:
-      "There is no support inbox for this learning project, but here is where a real conversation would start.",
+      "Send a message and it is saved for the TripNest team. Enquiries from service pages are saved too, with the item you were looking at.",
     sections: [
       {
         heading: "Trip questions",
         body: [
-          "A real TripNest would offer a short callback window, a written summary of the conversation, and a human who can explain the trade-offs between two options.",
-          "This demo does not collect contact details. The sign-in dialog and newsletter form both stop short of sending anything.",
+          "Use the form below to tell us what you are planning. Your name, email address, optional phone number, and message are stored so the team can follow up.",
+          "Service pages also save an enquiry when you request a quote on WhatsApp. That record includes the selected flight, stay, holiday, or car so the reply can pick up where you left off.",
         ],
       },
       {
-        heading: "Project feedback",
+        heading: "What we store",
         body: [
-          "If you are reviewing the build, the most useful feedback is about structure, accessibility, and whether the flows feel coherent. The REA notes in the repository document what was observed and what was inferred.",
+          "Contact messages, service enquiries, and newsletter sign-ups are written to the project database. No payment details, passwords, or identity documents are collected.",
+          "This is still a learning project, so replies are not guaranteed and no message triggers an automated email.",
         ],
       },
     ],
@@ -209,19 +210,33 @@ export const infoPages = {
     title: "Privacy",
     eyebrow: "Your data",
     description:
-      "TripNest is a local learning project with no accounts, no database, and no analytics. There is very little to collect.",
+      "TripNest stores the contact details you choose to send so enquiries and the newsletter can work. There are no accounts, payments, analytics, or advertising trackers.",
     sections: [
       {
         heading: "What is collected",
         body: [
-          "Nothing is persisted by the application. Form submissions in the demo are handled in the browser and discarded. Search state lives in the URL so it can be shared or refreshed.",
-          "The site may be served by a hosting provider that keeps standard request logs. That is outside the application’s control and outside the scope of this demo.",
+          "Service enquiries save your name, phone number, the item you were viewing, and any details shown in the enquiry. Contact messages save your name, email address, optional phone number, and message. Newsletter sign-ups save your email address.",
+          "The travel catalogue is stored in MongoDB and was loaded from the project's authored fixtures. Search and filter state lives in the URL so it can be shared or refreshed.",
+        ],
+      },
+      {
+        heading: "How it is used",
+        body: [
+          "Contact details are used only to reply to your enquiry or to send the newsletter you asked for. They are not sold, shared with advertisers, or used for profiling.",
+          "There is no automated email sender in this learning project, so a saved enquiry or message does not trigger an email by itself. The team reads submissions from the database.",
         ],
       },
       {
         heading: "What is not collected",
         body: [
-          "No names, email addresses, phone numbers, payment details, or account credentials are stored. The newsletter and sign-in forms explicitly stop before sending anything.",
+          "No passwords, accounts, payment details, identity documents, or precise location data are collected. The sign-in dialog is a non-functional demo and stores nothing.",
+          "The site sets no advertising, analytics, or preference cookies. Standard request logs may be kept by the hosting provider, which is outside the application's control.",
+        ],
+      },
+      {
+        heading: "Removing your details",
+        body: [
+          "Send a message from the contact page and ask for your enquiry, contact message, or newsletter email to be deleted. Because there are no accounts, include the phone number or email address you used so the right record can be found.",
         ],
       },
     ],
@@ -278,7 +293,7 @@ export const infoPages = {
         heading: "No real bookings",
         body: [
           "Every hotel, holiday package, car listing, price, rating, and offer in this project is fictional demo data. No booking is created, no payment is taken, and no supplier is contacted.",
-          "The checkout flow is a mock review and confirmation. It exists to demonstrate form structure, validation, and price summaries, not to transact.",
+          "Enquiries and contact messages are real records in the project database so the team can reply. They are not bookings, and they do not hold inventory or charge anything.",
         ],
       },
       {

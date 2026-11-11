@@ -1,8 +1,8 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { CheckCircle2, Send, ShieldCheck, X } from "lucide-react";
-import { useId, useState, type FormEvent } from "react";
+import { CheckCircle2, Loader2, Send, ShieldCheck, X } from "lucide-react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import {
   buildWhatsAppEnquiryMessage,
   ENQUIRY_SERVICE_LABELS,
@@ -73,14 +73,23 @@ export function EnquiryDialog({
     phone: "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const pendingWindowRef = useRef<Window | null>(null);
+
+  const context = (target.context ?? []).filter((line) => line.trim().length > 0);
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
 
     if (!nextOpen) {
+      pendingWindowRef.current?.close();
+      pendingWindowRef.current = null;
       setSent(false);
       setLastUrl("");
       setErrors({});
+      setSaving(false);
+      setSubmitError("");
     }
   }
 
@@ -95,8 +104,10 @@ export function EnquiryDialog({
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (saving) return;
 
     const parsed = enquiryFormSchema.safeParse(values);
 
@@ -109,19 +120,60 @@ export function EnquiryDialog({
       return;
     }
 
-    const url = whatsappEnquiryUrl(
-      buildWhatsAppEnquiryMessage({
-        ...parsed.data,
-        target,
-      }),
-    );
+    setSaving(true);
+    setSubmitError("");
 
-    setLastUrl(url);
-    setSent(true);
-    window.open(url, "_blank", "noopener,noreferrer");
+    // Open the tab inside the submit gesture. Some browsers block window.open
+    // after an await, which would break the WhatsApp hand-off on a slow save.
+    pendingWindowRef.current = window.open("about:blank", "_blank");
+
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: parsed.data.name,
+          phone: parsed.data.phone,
+          service: target.service,
+          title: target.title,
+          context,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        pendingWindowRef.current?.close();
+        pendingWindowRef.current = null;
+        setSubmitError(payload?.error ?? "We couldn't save your enquiry. Please try again.");
+        return;
+      }
+
+      const url = whatsappEnquiryUrl(
+        buildWhatsAppEnquiryMessage({
+          ...parsed.data,
+          target,
+        }),
+      );
+
+      setLastUrl(url);
+      setSent(true);
+
+      if (pendingWindowRef.current) {
+        pendingWindowRef.current.opener = null;
+        pendingWindowRef.current.location.href = url;
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+
+      pendingWindowRef.current = null;
+    } catch {
+      pendingWindowRef.current?.close();
+      pendingWindowRef.current = null;
+      setSubmitError("We couldn't save your enquiry. Check your connection and try again.");
+    } finally {
+      setSaving(false);
+    }
   }
-
-  const context = (target.context ?? []).filter((line) => line.trim().length > 0);
 
   return (
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
@@ -153,12 +205,12 @@ export function EnquiryDialog({
               </span>
               <div className="min-w-0">
                 <Dialog.Title className="text-xl leading-tight">
-                  {sent ? "Your enquiry is ready." : "Send an enquiry on WhatsApp."}
+                  {sent ? "Your enquiry is saved." : "Send an enquiry on WhatsApp."}
                 </Dialog.Title>
                 <Dialog.Description className="mt-1 text-xs leading-5 text-muted">
                   {sent
                     ? "WhatsApp should have opened with your message. Press send there to deliver it."
-                    : `Tell us who you are and what you need. Your message goes to the TripNest business WhatsApp.`}
+                    : "Tell us who you are and what you need. We save the enquiry and open WhatsApp so you can send it to the TripNest business number."}
                 </Dialog.Description>
               </div>
             </div>
@@ -174,12 +226,10 @@ export function EnquiryDialog({
             <div className="mt-4">
               <div className="rounded-xl border border-success/20 bg-success-soft p-4 text-center">
                 <CheckCircle2 aria-hidden="true" className="mx-auto size-7 text-success" />
-                <p className="mt-2 text-sm font-extrabold text-ink">
-                  WhatsApp opened in a new tab.
-                </p>
+                <p className="mt-2 text-sm font-extrabold text-ink">Your enquiry has been saved.</p>
                 <p className="mt-1 text-xs leading-5 text-muted">
-                  Press send in WhatsApp to deliver your enquiry. If the tab did not open, use the
-                  button below.
+                  WhatsApp opened in a new tab. Press send there to deliver the same details. If the
+                  tab did not open, use the button below.
                 </p>
                 {lastUrl ? (
                   <a
@@ -298,12 +348,31 @@ export function EnquiryDialog({
                   ) : null}
                 </div>
 
+                {submitError ? (
+                  <p
+                    role="alert"
+                    className="rounded-xl border border-danger/20 bg-danger-soft px-3 py-2.5 text-[11px] leading-5 font-bold text-danger"
+                  >
+                    {submitError}
+                  </p>
+                ) : null}
+
                 <button
                   type="submit"
-                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-success px-5 text-sm font-extrabold text-white shadow-sm transition-colors hover:bg-brand-800"
+                  disabled={saving}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-success px-5 text-sm font-extrabold text-white shadow-sm transition-colors hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  <Send aria-hidden="true" className="size-4" />
-                  Send enquiry on WhatsApp
+                  {saving ? (
+                    <>
+                      <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                      Saving your details…
+                    </>
+                  ) : (
+                    <>
+                      <Send aria-hidden="true" className="size-4" />
+                      Save and open WhatsApp
+                    </>
+                  )}
                 </button>
               </form>
 
@@ -312,8 +381,9 @@ export function EnquiryDialog({
                   aria-hidden="true"
                   className="mt-0.5 size-3.5 shrink-0 text-brand-500"
                 />
-                Your name and phone number are used only to reply on WhatsApp. The selected item and
-                its details are included automatically. Nothing is stored on this site.
+                Your name, phone number, and this enquiry are saved so the TripNest team can follow
+                up. They are not shared with anyone else. WhatsApp opens with the same details so
+                you can send the message.
               </p>
             </>
           )}

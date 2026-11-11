@@ -2,13 +2,13 @@
 
 TripNest is an original, learning-purpose travel experience inspired by the structure and
 flows of modern travel-booking products. It is **not** affiliated with, endorsed by, or
-connected to any travel brand. There are no real bookings, payments, accounts, or stored
-personal details.
+connected to any travel brand. There are no real bookings, payments, or accounts. Enquiries,
+contact messages, and newsletter sign-ups are stored so the team can follow up.
 
 The project is being built in phases. **Phases 1 (foundation), 2 (flights and hotels), 3
 (holidays, offers, and APIs), 4 (home and editorial polish), 5 (mock booking review and
-confirmation), 6 (quality pass: tests, accessibility, and performance), and 7 (rent a car)
-are complete.**
+confirmation), 6 (quality pass: tests, accessibility, and performance), 7 (rent a car), and 8
+(enquiries, newsletter, and contact persistence) are complete.**
 
 ## What is in this build
 
@@ -25,7 +25,7 @@ are complete.**
 - A typed, cached MongoDB data layer with 16 cities, 540 flights, 32 stays, 12 holidays, 12 offers,
   and 62 self-drive cars
 - Flight search and results: route/date/traveller form, filters, sorting, active-filter chips,
-  result cards, and a detail page with fare breakdown and review hand-off
+  result cards, and a detail page with fare breakdown and a WhatsApp enquiry
 - Hotel search and results: city/date/room form, filters, sorting, result cards, a landing page
   with featured stays, and a detail page with gallery, amenities, rate plans, and policies
 - Rent a car (self-drive): city and pick-up/drop-off search, Daily Drives / Subscription /
@@ -35,14 +35,16 @@ are complete.**
 - Holiday catalogue: destination-led browsing, theme/length/budget filters, sorting, featured and
   destination strips, and package detail pages with gallery, day-by-day itinerary, inclusions,
   departure picker, live demo totals, and similar packages
-- Shared mock booking flow: a URL-driven review step for cars, stays, and holidays, a native
-  acknowledgement form, deterministic demo references, and a confirmation page with next steps
+- Persisted lead capture: service enquiries, newsletter sign-ups, and contact messages are
+  validated with Zod and written to MongoDB; enquiries still open a pre-filled WhatsApp message
+- Contact page form for name, email, optional phone, and message, with inline validation and a
+  saved-state confirmation
 - Offer board: category tabs with counts, a featured banner, copyable demo codes, validity dates,
   and expandable terms
-- JSON APIs at `/api/flights`, `/api/hotels`, `/api/holidays`, `/api/cars`, `/api/offers`, and
-  `/api/cities`, validated with Zod
+- JSON APIs at `/api/flights`, `/api/hotels`, `/api/holidays`, `/api/cars`, `/api/offers`,
+  `/api/cities`, `/api/enquiries`, `/api/newsletter`, and `/api/contact`, validated with Zod
 - Flights and trains stay in the codebase and remain routable, but are no longer linked from the
-  navigation, home page, offers, or booking flow
+  navigation, home page, offers, or enquiry flow
 - Editorial, legal, and demo account pages (my trips, wishlist, login)
 - Root `loading.tsx`, `error.tsx`, `not-found.tsx`, and an SVG app icon
 - Local abstract SVG artwork under `public/images`; no third-party brand assets
@@ -87,15 +89,20 @@ npm run start
 | `/cabs`                  | Permanent redirect to `/rent-a-car`                                                     |
 | `/offers`                | Offer board with category tabs, featured offer, copyable codes, and terms               |
 | `/my-trips`, `/wishlist` | Static empty-state demos                                                                |
-| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, contact, disclaimer                    |
+| `/info/[slug]`           | About, how-it-works, help, legal, accessibility, disclaimer, and contact form           |
 | `/api/flights`           | JSON search API (query validation, `400` on invalid input)                              |
 | `/api/flights/[id]`      | JSON flight detail (`404` when unknown)                                                 |
 | `/api/hotels`            | JSON hotel search API                                                                   |
 | `/api/hotels/[id]`       | JSON hotel detail with the stay price breakdown                                         |
 | `/api/holidays`          | JSON holiday search API with per-person and traveller totals                            |
 | `/api/holidays/[slug]`   | JSON holiday detail with itinerary and price breakdown                                  |
+| `/api/cars`              | JSON car search API with plan and rental-window validation                              |
+| `/api/cars/[id]`         | JSON car detail with the rental price breakdown                                         |
 | `/api/offers`            | JSON offer list, category filter, and category counts                                   |
 | `/api/cities`            | City list, optionally scoped to `flights` or `hotels`                                   |
+| `/api/enquiries`         | `POST` an enquiry, validated and saved; `201` with the record id                        |
+| `/api/newsletter`        | `POST` an email, saved once per address; duplicate sign-ups stay idempotent             |
+| `/api/contact`           | `POST` a contact message, validated and saved; `201` with the record id                 |
 
 Search and filter state lives entirely in URL search params, so every results view is linkable
 and the server renders the matching set:
@@ -126,20 +133,20 @@ Example:
 
 ```text
 app/                  Routes, layouts, loading/error/not-found, APIs, global styles
-  api/                JSON route handlers for flights, hotels, holidays, cars, offers, and cities
-  booking/            Shared review and confirmation routes with loading skeletons
+  api/                JSON route handlers: catalogue reads plus enquiry, newsletter, and contact writes
   flights/            Retained search/results and detail pages (hidden from navigation)
   holidays/           Catalogue page, package detail, loading skeletons
   hotels/             Landing/results page, detail page, loading skeletons
   rent-a-car/         Self-drive landing, search/results, detail, loading skeletons
   offers/             Offer board and loading skeleton
 components/
-  booking/            Summary, price panel, acknowledgement form, progress, empty states
-  cars/               Search form, filters, cards, gallery, booking panel, skeletons
+  cars/               Search form, filters, cards, gallery, enquiry panel, skeletons
+  enquiry/            Shared WhatsApp enquiry dialog and saved-state feedback
   flights/            Search form, filters, cards, popular routes, skeletons
-  holidays/           Search form, filters, cards, gallery, itinerary, booking panel, skeletons
+  holidays/           Search form, filters, cards, gallery, itinerary, enquiry panel, skeletons
   home/               Home search widget, destination/stay cards, FAQ, field notes
   hotels/             Search form, filters, cards, gallery, skeletons
+  info/               Contact form for the contact page
   layout/             Navbar, mobile nav, login dialog, footer, newsletter
   offers/             Offer card, category tabs, copy-code button, icon mapper, skeletons
   providers/          Motion and Lenis providers
@@ -151,18 +158,18 @@ docs/REA.md           Reverse-engineering notes, evidence, and design decisions
 docs/rent-a-car.md    Rent-a-car routes, data, pricing, plans, and deliberate gaps
 hooks/                Small client hooks (scroll state, media query)
 lib/
-  booking.ts          Selection resolver, price summary, links, demo reference
+  enquiry.ts          Enquiry form schema, WhatsApp message builder, and number config
   data/               Cached MongoDB collection loader, Zod schemas, query and facet helpers
-  models/             Mongoose models for cities, flights, hotels, cars, holidays, offers
+  models/             Mongoose models for catalogues plus enquiries, subscribers, and contact
   mongodb.ts          Cached Mongoose connection
-  validation/         URL search-param and booking parsing with Zod
+  validation/         URL search-param and lead-form parsing with Zod
   pricing.ts          Fare, stay, holiday, and car-rental totals with tax bands
   search-options.ts   Filter, sort, cabin, amenity, holiday, car, and offer option tables
   dates.ts            Date parsing, labels, night counts, and rental windows
   home-content.ts     Original home FAQ and field-note copy
 public/images/        Original abstract SVG placeholders, including six car body styles
 scripts/              MongoDB seed, axe-core accessibility, and lab performance audits
-tests/                Vitest suites for dates, pricing, validation, booking, and data
+tests/                Vitest suites for dates, pricing, validation, lead forms, and data
 types/                Shared TypeScript types
 vitest.config.ts      Vitest config with the @ alias and Mongo fixture mock
 ```
@@ -174,6 +181,11 @@ process, validates every document with the same Zod schemas the app uses, strips
 and caches the typed promise. Server Components and the API route handlers share the same helpers,
 so there is no second source of truth.
 
+The catalogue is read-only from the app. Three separate collections accept writes from the lead
+forms: `enquiries`, `newsletter_subscribers`, and `contact_messages`. Their route handlers call
+`dbConnect()` directly and let Mongoose create the documents, so the catalogue cache is never
+involved in a write.
+
 ### MongoDB setup
 
 ```bash
@@ -182,7 +194,7 @@ MONGODB_URI=mongodb+srv://...
 MONGODB_DB=tripnest
 
 npm run db:seed        # validate the JSON fixtures, then upsert every row
-npm run db:seed:fresh  # clear the six collections first, then seed
+npm run db:seed:fresh  # clear the six catalogue collections first, then seed
 ```
 
 The seed fixtures in `data/*.json` are the authored catalogue. The seed script validates them with
@@ -193,21 +205,29 @@ project it back out.
 Because collection reads are cached per process, restart the dev server after re-seeding to pick up
 changes (or run the seed before starting it).
 
-| Collection | Rows | Notes                                                                |
-| ---------- | ---- | -------------------------------------------------------------------- |
-| `cities`   | 16   | 10 flight cities and 8 hotel cities, with airport and tagline        |
-| `flights`  | 540  | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins     |
-| `hotels`   | 32   | 4 stays in each of 8 cities, fictional names, amenities, policies    |
-| `cars`     | 62   | 12 car cities, 6 body styles, 12 fictional hosts, hourly demo rates  |
-| `holidays` | 12   | 10 destinations, 10 themes, day-by-day itineraries, departure dates  |
-| `offers`   | 12   | 7 visible rows across stays, holidays, and cars; flights/trains kept |
+Service enquiries open WhatsApp with `NEXT_PUBLIC_WHATSAPP_NUMBER` (default `917013114599`). Next.js
+inlines the value at build time, so set it in `.env.local` before building for another number.
+
+| Collection               | Rows  | Notes                                                                  |
+| ------------------------ | ----- | ---------------------------------------------------------------------- |
+| `cities`                 | 16    | 10 flight cities and 8 hotel cities, with airport and tagline          |
+| `flights`                | 540   | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins       |
+| `hotels`                 | 32    | 4 stays in each of 8 cities, fictional names, amenities, policies      |
+| `cars`                   | 62    | 12 car cities, 6 body styles, 12 fictional hosts, hourly demo rates    |
+| `holidays`               | 12    | 10 destinations, 10 themes, day-by-day itineraries, departure dates    |
+| `offers`                 | 12    | 7 visible rows across stays, holidays, and cars; flights/trains kept   |
+| `enquiries`              | grows | name, normalised phone, service, item title, context lines, timestamps |
+| `newsletter_subscribers` | grows | unique lowercased email, source, timestamps                            |
+| `contact_messages`       | grows | name, email, optional phone, message, timestamps                       |
 
 All fares, taxes, ratings, and availability are fictional demo values. Nothing is held or charged,
-and no booking is persisted.
+and no booking is persisted. Enquiries, newsletter emails, and contact messages are persisted so the
+team can follow up; `db:seed:fresh` only clears the six catalogue collections and leaves them intact.
 
 The models in `lib/models/` mirror the Zod row shapes, use the existing snake_case field names, and
-add unique indexes on `id` (and `code` for cities). `lib/mongodb.ts` caches one connection across
-requests and dev reloads.
+add unique indexes on `id` (and `code` for cities). The lead models add a descending `createdAt`
+index for triage and make `email` unique for newsletter sign-ups. `lib/mongodb.ts` caches one
+connection across requests and dev reloads.
 
 ## Verification
 
@@ -238,8 +258,21 @@ curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/api/offers?categ
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:3000/cabs"                # 308 → /rent-a-car
 ```
 
+Lead forms are `POST`-only and return the saved record id, so they can be checked without a browser:
+
+```bash
+curl -s -X POST "http://localhost:3000/api/enquiries" -H "Content-Type: application/json" \
+  -d '{"name":"Demo User","phone":"9876543210","service":"hotel","title":"Harbour & Hush","context":["2 guests"]}'
+curl -s -X POST "http://localhost:3000/api/newsletter" -H "Content-Type: application/json" \
+  -d '{"email":"demo@example.com"}'
+curl -s -X POST "http://localhost:3000/api/contact" -H "Content-Type: application/json" \
+  -d '{"name":"Demo User","email":"demo@example.com","message":"Please share two stay options."}'
+curl -s -o /dev/null -w "%{http_code}\n" -X POST "http://localhost:3000/api/enquiries" \
+  -H "Content-Type: application/json" -d '{"name":"X","phone":"123","service":"train","title":""}' # 400
+```
+
 On the home page, the offer and holiday carousels use previous/next controls with a polite slide
-counter, the FAQ uses native disclosures, and the newsletter confirms that nothing was stored.
+counter, the FAQ uses native disclosures, and the newsletter confirms that the email was saved.
 Destination and theme links point at real catalogue query params:
 
 ```bash
@@ -258,23 +291,24 @@ shared links behave as expected.
 `npm test` runs Vitest in a Node environment with the `@` alias. The suite targets the logic that
 is easy to get quietly wrong and hard to see in the UI:
 
-| File                               | Coverage                                                                                    |
-| ---------------------------------- | ------------------------------------------------------------------------------------------- |
-| `tests/dates.test.ts`              | ISO validation, leap years, rollover, night clamping, rental windows, India-time labels     |
-| `tests/pricing.test.ts`            | Flight, stay, holiday, and car breakdowns, tax rounding, per-room and per-day scaling       |
-| `tests/utils.test.ts`              | INR formatting, compaction, pluralisation, query strings, class merging                     |
-| `tests/validation-search.test.ts`  | Flight, hotel, holiday, car, and offer URL parsing, defaults, clamping, error copy          |
-| `tests/validation-booking.test.ts` | All four booking types, bounds, repeated params, plain-language errors                      |
-| `tests/booking.test.ts`            | Selection serialisation, references, review/confirmation links, totals, missing products    |
-| `tests/data.test.ts`               | Catalogue counts, lookup, filters, sorts, facets, popular routes, similar packages and cars |
-| `tests/fixtures.test.ts`           | Every JSON seed fixture validated against the same Zod schemas used for MongoDB reads       |
+| File                              | Coverage                                                                                    |
+| --------------------------------- | ------------------------------------------------------------------------------------------- |
+| `tests/dates.test.ts`             | ISO validation, leap years, rollover, night clamping, rental windows, India-time labels     |
+| `tests/pricing.test.ts`           | Flight, stay, holiday, and car breakdowns, tax rounding, per-room and per-day scaling       |
+| `tests/utils.test.ts`             | INR formatting, compaction, pluralisation, query strings, class merging                     |
+| `tests/validation-search.test.ts` | Flight, hotel, holiday, car, and offer URL parsing, defaults, clamping, error copy          |
+| `tests/validation-forms.test.ts`  | Enquiry, newsletter, and contact payloads, phone normalisation, caps, invalid services      |
+| `tests/data.test.ts`              | Catalogue counts, lookup, filters, sorts, facets, popular routes, similar packages and cars |
+| `tests/fixtures.test.ts`          | Every JSON seed fixture validated against the same Zod schemas used for MongoDB reads       |
 
-121 tests across 8 files. They run in about 300 ms and need no browser, server, or database: the
-Mongo collection loader is mocked with the same seed fixtures.
+106 tests across 7 files. They run in about 400 ms and need no browser, server, or database: the
+Mongo collection loader is mocked with the same seed fixtures. The lead schemas are exercised by
+`tests/validation-forms.test.ts`; the route handlers themselves are verified against MongoDB
+manually.
 
 ### Accessibility
 
-The app targets WCAG 2.2 AA. Automated checks use axe-core over 19 routes:
+The app targets WCAG 2.2 AA. Automated checks use axe-core over 16 routes:
 
 ```bash
 npm run build && npm run start   # in one terminal
@@ -282,13 +316,13 @@ npm run audit:a11y               # WCAG 2.2 AA
 npm run audit:a11y -- --best-practice
 ```
 
-Both audits currently report **19/19 pages clean**. They need a running app and a local Chrome;
+Both audits currently report **16/16 pages clean**. They need a running app and a local Chrome;
 set `CHROME_PATH` if Chrome is not in a standard location, and `BASE_URL` to point at another
 origin.
 
 The route set covers home, flight search and detail, hotel search and detail, the holiday
-catalogue and detail, offers, the rent-a-car landing, car search and detail, booking review and
-confirmation for flights and cars, about, my trips, trains, and the not-found page.
+catalogue and detail, offers, the rent-a-car landing, car search and detail, about, the contact
+form, my trips, trains, and the not-found page.
 
 Keyboard behaviour verified in the browser:
 
@@ -362,9 +396,13 @@ above). They share the same cached collection loader and Zod row schemas, so eve
 one typed source of truth. Flights and trains keep their data and routes but are hidden from the
 navigation in this phase; trains remain a static shell.
 
+`enquiries`, `newsletter_subscribers`, and `contact_messages` are the write side of the data layer.
+They are intentionally small, append-only records with no catalogue relationship beyond the stored
+service name and item title.
+
 ## Reverse-engineering notes
 
-`docs/REA.md` records the Step 0 analysis and the Phase 2–7 implementation records: observed
+`docs/REA.md` records the Step 0 analysis and the Phase 2–8 implementation records: observed
 sitemap and layout patterns, inferred flows, catalogue schemas, responsive behaviour, design
 decisions, verification, and limitations. Live MakeMyTrip capture was blocked by an Akamai 403, so the
 analysis relies on archived snapshots and public page structure. Phase 7 uses REA browser captures
@@ -381,12 +419,16 @@ No proprietary code, logos, photography, or marketing copy was reused.
    board, route handlers, Zod query validation.
 4. **Phase 4 — Home and editorial polish (done):** full home composition, accessible carousels,
    curated destinations and stays, field notes, newsletter, and FAQ.
-5. **Phase 5 — Booking (done):** URL-driven review and confirmation for flights, stays, and
-   holidays, deterministic demo references, and no payment or persistence.
+5. **Phase 5 — Booking (done, later replaced):** URL-driven review and confirmation for flights,
+   stays, and holidays, deterministic demo references, and no payment or persistence. Phase 8
+   replaced this flow with saved enquiries and a WhatsApp hand-off.
 6. **Phase 6 — Quality (done):** accessibility audit, performance pass, tests, documentation.
 7. **Phase 7 — Rent a car (done):** Zoomcar-style self-drive landing, search, and detail pages,
-   a 62-car catalogue, car pricing with GST and kilometre plans, shared booking integration,
+   a 62-car catalogue, car pricing with GST and kilometre plans, shared enquiry integration,
    flights/trains hidden from the navigation, and `/cabs` redirects to `/rent-a-car`.
+8. **Phase 8 — Lead persistence (done):** service enquiries, newsletter sign-ups, and contact
+   messages are validated with Zod and saved in MongoDB, with idempotent newsletter sign-ups and
+   a contact form on `/info/contact`.
 
 ## Disclaimer
 

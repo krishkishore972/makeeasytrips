@@ -39,6 +39,7 @@ const ROUTES = [
   ],
   ["car detail", "/rent-a-car/car-maruti-suzuki-swift?start=2026-11-13T10:00&end=2026-11-15T10:00"],
   ["about", "/info/about"],
+  ["contact", "/info/contact"],
   ["my trips", "/my-trips"],
   ["trains", "/trains"],
   ["not found", "/this-route-does-not-exist"],

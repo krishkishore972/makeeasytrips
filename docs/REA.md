@@ -1009,6 +1009,10 @@ filters actually return the expected package (`UDR` → Lake City in Three Acts,
 
 ## 14. Phase 5 implementation record (mock booking review and confirmation)
 
+> **Superseded in Phase 8.** The `/booking/*` routes and their helpers were removed when the
+> booking hand-off became a saved enquiry plus WhatsApp. This section records what Phase 5 built
+> and why; see section 17 for the current flow.
+
 Phase 5 adds the shared review and confirmation flow for flights, stays, and holidays. The scope
 is deliberately narrow: no payment, no account, no inventory hold, and no stored personal data.
 A booking is a **linkable selection**, not a record. Both routes rebuild everything from the URL
@@ -1448,3 +1452,101 @@ datetime inputs drop to 12px in narrow cards so the picker icon keeps its paddin
 - Container queries are used instead of viewport breakpoints wherever a component is reused at
   two very different widths; this is the same reason the hotel and flight forms remain separate
   components with their own layouts.
+
+## 17. Phase 8 implementation record (lead persistence)
+
+### 17.1 Why this phase exists
+
+Phase 5 wrote the review and confirmation flow entirely on the client. Phase 7 kept the same
+pattern for cars, and the last refinement replaced the booking hand-off with a WhatsApp enquiry
+dialog. That left no durable record on the server: the name and phone existed only inside the
+WhatsApp draft, the newsletter confirmed a subscription without saving an email, and the contact
+page was copy with no form.
+
+Phase 8 keeps WhatsApp as the fast reply channel but adds a database write first, so a missed
+message is still recoverable. Newsletter and contact submissions are stored for the same reason.
+
+### 17.2 Collections and validation
+
+Three append-only collections sit beside the six catalogue collections:
+
+| Collection               | Fields                                                       |
+| ------------------------ | ------------------------------------------------------------ |
+| `enquiries`              | `name`, `phone`, `service`, `title`, `context[]`, timestamps |
+| `newsletter_subscribers` | unique lowercase `email`, `source`, timestamps               |
+| `contact_messages`       | `name`, `email`, optional `phone`, `message`, timestamps     |
+
+The write models live in `lib/models/` and use the same caching guard as the catalogue models so a
+dev reload cannot compile the same model twice. `enquiries` and `contact_messages` index
+`createdAt` descending for triage; `newsletter_subscribers` makes `email` unique and adds a
+descending `createdAt` index.
+
+`lib/validation/forms.ts` owns the shared Zod contracts:
+
+- Enquiries extend the existing `enquiryFormSchema` with a service enum, a bounded title, and up
+  to eight context lines of 300 characters. The phone number is normalised to ten digits after
+  validation, so `+91 98765 43210` and `09876543210` are stored as `9876543210`.
+- Newsletter emails are trimmed, lowercased, and validated with `z.email()`.
+- Contact messages cap the name, email, optional phone, and a 10–2,000-character message. The
+  optional phone uses the same Indian-mobile normalisation when supplied.
+
+The dialog still validates locally before the request, so a user sees field errors without a round
+trip. The API validates the same object again because the local check is not a trust boundary.
+
+### 17.3 Route handlers
+
+| Route             | Method | Behaviour                                                                  |
+| ----------------- | ------ | -------------------------------------------------------------------------- |
+| `/api/enquiries`  | `POST` | `201` with the record id; `400` with per-field issues; `500` on DB failure |
+| `/api/newsletter` | `POST` | Upsert by email, `200` even for a repeat sign-up, so retries are safe      |
+| `/api/contact`    | `POST` | `201` with the record id; `400` with per-field issues; `500` on DB failure |
+
+Each handler parses JSON defensively, calls `dbConnect()` itself, and returns a generic message on
+database errors. There are deliberately no `GET` handlers: the records contain personal details
+and there is no admin surface or authentication yet. The newsletter handler treats a duplicate-key
+error as success because a concurrent request may have inserted the same unique email between the
+upsert's read and write.
+
+Writes bypass `readCollection` entirely. The catalogue cache is a read-only projection of seeded
+fixtures; mixing writes into it would make stale reads more likely.
+
+### 17.4 Client behaviour
+
+- **Enquiry dialog.** Submit is now async. It posts the person details plus the service, title, and
+  context, disables the button while saving, and shows an inline alert if the write fails. Only a
+  successful write opens WhatsApp, so the saved record and the outgoing message cannot diverge.
+  The tab is opened synchronously inside the submit gesture and pointed at WhatsApp after the
+  write, so browsers that block `window.open` after an `await` still complete the hand-off. The
+  privacy line and success copy now say the enquiry is saved instead of claiming nothing is
+  stored.
+- **Newsletter form.** The email is controlled, validated with the shared schema, and posted to
+  `/api/newsletter`. Success shows the saved state; failures keep the address in the field and
+  announce the error. Repeat submissions return success without creating another row.
+- **Contact form.** `/info/contact` now renders a client form with name, email, optional phone, and
+  message. It uses the same inline-error pattern as the enquiry dialog and a success panel that
+  explains what was stored.
+
+Copy that previously claimed "nothing is stored" was corrected on the home page, contact, privacy,
+disclaimer, how-it-works, and rent-a-car pages. The privacy page now lists exactly what is saved
+and how to ask for removal.
+
+### 17.5 Verification
+
+- `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build` are clean.
+- `npm test`: 106 tests across 7 files, including the new `tests/validation-forms.test.ts`.
+- A manual end-to-end run against the configured MongoDB wrote one enquiry, one newsletter
+  subscriber, and one contact message; a repeat newsletter sign-up left one row; the invalid
+  enquiry returned `400` with field errors. The three test rows were deleted afterwards.
+- A browser run on the dev server submitted the contact form and the newsletter (both persisted)
+  and opened the hotel enquiry dialog. The enquiry posted the expected payload, returned `201`,
+  built the WhatsApp URL, and saved one row; every test row was deleted afterwards.
+- `npm run audit:a11y` now covers 16 routes, including `/info/contact`.
+
+### 17.6 Deliberate gaps
+
+- No admin UI, export, or notification email. Records are read directly from MongoDB.
+- No rate limiting, CAPTCHA, or honeypot. The forms validate shape and length, not intent.
+- No authenticated deletion flow; the privacy page asks people to request removal by message.
+- Newsletter sign-ups are stored but no letter is actually sent, and no unsubscribe mechanism
+  exists.
+- Phone normalisation is India-specific, matching the rest of the demo.

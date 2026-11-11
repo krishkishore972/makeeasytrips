@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowRight, ChevronRight, Info, ShieldCheck } from "lucide-react";
+import { ContactForm } from "@/components/info/contact-form";
 import {
   infoPages,
   infoPageSlugs,
@@ -97,6 +98,8 @@ async function InfoContent({ params }: InfoPageProps) {
               </section>
             ))}
           </div>
+
+          {slug === "contact" ? <ContactForm /> : null}
 
           <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-line pt-6">
             <Link

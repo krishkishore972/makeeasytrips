@@ -625,7 +625,8 @@ export default async function HomePage() {
                     </Link>
                   </div>
                   <p className="mt-5 text-[11px] leading-5 text-white/65">
-                    Demo experience. No real bookings, payments, or personal data.
+                    Demo experience. No real bookings or payments. Enquiries are saved so the team
+                    can reply.
                   </p>
                 </div>
 

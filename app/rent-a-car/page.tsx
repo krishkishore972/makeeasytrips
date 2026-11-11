@@ -69,9 +69,9 @@ const HOW_IT_WORKS = [
   },
   {
     icon: Route,
-    title: "Review, then hit the road",
+    title: "Enquire, then hit the road",
     detail:
-      "The mock review step shows the full split: rental, delivery, add-ons, GST, and the refundable deposit.",
+      "The enquiry panel shows the full split: rental, delivery, add-ons, GST, and the refundable deposit. Sending it saves the enquiry and opens WhatsApp.",
   },
 ];
 
@@ -104,7 +104,7 @@ const RENTAL_FAQS: HomeFaq[] = [
   {
     question: "Can I cancel a demo rental?",
     answer:
-      "Cancellation rules are shown on each car page so you can compare them. They are illustrative only. Nothing is stored, so there is no booking to cancel after you leave the confirmation screen.",
+      "Cancellation rules are shown on each car page so you can compare them. They are illustrative only. No booking is created, so there is nothing to cancel.",
   },
 ];
 
