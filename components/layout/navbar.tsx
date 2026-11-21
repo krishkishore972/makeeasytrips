@@ -7,8 +7,6 @@ import {
   BedDouble,
   CarFront,
   CalendarDays,
-  Globe2,
-  Headphones,
   MapPin,
   Palmtree,
   Tag,
@@ -38,35 +36,6 @@ export function Navbar() {
         scrolled ? "shadow-sm" : "shadow-none",
       )}
     >
-      {/* Utility strip */}
-      <div className="hidden bg-brand-950 text-white lg:block">
-        <div className="page-container flex h-9 items-center justify-between gap-6 text-[11px] font-semibold">
-          <ul className="flex items-center gap-5">
-            {siteConfig.utilityNavigation.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="text-white/75 transition-colors hover:text-white">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-center gap-5 text-white/75">
-            <span className="inline-flex items-center gap-1.5">
-              <Headphones aria-hidden="true" className="size-3.5" />
-              24/7 demo support
-            </span>
-            <span aria-hidden="true" className="h-3 w-px bg-white/20" />
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
-            >
-              <Globe2 aria-hidden="true" className="size-3.5" />
-              India · INR
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Main navigation */}
       <div className="border-b border-line bg-surface/95 backdrop-blur-xl">
         <div className="page-container flex h-[72px] items-center justify-between gap-3 sm:h-[76px]">
