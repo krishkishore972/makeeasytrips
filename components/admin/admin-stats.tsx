@@ -29,6 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const SERVICE_ICONS: Record<EnquiryService, LucideIcon> = {
+  event: CalendarDays,
   flight: Plane,
   hotel: Building2,
   holiday: CalendarDays,
@@ -36,6 +37,7 @@ const SERVICE_ICONS: Record<EnquiryService, LucideIcon> = {
 };
 
 const SERVICE_STYLES: Record<EnquiryService, string> = {
+  event: "bg-gold-100 text-gold-600",
   flight: "bg-sky-50 text-sky-700",
   hotel: "bg-brand-50 text-brand-700",
   holiday: "bg-gold-100 text-gold-600",
@@ -348,7 +350,8 @@ export function AdminStatsView({ email, stats }: AdminStatsProps) {
               Most enquired items
             </h2>
             <p className="mt-1.5 text-xs leading-5 text-muted">
-              Top 10 stays, packages, cars, and flights in the last {RANGE_LABELS[stats.range]}.
+              Top 10 stays, packages, cars, flights, and events in the last{" "}
+              {RANGE_LABELS[stats.range]}.
             </p>
           </div>
           <span className="rounded-full bg-canvas px-2.5 py-1 text-[10px] font-extrabold tracking-[0.08em] text-muted uppercase">

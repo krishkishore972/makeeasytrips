@@ -19,6 +19,7 @@ const searchTabs: { label: string; href: string; icon: LucideIcon; active?: bool
   { label: "Hotels", href: "/hotels", icon: BedDouble, active: true },
   { label: "Holidays", href: "/holidays", icon: Palmtree },
   { label: "Rent a car", href: "/rent-a-car", icon: CarFront },
+  { label: "Events in Goa", href: "/events", icon: CalendarDays },
 ];
 
 type FieldProps = {

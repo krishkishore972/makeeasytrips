@@ -65,6 +65,7 @@ type EnquiryDoc = {
   service: EnquiryService;
   title: string;
   context?: string[];
+  details?: string;
   itemId?: string;
   itemHref?: string;
   status?: EnquiryStatus | null;
@@ -78,6 +79,7 @@ export function serialiseEnquiry(row: EnquiryDoc) {
     service: row.service,
     title: row.title,
     context: row.context ?? [],
+    details: row.details,
     itemId: row.itemId,
     itemHref: safeItemHref(row.itemHref),
     status: row.status ?? ("new" as EnquiryStatus),

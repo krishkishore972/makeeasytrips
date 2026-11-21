@@ -3,6 +3,32 @@ import { enquiryMongoFilter, parseEnquiryFilters, serialiseEnquiry } from "@/lib
 import { Types } from "mongoose";
 
 describe("admin enquiry filters", () => {
+  it("accepts event enquiries and their listing links", () => {
+    expect(parseEnquiryFilters({ service: "event" }).service).toBe("event");
+    expect(
+      serialiseEnquiry({
+        _id: new Types.ObjectId(),
+        name: "Test",
+        phone: "9999999999",
+        service: "event",
+        title: "Test event",
+        itemHref: "/events/test-event",
+      }).itemHref,
+    ).toBe("/events/test-event");
+  });
+  it("preserves optional enquiry requirements while supporting older records", () => {
+    const base = {
+      _id: new Types.ObjectId(),
+      name: "Test",
+      phone: "9999999999",
+      service: "hotel" as const,
+      title: "Test enquiry",
+    };
+    expect(serialiseEnquiry({ ...base, details: "An accessible venue, please." }).details).toBe(
+      "An accessible venue, please.",
+    );
+    expect(serialiseEnquiry(base).details).toBeUndefined();
+  });
   it("rejects malformed filters and bounds the search and page", () => {
     expect(
       parseEnquiryFilters({

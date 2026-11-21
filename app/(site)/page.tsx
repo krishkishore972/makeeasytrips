@@ -23,6 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { HolidayCard } from "@/components/holidays/holiday-card";
+import { HomeEvents } from "@/components/events/home-events";
 import { DestinationCard } from "@/components/home/destination-card";
 import { Faq } from "@/components/home/faq";
 import { HeroSearch } from "@/components/home/hero-search";
@@ -542,6 +543,8 @@ async function HomeContent() {
           </ScrollReveal>
         </div>
       </section>
+
+      <HomeEvents />
 
       <section id="faq" className="section-padding border-t border-line bg-surface">
         <div className="page-container grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">

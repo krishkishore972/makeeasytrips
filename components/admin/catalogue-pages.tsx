@@ -37,6 +37,7 @@ type CatalogueEditPageProps = {
 };
 
 const resourceIcons: Record<CatalogueResource, LucideIcon> = {
+  events: CalendarDays,
   hotels: Building2,
   holidays: CalendarDays,
   cars: CarFront,
@@ -309,7 +310,15 @@ function CatalogueEditorShell({
         ) : null}
       </div>
 
-      <CatalogueForm resource={resource} mode={mode} record={record} cities={cities} />
+      <CatalogueForm
+        // Cache Components preserves this editor across navigations. Reset
+        // its state and uncontrolled inputs when the saved record changes.
+        key={`${resource}:${mode}:${JSON.stringify(record)}`}
+        resource={resource}
+        mode={mode}
+        record={record}
+        cities={cities}
+      />
       {mode === "edit" && typeof record.id === "string" ? (
         <CatalogueDelete resource={resource} id={record.id} title={title} />
       ) : null}

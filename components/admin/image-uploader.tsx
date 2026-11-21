@@ -117,7 +117,7 @@ export function ImageUploader({
 
       const payload: unknown = await response.json().catch(() => null);
 
-      if (!isUploadResponse(payload) || payload.ok === false) {
+      if (!response.ok || !isUploadResponse(payload) || payload.ok === false) {
         const message =
           isUploadResponse(payload) && payload.ok === false ? payload.error : undefined;
         throw new Error(message || "The upload did not complete. Try again.");
@@ -189,6 +189,7 @@ export function ImageUploader({
         <div className="space-y-3">
           <div className="relative overflow-hidden rounded-xl border border-line bg-canvas">
             <Image
+              key={image.url}
               src={image.url}
               alt={initialAlt ?? "Uploaded image preview"}
               width={image.width ?? 640}

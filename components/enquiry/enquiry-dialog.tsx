@@ -62,6 +62,8 @@ export function EnquiryDialog({
   const baseId = useId();
   const nameId = `${baseId}-name`;
   const phoneId = `${baseId}-phone`;
+  const detailsId = `${baseId}-details`;
+  const detailsErrorId = `${baseId}-details-error`;
   const nameErrorId = `${baseId}-name-error`;
   const phoneErrorId = `${baseId}-phone-error`;
 
@@ -71,6 +73,7 @@ export function EnquiryDialog({
   const [values, setValues] = useState<EnquiryFormValues>({
     name: "",
     phone: "",
+    details: "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
@@ -116,6 +119,7 @@ export function EnquiryDialog({
       setErrors({
         name: fieldErrors.name?.[0],
         phone: fieldErrors.phone?.[0],
+        details: fieldErrors.details?.[0],
       });
       return;
     }
@@ -134,6 +138,7 @@ export function EnquiryDialog({
         body: JSON.stringify({
           name: parsed.data.name,
           phone: parsed.data.phone,
+          details: parsed.data.details,
           service: target.service,
           title: target.title,
           context,
@@ -346,6 +351,40 @@ export function EnquiryDialog({
                       className="mt-1.5 text-[11px] font-bold text-danger"
                     >
                       {errors.phone}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor={detailsId}
+                    className="text-[10px] font-extrabold tracking-[0.12em] text-muted-soft uppercase"
+                  >
+                    Enquiry details <span className="font-normal">(optional)</span>
+                  </label>
+                  <textarea
+                    id={detailsId}
+                    name="details"
+                    rows={4}
+                    maxLength={2000}
+                    value={values.details ?? ""}
+                    onChange={(event) => updateField("details", event.target.value)}
+                    aria-invalid={Boolean(errors.details)}
+                    aria-describedby={errors.details ? detailsErrorId : undefined}
+                    placeholder={
+                      target.service === "event"
+                        ? "Tell us your preferred date, number of guests, and what you would like us to organise in Goa."
+                        : "Tell us what you would like to know."
+                    }
+                    className={cn(
+                      fieldClassName,
+                      "py-3",
+                      errors.details ? "border-danger" : "border-line",
+                    )}
+                  />
+                  {errors.details ? (
+                    <p id={detailsErrorId} role="alert" className="mt-1.5 text-xs text-danger">
+                      {errors.details}
                     </p>
                   ) : null}
                 </div>

@@ -14,7 +14,7 @@ function digitsOnly(value: string) {
 export const whatsappNumber =
   digitsOnly(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "") || DEFAULT_WHATSAPP_NUMBER;
 
-export const enquiryServiceValues = ["flight", "hotel", "holiday", "car"] as const;
+export const enquiryServiceValues = ["flight", "hotel", "holiday", "car", "event"] as const;
 export type EnquiryService = (typeof enquiryServiceValues)[number];
 
 export const ENQUIRY_SERVICE_LABELS: Record<EnquiryService, string> = {
@@ -22,6 +22,7 @@ export const ENQUIRY_SERVICE_LABELS: Record<EnquiryService, string> = {
   hotel: "Stay",
   holiday: "Holiday",
   car: "Car rental",
+  event: "Event",
 };
 
 /** Strip common Indian dialling prefixes so 10-digit validation is predictable. */
@@ -40,6 +41,11 @@ export function normaliseIndianMobile(value: string) {
 }
 
 export const enquiryFormSchema = z.object({
+  details: z
+    .string()
+    .trim()
+    .max(2000, "Please keep your enquiry under 2,000 characters.")
+    .optional(),
   name: z
     .string()
     .trim()
@@ -79,7 +85,7 @@ export type EnquiryMessageInput = EnquiryFormValues & {
  * Build the pre-filled WhatsApp message. WhatsApp renders `*text*` as bold, so
  * the trip name stays easy to spot in the chat.
  */
-export function buildWhatsAppEnquiryMessage({ target, name, phone }: EnquiryMessageInput) {
+export function buildWhatsAppEnquiryMessage({ target, name, phone, details }: EnquiryMessageInput) {
   const serviceLabel = ENQUIRY_SERVICE_LABELS[target.service];
   const context = (target.context ?? []).map((line) => line.trim()).filter(Boolean);
 
@@ -91,6 +97,7 @@ export function buildWhatsAppEnquiryMessage({ target, name, phone }: EnquiryMess
     "",
     `Name: ${name.trim()}`,
     `Phone: +91 ${normaliseIndianMobile(phone)}`,
+    ...(details?.trim() ? ["", `Enquiry details: ${details.trim()}`] : []),
     "",
     "Sent from the Makeasytrips website.",
   ];

@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import {
   BedDouble,
   CarFront,
+  CalendarDays,
   Globe2,
   Headphones,
   MapPin,
@@ -24,6 +25,7 @@ const navIcons: Record<string, LucideIcon> = {
   palmtree: Palmtree,
   car: CarFront,
   tag: Tag,
+  calendar: CalendarDays,
 };
 
 export function Navbar() {

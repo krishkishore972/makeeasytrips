@@ -49,6 +49,22 @@ export function summariseCatalogueRecord(
 
   const featured = record.featured === true;
 
+  if (resource === "events") {
+    const slug = text(record.slug);
+    return {
+      id,
+      title: text(record.title) || id,
+      subtitle: [text(record.venue), text(record.area), "Goa"].filter(Boolean).join(" · "),
+      meta: [text(record.event_date) || "Dates on request", text(record.price_label)]
+        .filter(Boolean)
+        .join(" · "),
+      editHref: editHref(resource, id),
+      publicHref: slug ? `/events/${encodeURIComponent(slug)}` : undefined,
+      image: text(record.image) || undefined,
+      featured,
+    };
+  }
+
   if (resource === "hotels") {
     const title = text(record.name) || id;
     const area = text(record.area);

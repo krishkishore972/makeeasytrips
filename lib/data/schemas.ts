@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EVENT_CATEGORIES } from "@/lib/event-options";
 import {
   cabinValues,
   carFuelValues,
@@ -250,6 +251,30 @@ export const offerSchema = z.object({
 });
 
 export const holidaySortSchema = z.enum(holidaySortValues);
+
+export const eventSchema = z.object({
+  id: z.string().trim().min(1),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/, "Expected a lowercase slug"),
+  title: z.string().trim().min(1),
+  category: z.enum(EVENT_CATEGORIES),
+  summary: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  venue: z.string().trim().min(1),
+  area: z.string().trim().min(1),
+  location: z.literal("Goa").default("Goa"),
+  event_date: z.union([z.literal(""), z.iso.date()]).default(""),
+  start_time: z.union([z.literal(""), z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)]).default(""),
+  price_label: z.string().trim().min(1).default("Get a custom quote"),
+  image: z.string().trim().min(1),
+  gallery: z.array(z.string().trim().min(1)).default([]),
+  highlights: z.array(z.string().trim().min(1)).default([]),
+  featured: z.boolean().default(false),
+});
+
+export type GoaEvent = z.infer<typeof eventSchema>;
 
 export type City = z.infer<typeof citySchema>;
 export type Flight = z.infer<typeof flightSchema>;

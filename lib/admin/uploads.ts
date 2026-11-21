@@ -23,12 +23,13 @@ export const IMAGE_EXTENSIONS: Record<ImageMimeType, "jpg" | "png" | "webp"> = {
 
 export const UPLOAD_ACCEPT = IMAGE_MIME_TYPES.join(",");
 
-export const UPLOAD_FOLDERS = ["media", "hotels", "holidays", "cars", "offers"] as const;
+export const UPLOAD_FOLDERS = ["media", "hotels", "holidays", "cars", "offers", "events"] as const;
 export type UploadFolder = (typeof UPLOAD_FOLDERS)[number];
 
 export const DEFAULT_UPLOAD_FOLDER: UploadFolder = "media";
 
 export const UPLOAD_FOLDER_LABELS: Record<UploadFolder, string> = {
+  events: "Events",
   media: "Media library",
   hotels: "Hotels",
   holidays: "Holidays",

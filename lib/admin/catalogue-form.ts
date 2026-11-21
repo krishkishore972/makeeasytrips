@@ -4,9 +4,16 @@ import {
   type CatalogueField,
   type CatalogueResource,
 } from "@/lib/admin/catalogue-config";
-import { carSchema, holidaySchema, hotelSchema, offerSchema } from "@/lib/data/schemas";
+import {
+  carSchema,
+  eventSchema,
+  holidaySchema,
+  hotelSchema,
+  offerSchema,
+} from "@/lib/data/schemas";
 
 const schemas = {
+  events: eventSchema,
   hotels: hotelSchema,
   holidays: holidaySchema,
   cars: carSchema,
@@ -155,6 +162,11 @@ export function parseCatalogueForm(
 
   if (options.fixedId) {
     raw.id = options.fixedId;
+  }
+
+  if (resource === "events") {
+    raw.location = "Goa";
+    if (!raw.price_label) raw.price_label = undefined;
   }
 
   const gallery = raw.gallery as string[];

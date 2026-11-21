@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
   { label: "Holidays", href: "/admin/holidays", icon: CalendarDays },
   { label: "Cars", href: "/admin/cars", icon: CarFront },
   { label: "Offers", href: "/admin/offers", icon: Tag },
+  { label: "Events", href: "/admin/events", icon: CalendarDays },
   { label: "Enquiries", href: "/admin/enquiries", icon: Inbox },
 ];
 

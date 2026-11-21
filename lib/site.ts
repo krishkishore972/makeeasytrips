@@ -10,6 +10,7 @@ export const siteConfig = {
     { label: "Hotels", href: "/hotels", icon: "bed" },
     { label: "Holidays", href: "/holidays", icon: "palmtree" },
     { label: "Rent a car", href: "/rent-a-car", icon: "car" },
+    { label: "Events", href: "/events", icon: "calendar" },
     { label: "Offers", href: "/offers", icon: "tag" },
   ],
   utilityNavigation: [{ label: "List your property", href: "/info/list-your-property" }],
@@ -18,6 +19,7 @@ export const siteConfig = {
       { label: "Hotels", href: "/hotels" },
       { label: "Holiday packages", href: "/holidays" },
       { label: "Rent a car", href: "/rent-a-car" },
+      { label: "Events in Goa", href: "/events" },
       { label: "Offers", href: "/offers" },
     ],
     company: [

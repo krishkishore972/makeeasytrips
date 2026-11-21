@@ -79,6 +79,12 @@ async function EnquiryContent({ params }: Props) {
             </ul>
           </div>
         ) : null}
+        {row.details ? (
+          <div>
+            <h2 className="text-sm font-bold">Additional requirements</h2>
+            <p className="mt-2 text-sm whitespace-pre-wrap text-muted">{row.details}</p>
+          </div>
+        ) : null}
         <div className="border-t border-line pt-5">
           <EnquiryStatusForm id={row.id} status={row.status} />
         </div>

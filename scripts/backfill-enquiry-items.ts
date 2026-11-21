@@ -4,6 +4,7 @@ import { getCars } from "@/lib/data/cars";
 import { getFlights } from "@/lib/data/flights";
 import { getHolidays } from "@/lib/data/holidays";
 import { getHotels } from "@/lib/data/hotels";
+import { getEvents } from "@/lib/data/events";
 import type { EnquiryService } from "@/lib/enquiry";
 import { EnquiryModel } from "@/lib/models/enquiry";
 import dbConnect from "@/lib/mongodb";
@@ -58,14 +59,18 @@ async function main() {
 
   console.log(`Connected to MongoDB: ${connection.connection.host}/${connection.connection.name}`);
 
-  const [hotels, holidays, cars, flights] = await Promise.all([
+  const [hotels, holidays, cars, flights, events] = await Promise.all([
     getHotels(),
     getHolidays(),
     getCars(),
     getFlights(),
+    getEvents(),
   ]);
 
   const matchesByService: Record<EnquiryService, Map<string, ItemMatch>> = {
+    event: uniqueMatches(
+      events.map((event) => [event.title, { itemId: event.id, itemHref: `/events/${event.slug}` }]),
+    ),
     hotel: uniqueMatches(
       hotels.map((hotel) => [hotel.name, { itemId: hotel.id, itemHref: `/hotels/${hotel.id}` }]),
     ),
@@ -106,6 +111,7 @@ async function main() {
   }> = [];
   const unmatched: PendingEnquiry[] = [];
   const matchedByService: Record<EnquiryService, number> = {
+    event: 0,
     flight: 0,
     hotel: 0,
     holiday: 0,

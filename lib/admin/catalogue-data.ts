@@ -1,12 +1,13 @@
 import type { Model } from "mongoose";
 import type { CatalogueResource } from "@/lib/admin/catalogue-config";
 import { summariseCatalogueRecord, type CatalogueSummary } from "@/lib/admin/catalogue-summary";
-import { CarModel, HolidayModel, HotelModel, OfferModel } from "@/lib/models";
+import { CarModel, EventModel, HolidayModel, HotelModel, OfferModel } from "@/lib/models";
 import dbConnect from "@/lib/mongodb";
 
 type AnyDoc = Record<string, unknown>;
 
 const models = {
+  events: EventModel,
   hotels: HotelModel,
   holidays: HolidayModel,
   cars: CarModel,

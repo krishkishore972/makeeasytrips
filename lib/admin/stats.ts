@@ -12,7 +12,7 @@ export const DEFAULT_STATS_RANGE: StatsRange = 30;
 const TREND_DAYS = 30;
 
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
-const ITEM_HREF_PATTERN = /^\/(?:hotels|holidays|rent-a-car|flights)\/[a-z0-9][a-z0-9-]*$/i;
+const ITEM_HREF_PATTERN = /^\/(?:hotels|holidays|rent-a-car|flights|events)\/[a-z0-9][a-z0-9-]*$/i;
 
 export const ENQUIRY_STATUS_LABELS: Record<EnquiryStatus, string> = {
   new: "New",

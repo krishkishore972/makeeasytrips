@@ -27,7 +27,7 @@ export const enquirySubmissionSchema = enquiryFormSchema
       .string()
       .trim()
       .max(300)
-      .regex(/^\/(?:hotels|holidays|rent-a-car|flights)\/[a-z0-9][a-z0-9-]*$/i, {
+      .regex(/^\/(?:hotels|holidays|rent-a-car|flights|events)\/[a-z0-9][a-z0-9-]*$/i, {
         error: "Expected an internal catalogue path.",
       })
       .optional(),

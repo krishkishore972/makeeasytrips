@@ -1,4 +1,5 @@
 import type { UploadFolder } from "@/lib/admin/uploads";
+import { EVENT_CATEGORY_OPTIONS } from "@/lib/event-options";
 import {
   AMENITY_LABELS,
   CAR_TYPE_OPTIONS,
@@ -11,7 +12,7 @@ import {
   offerToneValues,
 } from "@/lib/search-options";
 
-export const CATALOGUE_RESOURCES = ["hotels", "holidays", "cars", "offers"] as const;
+export const CATALOGUE_RESOURCES = ["hotels", "holidays", "cars", "offers", "events"] as const;
 export type CatalogueResource = (typeof CATALOGUE_RESOURCES)[number];
 
 export function isCatalogueResource(value: unknown): value is CatalogueResource {
@@ -28,6 +29,14 @@ export type CatalogueMeta = {
 };
 
 export const CATALOGUE_META: Record<CatalogueResource, CatalogueMeta> = {
+  events: {
+    label: "Events",
+    singular: "event",
+    description: "Events and experiences in Goa. Slugs become the public URL.",
+    uploadFolder: "events",
+    titleField: "title",
+    identityField: "id",
+  },
   hotels: {
     label: "Hotels",
     singular: "hotel",
@@ -698,6 +707,76 @@ const offerSections: CatalogueSection[] = [
 ];
 
 export const CATALOGUE_SECTIONS: Record<CatalogueResource, CatalogueSection[]> = {
+  events: [
+    {
+      title: "Identity and venue",
+      description: "All events take place in Goa. The state cannot be changed.",
+      fields: [
+        { kind: "text", name: "id", label: "Record id", required: true, format: "identifier" },
+        {
+          kind: "text",
+          name: "slug",
+          label: "Public slug",
+          required: true,
+          format: "slug",
+          hint: "Used in /events/<slug>.",
+        },
+        { kind: "text", name: "title", label: "Title", required: true, wide: true },
+        {
+          kind: "select",
+          name: "category",
+          label: "Category",
+          required: true,
+          options: EVENT_CATEGORY_OPTIONS,
+        },
+        { kind: "text", name: "venue", label: "Venue", required: true },
+        { kind: "text", name: "area", label: "Area in Goa", required: true },
+        {
+          kind: "date",
+          name: "event_date",
+          label: "Event date",
+          hint: "Leave blank for dates on request.",
+        },
+        { kind: "time", name: "start_time", label: "Start time" },
+        {
+          kind: "text",
+          name: "price_label",
+          label: "Price label",
+          hint: "Leave blank for Get a custom quote.",
+        },
+        { kind: "checkbox", name: "featured", label: "Feature this event" },
+      ],
+    },
+    {
+      title: "Event details",
+      fields: [
+        { kind: "textarea", name: "summary", label: "Summary", required: true, wide: true },
+        {
+          kind: "textarea",
+          name: "description",
+          label: "Description",
+          required: true,
+          wide: true,
+          rows: 5,
+        },
+        {
+          kind: "list",
+          name: "highlights",
+          label: "Highlights",
+          wide: true,
+          hint: "One highlight per line.",
+        },
+      ],
+    },
+    {
+      title: "Photography",
+      description: "Uploaded to the events folder in Cloudinary. Up to five photos in total.",
+      fields: [
+        { kind: "image", name: "image", label: "Main image", required: true },
+        { kind: "gallery", name: "gallery", label: "Additional photos" },
+      ],
+    },
+  ],
   hotels: hotelSections,
   holidays: holidaySections,
   cars: carSections,
@@ -705,6 +784,7 @@ export const CATALOGUE_SECTIONS: Record<CatalogueResource, CatalogueSection[]> =
 };
 
 export const CATALOGUE_UNIQUE_FIELDS: Record<CatalogueResource, readonly string[]> = {
+  events: ["slug"],
   hotels: [],
   holidays: ["slug"],
   cars: [],

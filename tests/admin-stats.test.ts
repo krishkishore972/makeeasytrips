@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ENQUIRY_SERVICE_LABELS, enquiryServiceValues } from "@/lib/enquiry";
 import {
   buildEnquiryStats,
   istDayKey,
@@ -43,6 +44,8 @@ describe("admin stats range", () => {
   it("only accepts internal catalogue links", () => {
     expect(safeItemHref("/hotels/stay-1")).toBe("/hotels/stay-1");
     expect(safeItemHref("/holidays/goa-long-weekend")).toBe("/holidays/goa-long-weekend");
+    expect(safeItemHref("/events/goa-music")).toBe("/events/goa-music");
+    expect(safeItemHref("/events/../admin")).toBeUndefined();
     expect(safeItemHref("https://example.com/hotels/stay-1")).toBeUndefined();
     expect(safeItemHref("//example.com/hotels/stay-1")).toBeUndefined();
     expect(safeItemHref("/admin")).toBeUndefined();
@@ -51,6 +54,25 @@ describe("admin stats range", () => {
 });
 
 describe("buildEnquiryStats", () => {
+  it("counts event enquiries and retains safe event detail links", () => {
+    const stats = buildEnquiryStats(
+      [
+        row({
+          service: "event",
+          title: "Test event",
+          itemId: "event-test",
+          itemHref: "/events/test-event",
+        }),
+      ],
+      { range: 7, now: NOW },
+    );
+    expect(stats.serviceSplit.find(({ service }) => service === "event")?.count).toBe(1);
+    expect(stats.topItems[0]).toMatchObject({
+      service: "event",
+      href: "/events/test-event",
+      count: 1,
+    });
+  });
   const enquiries: StatsEnquiryRow[] = [
     row({
       id: "1",
@@ -113,12 +135,13 @@ describe("buildEnquiryStats", () => {
     const stats = buildEnquiryStats(enquiries, { range: 7, now: NOW });
 
     expect(stats.enquiriesInRange).toBe(5);
-    expect(stats.serviceSplit).toEqual([
-      { service: "flight", label: "Flight", count: 0 },
-      { service: "hotel", label: "Stay", count: 2 },
-      { service: "holiday", label: "Holiday", count: 2 },
-      { service: "car", label: "Car rental", count: 1 },
-    ]);
+    expect(stats.serviceSplit).toEqual(
+      enquiryServiceValues.map((service) => ({
+        service,
+        label: ENQUIRY_SERVICE_LABELS[service],
+        count: service === "hotel" || service === "holiday" ? 2 : service === "car" ? 1 : 0,
+      })),
+    );
     expect(stats.statusSplit).toEqual([
       { status: "new", label: "New", count: 3 },
       { status: "contacted", label: "Contacted", count: 1 },

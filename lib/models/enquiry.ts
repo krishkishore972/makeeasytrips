@@ -22,6 +22,7 @@ const enquirySchema = new Schema<EnquiryRecord>(
     phone: { type: String, required: true, match: /^[6-9]\d{9}$/ },
     service: { type: String, required: true, enum: enquiryServiceValues },
     title: { type: String, required: true, trim: true, maxlength: 200 },
+    details: { type: String, trim: true, maxlength: 2000 },
     context: { type: [String], required: true, default: [] },
     itemId: { type: String, trim: true, maxlength: 120 },
     itemHref: { type: String, trim: true, maxlength: 300 },
