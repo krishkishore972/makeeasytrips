@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { LiveEventsBanner } from "@/components/events/live-events-banner";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 
@@ -8,6 +10,9 @@ import { Navbar } from "@/components/layout/navbar";
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <Suspense fallback={null}>
+        <LiveEventsBanner />
+      </Suspense>
       <Navbar />
       <main id="main-content" tabIndex={-1} className="flex-1">
         {children}

@@ -21,6 +21,7 @@ const eventSchema = new Schema<Ordered<GoaEvent>>(
     gallery: { type: [String], default: [] },
     highlights: { type: [String], default: [] },
     featured: { type: Boolean, required: true, default: false },
+    show_in_banner: { type: Boolean, required: true, default: true },
     sort_order: { type: Number, required: true, min: 0 },
   },
   { collection: "events", timestamps: true, id: false, versionKey: false },

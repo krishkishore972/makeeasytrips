@@ -272,6 +272,7 @@ export const eventSchema = z.object({
   gallery: z.array(z.string().trim().min(1)).default([]),
   highlights: z.array(z.string().trim().min(1)).default([]),
   featured: z.boolean().default(false),
+  show_in_banner: z.boolean().default(true),
 });
 
 export type GoaEvent = z.infer<typeof eventSchema>;

@@ -3,12 +3,15 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { EventCard } from "@/components/events/event-card";
 import { EventGallery } from "@/components/events/event-gallery";
+import { LiveEventsTicker } from "@/components/events/live-events-banner";
 import { eventSchema } from "@/lib/data/schemas";
 import { buildWhatsAppEnquiryMessage, whatsappEnquiryUrl } from "@/lib/enquiry";
 import {
   eventEnquiryTarget,
   eventSchedule,
+  eventTickerDate,
   goaEventPlanningTarget,
+  upcomingGoaEvents,
 } from "@/lib/event-presentation";
 import { enquirySubmissionSchema } from "@/lib/validation/forms";
 import { siteConfig } from "@/lib/site";
@@ -104,5 +107,76 @@ describe("Goa events public experience", () => {
         details: "a".repeat(2001),
       }).success,
     ).toBe(false);
+  });
+
+  it("keeps only scheduled events that are still ahead, soonest first", () => {
+    const now = new Date("2026-11-21T10:00:00+05:30");
+    const base = event();
+    const past = { ...base, id: "evt-past", slug: "past", event_date: "2026-11-20" };
+    const today = { ...base, id: "evt-today", slug: "today", event_date: "2026-11-21" };
+    const later = { ...base, id: "evt-later", slug: "later", event_date: "2026-12-05" };
+    const undated = { ...base, id: "evt-undated", slug: "undated", event_date: "" };
+
+    expect(upcomingGoaEvents([later, undated, past, today], now).map((item) => item.id)).toEqual([
+      "evt-today",
+      "evt-later",
+    ]);
+    expect(upcomingGoaEvents([past, undated], now)).toEqual([]);
+  });
+
+  it("lets admin switch a scheduled event out of the banner", () => {
+    const now = new Date("2026-11-21T10:00:00+05:30");
+    const visible = { ...event(), id: "evt-visible", slug: "visible" };
+    const hidden = {
+      ...event(),
+      id: "evt-hidden",
+      slug: "hidden",
+      show_in_banner: false,
+    };
+
+    expect(upcomingGoaEvents([hidden, visible], now).map((item) => item.id)).toEqual([
+      "evt-visible",
+    ]);
+    expect(
+      renderToStaticMarkup(
+        createElement(LiveEventsTicker, { events: upcomingGoaEvents([hidden], now) }),
+      ),
+    ).toBe("");
+  });
+
+  it("labels ticker dates relative to today in Goa's timezone", () => {
+    const now = new Date("2026-11-21T10:00:00+05:30");
+
+    expect(eventTickerDate({ event_date: "2026-11-21", start_time: "18:30" }, now)).toBe(
+      "Today, 6:30 pm",
+    );
+    expect(eventTickerDate({ event_date: "2026-11-22", start_time: "" }, now)).toBe("Tomorrow");
+    expect(eventTickerDate({ event_date: "2026-12-05", start_time: "" }, now)).toBe("5 Dec");
+    expect(eventTickerDate({ event_date: "", start_time: "" }, now)).toBe("Dates on enquiry");
+  });
+
+  it("renders a looping live ticker that links to each upcoming event", () => {
+    const html = renderToStaticMarkup(
+      createElement(LiveEventsTicker, {
+        events: [event(), { ...event(), id: "evt-second", slug: "second", title: "Second event" }],
+      }),
+    );
+
+    expect(html).toContain("Live in Goa");
+    expect(html).toContain("Upcoming live events in Goa");
+    expect(html).toContain("animate-marquee-right");
+    expect(html).toContain('href="/events/second"');
+    expect(html).toContain('href="/events"');
+
+    // The schedule repeats to fill wide screens, then the whole loop is copied
+    // once for the seamless wrap. Only the first copy is keyboard reachable.
+    const totalEventLinks = (html.match(/href="\/events\/(?:goa-gathering|second)"/g) ?? []).length;
+    expect(totalEventLinks).toBeGreaterThanOrEqual(8);
+    expect(totalEventLinks % 2).toBe(0);
+    expect(html.match(/tabindex="-1"/g)).toHaveLength(totalEventLinks / 2);
+  });
+
+  it("renders no ticker when nothing is scheduled", () => {
+    expect(renderToStaticMarkup(createElement(LiveEventsTicker, { events: [] }))).toBe("");
   });
 });

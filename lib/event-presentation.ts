@@ -23,6 +23,65 @@ export function eventSchedule(event: Pick<GoaEvent, "event_date" | "start_time">
   return `${date} · ${time} IST`;
 }
 
+/** Calendar day in Goa's timezone, as `YYYY-MM-DD`. */
+function goaDateKey(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+  }).format(date);
+}
+
+/**
+ * Events still ahead of us, soonest first. Undated listings stay out of the
+ * live banner because they are not scheduled yet; they remain on /events.
+ * Admin can also switch an event out of the banner.
+ */
+export function upcomingGoaEvents(events: GoaEvent[], now = new Date()): GoaEvent[] {
+  const today = goaDateKey(now);
+
+  return events
+    .filter((event) => event.show_in_banner !== false && event.event_date >= today)
+    .sort(
+      (a, b) =>
+        a.event_date.localeCompare(b.event_date) ||
+        a.start_time.localeCompare(b.start_time) ||
+        a.title.localeCompare(b.title),
+    );
+}
+
+/** Compact date for the ticker: "Today, 6:30 pm", "Tomorrow" or "15 Jan". */
+export function eventTickerDate(
+  event: Pick<GoaEvent, "event_date" | "start_time">,
+  now = new Date(),
+) {
+  if (!event.event_date) return "Dates on enquiry";
+
+  const today = goaDateKey(now);
+  const tomorrow = goaDateKey(new Date(now.getTime() + 24 * 60 * 60 * 1000));
+  const day =
+    event.event_date === today
+      ? "Today"
+      : event.event_date === tomorrow
+        ? "Tomorrow"
+        : new Intl.DateTimeFormat("en-IN", {
+            day: "numeric",
+            month: "short",
+            timeZone: "Asia/Kolkata",
+          }).format(new Date(`${event.event_date}T00:00:00+05:30`));
+
+  if (!event.start_time) return day;
+
+  const time = new Intl.DateTimeFormat("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  }).format(new Date(`${event.event_date}T${event.start_time}:00+05:30`));
+
+  return `${day}, ${time}`;
+}
+
 export function eventEnquiryTarget(event: GoaEvent): EnquiryTarget {
   return {
     service: "event",

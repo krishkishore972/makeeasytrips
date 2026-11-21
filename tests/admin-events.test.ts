@@ -5,6 +5,7 @@ import {
   CATALOGUE_META,
   CATALOGUE_UNIQUE_FIELDS,
   catalogueFields,
+  toCatalogueFormValues,
 } from "@/lib/admin/catalogue-config";
 import { parseCatalogueForm } from "@/lib/admin/catalogue-form";
 import { summariseCatalogueRecord } from "@/lib/admin/catalogue-summary";
@@ -88,6 +89,7 @@ describe("events catalogue contract", () => {
       gallery: [],
       highlights: [],
       featured: false,
+      show_in_banner: true,
     });
     expect(eventSchema.safeParse({ ...event, location: "Kerala" }).success).toBe(false);
     expect(eventSchema.safeParse({ ...event, event_date: "2027-02-30" }).success).toBe(false);
@@ -147,6 +149,20 @@ describe("events catalogue contract", () => {
         }),
       ).success,
     ).toBe(false);
+  });
+
+  it("lets admins keep an event out of the scrolling banner", () => {
+    expect(catalogueFields("events").find(({ name }) => name === "show_in_banner")).toMatchObject({
+      kind: "checkbox",
+      defaultChecked: true,
+    });
+    expect(toCatalogueFormValues("events", {}).show_in_banner).toBe(true);
+
+    const included = parseCatalogueForm("events", form({ show_in_banner: "on" }));
+    const excluded = parseCatalogueForm("events", form());
+
+    expect(included.success && included.data.show_in_banner).toBe(true);
+    expect(excluded.success && excluded.data.show_in_banner).toBe(false);
   });
 
   it("uses event upload IDs, slug uniqueness and slug-based public links", () => {

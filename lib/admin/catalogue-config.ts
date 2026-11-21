@@ -101,7 +101,7 @@ export type CatalogueField = FieldBase &
     | { kind: "textarea"; rows?: number; placeholder?: string }
     | { kind: "select"; options: readonly CatalogueOption[] }
     | { kind: "city" }
-    | { kind: "checkbox" }
+    | { kind: "checkbox"; defaultChecked?: boolean }
     | { kind: "image"; optional?: boolean }
     | { kind: "gallery" }
     | { kind: "list"; rows?: number; placeholder?: string }
@@ -745,6 +745,13 @@ export const CATALOGUE_SECTIONS: Record<CatalogueResource, CatalogueSection[]> =
           hint: "Leave blank for Get a custom quote.",
         },
         { kind: "checkbox", name: "featured", label: "Feature this event" },
+        {
+          kind: "checkbox",
+          name: "show_in_banner",
+          label: "Show in the live events banner",
+          defaultChecked: true,
+          hint: "Scheduled events appear in the scrolling banner at the top of every page.",
+        },
       ],
     },
     {
@@ -802,7 +809,7 @@ export function catalogueFieldLabel(resource: CatalogueResource, name: string): 
 export function defaultFieldValue(field: CatalogueField): unknown {
   switch (field.kind) {
     case "checkbox":
-      return false;
+      return field.defaultChecked ?? false;
     case "multiselect":
     case "gallery":
     case "list":

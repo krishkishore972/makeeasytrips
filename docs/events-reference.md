@@ -22,6 +22,10 @@ APIs, or ticketing integrations are used by this website.
 - `/events/[slug]` shows the event photos and details.
 - Events are organised in **Goa only**; location is fixed to Goa in validation.
 - `/admin/events` uses the existing authenticated catalogue create/edit/delete flow.
+- A scrolling "Live in Goa" ticker runs above the site header on every public
+  page. It shows scheduled, upcoming events (today or later), soonest first.
+- Admin controls ticker membership per event with "Show in the live events
+  banner" (on by default). Unscheduled events stay off the ticker.
 - Event images use the existing signed upload endpoint and photo limits.
 - Enquiries reuse the existing name/phone dialog, durable enquiry record, and
   prefilled WhatsApp hand-off. Optional enquiry details allow customers to include
