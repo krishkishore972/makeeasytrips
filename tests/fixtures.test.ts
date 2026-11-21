@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import {
   carSchema,
   citySchema,
+  eventSchema,
   flightSchema,
   holidaySchema,
   hotelSchema,
@@ -20,6 +21,7 @@ const fixtures = [
   ["cars.json", carSchema],
   ["holidays.json", holidaySchema],
   ["offers.json", offerSchema],
+  ["events.json", eventSchema],
 ] as const;
 
 describe("seed fixtures", () => {

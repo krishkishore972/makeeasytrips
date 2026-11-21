@@ -7,6 +7,7 @@ import { z, type ZodType } from "zod";
 import {
   carSchema,
   citySchema,
+  eventSchema,
   flightSchema,
   holidaySchema,
   hotelSchema,
@@ -15,6 +16,7 @@ import {
 import {
   CarModel,
   CityModel,
+  EventModel,
   FlightModel,
   HolidayModel,
   HotelModel,
@@ -93,13 +95,14 @@ async function main() {
 
   console.log(`Connected to MongoDB: ${connection.connection.host}/${connection.connection.name}`);
 
-  const [cities, flights, hotels, cars, holidays, offers] = await Promise.all([
+  const [cities, flights, hotels, cars, holidays, offers, events] = await Promise.all([
     loadFixture("cities.json", citySchema),
     loadFixture("flights.json", flightSchema),
     loadFixture("hotels.json", hotelSchema),
     loadFixture("cars.json", carSchema),
     loadFixture("holidays.json", holidaySchema),
     loadFixture("offers.json", offerSchema),
+    loadFixture("events.json", eventSchema),
   ]);
 
   await seedCollection("cities", CityModel, cities, "code", fresh);
@@ -108,6 +111,7 @@ async function main() {
   await seedCollection("cars", CarModel, cars, "id", fresh);
   await seedCollection("holidays", HolidayModel, holidays, "id", fresh);
   await seedCollection("offers", OfferModel, offers, "id", fresh);
+  await seedCollection("events", EventModel, events, "id", fresh);
 
   await Promise.all([
     CityModel.syncIndexes(),
@@ -116,6 +120,7 @@ async function main() {
     CarModel.syncIndexes(),
     HolidayModel.syncIndexes(),
     OfferModel.syncIndexes(),
+    EventModel.syncIndexes(),
   ]);
 
   console.log(fresh ? "Seed complete (collections replaced)." : "Seed complete (upserts applied).");
