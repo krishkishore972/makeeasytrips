@@ -113,6 +113,18 @@ their previous day totals; they do not require a destructive reseed. New seed re
 and admin submissions use only daily and weekly rates. Initial weekly prices equal
 seven daily rates, with no assumed discount.
 
+To persist the conversion in MongoDB without reseeding:
+
+```sh
+npm run db:migrate-car-rates -- --dry-run
+npm run db:migrate-car-rates -- --apply
+```
+
+The migration validates every car before writing, backs up affected pricing fields
+under `/tmp/opencode/` with owner-only permissions, preserves explicit daily/weekly
+rates, and removes `price_per_hour`. Concurrent pricing edits are skipped rather than
+overwritten. It verifies all resulting rates and is safe to rerun.
+
 ## Components
 
 | File                                    | Role                                                               |
