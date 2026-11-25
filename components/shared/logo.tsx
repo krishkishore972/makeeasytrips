@@ -10,8 +10,8 @@ type LogoProps = {
 };
 
 /**
- * Original Makeasytrips mark: a horizon line cradled by two nest arcs with a coral
- * sun. No third-party logo or sprite is used.
+ * Mountain monogram, journey ribbon, and sun using the site's brand tokens.
+ * Inline SVG keeps the mark crisp and adapts it to light and dark backgrounds.
  */
 export function Logo({
   className,
@@ -32,41 +32,43 @@ export function Logo({
     >
       <span
         className={cn(
-          "relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-[14px] transition-transform duration-300 group-hover:-rotate-3",
-          tone === "dark"
-            ? "bg-brand-700 text-white shadow-sm"
-            : "bg-white/12 text-white ring-1 ring-white/20 backdrop-blur",
+          "grid size-11 shrink-0 place-items-center transition-transform duration-300 group-hover:-rotate-3",
+          tone === "dark" ? "text-brand-900" : "text-white",
         )}
       >
-        <svg viewBox="0 0 40 40" aria-hidden="true" className="size-8">
-          <circle cx="20" cy="12.5" r="3.1" fill="#FF6B4A" />
-          <path
-            d="M7.5 25.5c3.6-7.2 8.4-10.8 12.5-10.8s8.9 3.6 12.5 10.8"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeWidth="2.4"
-          />
-          <path
-            d="M11.5 30c2.9-4.6 5.7-6.8 8.5-6.8s5.6 2.2 8.5 6.8"
-            fill="none"
-            opacity="0.7"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeWidth="2"
-          />
+        <svg viewBox="0 0 156 156" fill="none" aria-hidden="true" className="size-full">
+          <g transform="translate(8 10)">
+            <circle cx="108" cy="30" r="10" className="fill-gold-500" />
+            <path
+              d="M15 91 44 30C47 24 54 24 57 30L73 63 88 45C92 40 98 41 101 47L122 91"
+              stroke="currentColor"
+              strokeWidth="14"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M18 109C43 126 85 122 108 104 121 94 128 80 130 65"
+              className="stroke-accent-400"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
+            <path
+              d="m116 69 15-17 8 22-12-5-11 0Z"
+              className={tone === "dark" ? "fill-brand-600" : "fill-brand-300"}
+            />
+          </g>
         </svg>
       </span>
 
       {showWordmark ? (
         <span
           className={cn(
-            "font-display text-[1.6rem] leading-none font-semibold tracking-[-0.035em]",
-            tone === "dark" ? "text-ink" : "text-white",
+            "inline-flex items-center font-sans text-[1.6rem] leading-none font-extrabold tracking-[-0.045em] whitespace-nowrap",
+            tone === "dark" ? "text-brand-900" : "text-white",
           )}
         >
-          Makeasytrips
-          <span className="text-accent-500">.</span>
+          <span>Makeasy</span>
+          <span>trips</span>
         </span>
       ) : null}
     </Link>

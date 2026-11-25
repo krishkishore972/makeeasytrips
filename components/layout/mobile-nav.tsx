@@ -91,7 +91,21 @@ export function MobileNav() {
           <div className="mt-auto space-y-3 pt-6">
             <div className="flex items-center gap-2 text-xs font-semibold text-muted">
               <Headphones aria-hidden="true" className="size-4 text-brand-500" />
-              24/7 demo support · India · INR
+              Call us
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-ink">
+              {siteConfig.company.phones.map((phone, index) => (
+                <span key={phone.href} className="inline-flex items-center gap-2">
+                  {index > 0 ? <span aria-hidden="true" className="h-3 w-px bg-line" /> : null}
+                  <a
+                    href={phone.href}
+                    aria-label={`Call ${phone.label}`}
+                    className="transition-colors hover:text-brand-700"
+                  >
+                    {phone.label}
+                  </a>
+                </span>
+              ))}
             </div>
             <p className="text-[11px] leading-5 text-muted-soft">
               Makeasytrips is a learning project. No bookings, payments, or accounts are real.

@@ -6,6 +6,20 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_IN",
   currency: "INR",
+  company: {
+    legalName: "Makeasytrips",
+    phones: [
+      { label: "9177771607", href: "tel:+919177771607" },
+      { label: "9177771803", href: "tel:+919177771803" },
+    ],
+    address: {
+      lines: ["Plot No 4, Badangpet, Nadurgul", "Near MVSR College Road", "Hyderabad 501510"],
+      locality: "Hyderabad",
+      region: "Telangana",
+      postalCode: "501510",
+      country: "IN",
+    },
+  },
   navigation: [
     { label: "Hotels", href: "/hotels", icon: "bed" },
     { label: "Holidays", href: "/holidays", icon: "palmtree" },

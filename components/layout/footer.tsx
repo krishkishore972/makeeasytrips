@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Globe2, LockKeyhole, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Globe2, LockKeyhole, MapPin, ShieldCheck } from "lucide-react";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { Logo } from "@/components/shared/logo";
 import { siteConfig } from "@/lib/site";
@@ -18,10 +18,30 @@ export function Footer() {
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.35fr_repeat(4,minmax(0,1fr))] lg:gap-8">
           <div className="max-w-sm sm:col-span-2 lg:col-span-1">
             <Logo />
-            <p className="mt-5 text-sm leading-7 text-muted">
-              Thoughtful trips, clearly planned. Find a stay with character, shape a holiday, or
-              pick up a self-drive car for the road between.
-            </p>
+            <address className="mt-4 flex gap-2 text-sm leading-6 text-muted not-italic">
+              <MapPin aria-hidden="true" className="mt-1 size-3.5 shrink-0 text-brand-500" />
+              <span>
+                {siteConfig.company.address.lines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+                <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                  {siteConfig.company.phones.map((phone, index) => (
+                    <span key={phone.href} className="inline-flex items-center gap-2">
+                      {index > 0 ? <span aria-hidden="true" className="h-3 w-px bg-line" /> : null}
+                      <a
+                        href={phone.href}
+                        aria-label={`Call ${phone.label}`}
+                        className="font-semibold transition-colors hover:text-brand-700"
+                      >
+                        {phone.label}
+                      </a>
+                    </span>
+                  ))}
+                </span>
+              </span>
+            </address>
 
             <div className="mt-6">
               <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-ink uppercase">

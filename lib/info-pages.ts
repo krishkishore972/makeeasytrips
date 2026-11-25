@@ -170,6 +170,14 @@ export const infoPages = {
       "Send a message and it is saved for the Makeasytrips team. Enquiries from service pages are saved too, with the item you were looking at.",
     sections: [
       {
+        heading: "Where to find us",
+        body: [
+          "Makeasytrips, Plot No 4, Badangpet, Nadurgul, Near MVSR College Road, Hyderabad 501510.",
+          "Call us on 9177771607 or 9177771803.",
+          "The address and numbers are for correspondence. This is a learning project, so there is no walk-in office.",
+        ],
+      },
+      {
         heading: "Trip questions",
         body: [
           "Use the form below to tell us what you are planning. Your name, email address, optional phone number, and message are stored so the team can follow up.",

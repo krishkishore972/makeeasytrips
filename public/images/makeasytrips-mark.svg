@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="156" viewBox="0 0 156 156" fill="none" role="img" aria-labelledby="mark-title">
+  <title id="mark-title">Makeasytrips travel monogram</title>
+  <g transform="translate(8 10)">
+    <circle cx="108" cy="30" r="10" fill="#f2b544"/>
+    <path d="M15 91 44 30C47 24 54 24 57 30L73 63 88 45C92 40 98 41 101 47L122 91"
+      stroke="#063b38" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M18 109C43 126 85 122 108 104 121 94 128 80 130 65"
+      stroke="#ff8a70" stroke-width="8" stroke-linecap="round"/>
+    <path d="m116 69 15-17 8 22-12-5-11 0Z" fill="#0e6e68"/>
+  </g>
+</svg>

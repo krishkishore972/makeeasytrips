@@ -9,6 +9,7 @@ import {
   CalendarDays,
   MapPin,
   Palmtree,
+  Phone,
   Tag,
   type LucideIcon,
 } from "lucide-react";
@@ -46,12 +47,23 @@ export function Navbar() {
           </Suspense>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span
-              title="Currency: Indian Rupee"
-              className="hidden items-center gap-1 rounded-lg px-2 py-2 text-xs font-bold text-ink-soft md:inline-flex"
-            >
-              INR
-            </span>
+            <div className="hidden items-center gap-0.5 md:flex">
+              <Phone aria-hidden="true" className="mr-1 size-3.5 text-brand-500" />
+              {siteConfig.company.phones.map((phone, index) => (
+                <span key={phone.href} className="inline-flex items-center">
+                  {index > 0 ? (
+                    <span aria-hidden="true" className="mx-0.5 h-3 w-px bg-line" />
+                  ) : null}
+                  <a
+                    href={phone.href}
+                    aria-label={`Call ${phone.label}`}
+                    className="rounded-lg px-1.5 py-2 text-xs font-bold text-ink-soft transition-colors hover:bg-brand-50 hover:text-brand-800"
+                  >
+                    {phone.label}
+                  </a>
+                </span>
+              ))}
+            </div>
 
             <MobileNav />
           </div>
