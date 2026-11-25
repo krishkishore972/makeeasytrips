@@ -57,7 +57,7 @@ export function Navbar() {
                   <a
                     href={phone.href}
                     aria-label={`Call ${phone.label}`}
-                    className="rounded-lg px-1.5 py-2 text-xs font-bold text-ink-soft transition-colors hover:bg-brand-50 hover:text-brand-800"
+                    className="rounded-lg px-1.5 py-2 text-m font-bold text-ink-soft transition-colors hover:bg-brand-50 hover:text-brand-800"
                   >
                     {phone.label}
                   </a>

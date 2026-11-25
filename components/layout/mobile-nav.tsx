@@ -93,7 +93,7 @@ export function MobileNav() {
               <Headphones aria-hidden="true" className="size-4 text-brand-500" />
               Call us
             </div>
-            <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-ink">
+            <div className="flex flex-wrap items-center gap-2 text-base font-bold text-ink">
               {siteConfig.company.phones.map((phone, index) => (
                 <span key={phone.href} className="inline-flex items-center gap-2">
                   {index > 0 ? <span aria-hidden="true" className="h-3 w-px bg-line" /> : null}

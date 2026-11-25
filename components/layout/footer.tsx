@@ -33,7 +33,7 @@ export function Footer() {
                       <a
                         href={phone.href}
                         aria-label={`Call ${phone.label}`}
-                        className="font-semibold transition-colors hover:text-brand-700"
+                        className="text-base font-semibold transition-colors hover:text-brand-700"
                       >
                         {phone.label}
                       </a>

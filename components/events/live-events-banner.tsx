@@ -55,7 +55,7 @@ export function LiveEventsTicker({ events }: { events: GoaEvent[] }) {
       aria-label="Upcoming live events in Goa"
       className="border-b border-white/10 bg-brand-950 text-white"
     >
-      <div className="mx-auto flex h-10 w-full max-w-[90rem] items-center gap-3 px-4 sm:h-11 sm:px-6">
+      <div className="mx-auto flex h-12 w-full max-w-[90rem] items-center gap-3 px-4 sm:h-14 sm:px-6">
         <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-accent-500 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.14em] whitespace-nowrap text-white uppercase">
           <span aria-hidden="true" className="relative flex size-1.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/80" />
