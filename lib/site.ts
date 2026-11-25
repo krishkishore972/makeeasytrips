@@ -9,8 +9,8 @@ export const siteConfig = {
   company: {
     legalName: "Makeasytrips",
     phones: [
-      { label: "9177771607", href: "tel:+919177771607" },
-      { label: "9177771803", href: "tel:+919177771803" },
+      { label: "91777\u00a071607", href: "tel:+919177771607" },
+      { label: "91777\u00a071803", href: "tel:+919177771803" },
     ],
     address: {
       lines: ["Plot No 4, Badangpet, Nadurgul", "Near MVSR College Road", "Hyderabad 501510"],
