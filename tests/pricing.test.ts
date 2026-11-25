@@ -63,15 +63,18 @@ describe("holidayPriceBreakdown", () => {
 });
 
 describe("carRentalBreakdown", () => {
-  it("converts the hourly rate into 24-hour day blocks", () => {
-    const breakdown = carRentalBreakdown(219, {
-      days: 2,
-      kmPlanExtraPerDay: 0,
-      delivery: false,
-      deliveryFee: 499,
-      addons: [],
-      deposit: 4000,
-    });
+  it("bills short rentals at the daily rate", () => {
+    const breakdown = carRentalBreakdown(
+      { price_per_day: 5256, price_per_week: 36792 },
+      {
+        days: 2,
+        kmPlanExtraPerDay: 0,
+        delivery: false,
+        deliveryFee: 499,
+        addons: [],
+        deposit: 4000,
+      },
+    );
 
     expect(breakdown.perDay).toBe(5256);
     expect(breakdown.base).toBe(10512);
@@ -82,17 +85,20 @@ describe("carRentalBreakdown", () => {
   });
 
   it("adds the kilometre plan, delivery, and extras before GST", () => {
-    const breakdown = carRentalBreakdown(219, {
-      days: 2,
-      kmPlanExtraPerDay: 399,
-      delivery: true,
-      deliveryFee: 499,
-      addons: [
-        { price: 199, perDay: true },
-        { price: 149, perDay: false },
-      ],
-      deposit: 4000,
-    });
+    const breakdown = carRentalBreakdown(
+      { price_per_day: 5256, price_per_week: 36792 },
+      {
+        days: 2,
+        kmPlanExtraPerDay: 399,
+        delivery: true,
+        deliveryFee: 499,
+        addons: [
+          { price: 199, perDay: true },
+          { price: 149, perDay: false },
+        ],
+        deposit: 4000,
+      },
+    );
 
     expect(breakdown.kmFee).toBe(798);
     expect(breakdown.deliveryFee).toBe(499);
@@ -102,17 +108,56 @@ describe("carRentalBreakdown", () => {
   });
 
   it("ignores delivery when it is not selected and never bills below one day", () => {
-    const breakdown = carRentalBreakdown(149, {
-      days: 0,
-      kmPlanExtraPerDay: 0,
-      delivery: false,
-      deliveryFee: 299,
-      addons: [],
-    });
+    const breakdown = carRentalBreakdown(
+      { price_per_day: 3576, price_per_week: 25032 },
+      {
+        days: 0,
+        kmPlanExtraPerDay: 0,
+        delivery: false,
+        deliveryFee: 299,
+        addons: [],
+      },
+    );
 
     expect(breakdown.days).toBe(1);
     expect(breakdown.base).toBe(3576);
     expect(breakdown.deliveryFee).toBe(0);
     expect(breakdown.deposit).toBe(0);
+  });
+
+  it.each([
+    [6, 0, 6, 12000],
+    [7, 1, 0, 12000],
+    [8, 1, 1, 14000],
+    [14, 2, 0, 24000],
+    [16, 2, 2, 28000],
+    [7.25, 1, 1, 14000],
+  ])("bills %s days as %s weeks and %s daily blocks", (days, weeks, remainingDays, base) => {
+    const breakdown = carRentalBreakdown(
+      { price_per_day: 2000, price_per_week: 12000 },
+      {
+        days,
+        kmPlanExtraPerDay: 399,
+        delivery: true,
+        deliveryFee: 499,
+        addons: [
+          { price: 199, perDay: true },
+          { price: 149, perDay: false },
+        ],
+        deposit: 3000,
+      },
+    );
+    const billedDays = Math.ceil(days);
+    expect(breakdown).toMatchObject({
+      weeks,
+      remainingDays,
+      base,
+      days: billedDays,
+      deposit: 3000,
+    });
+    expect(breakdown.kmFee).toBe(399 * billedDays);
+    expect(breakdown.addonFee).toBe(199 * billedDays + 149);
+    const subtotal = base + breakdown.kmFee + breakdown.addonFee + 499;
+    expect(breakdown.total).toBe(subtotal + Math.round(subtotal * 0.18));
   });
 });

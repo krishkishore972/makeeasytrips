@@ -248,7 +248,7 @@ inlines the value at build time, so set it in `.env.local` before building for a
 | `cities`                 | 16    | 10 flight cities and 8 hotel cities, with airport and tagline          |
 | `flights`                | 540   | 10 cities, 90 directional routes, 6 fictional airlines, 3 cabins       |
 | `hotels`                 | 32    | 4 stays in each of 8 cities, fictional names, amenities, policies      |
-| `cars`                   | 62    | 12 car cities, 6 body styles, 12 fictional hosts, hourly demo rates    |
+| `cars`                   | 62    | 12 car cities, 6 body styles, 12 fictional hosts, daily and weekly demo rates |
 | `holidays`               | 12    | 10 destinations, 10 themes, day-by-day itineraries, departure dates    |
 | `offers`                 | 12    | 7 visible rows across stays, holidays, and cars; flights/trains kept   |
 | `enquiries`              | grows | name, normalised phone, service, item title, context lines, timestamps |

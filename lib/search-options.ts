@@ -269,14 +269,14 @@ export const CAR_RATING_OPTIONS: { value: CarRatingFilter; label: string }[] = [
   { value: "3.5", label: "3.5+ rated" },
 ];
 
-export const carBudgetValues = ["under-300", "300-600", "600-1000", "over-1000"] as const;
+export const carBudgetValues = ["under-5000", "5000-10000", "10000-20000", "over-20000"] as const;
 export type CarBudget = (typeof carBudgetValues)[number];
 
 export const CAR_BUDGET_OPTIONS: { value: CarBudget; label: string; detail: string }[] = [
-  { value: "under-300", label: "Under ₹300", detail: "per hour" },
-  { value: "300-600", label: "₹300 – ₹600", detail: "per hour" },
-  { value: "600-1000", label: "₹600 – ₹1,000", detail: "per hour" },
-  { value: "over-1000", label: "Over ₹1,000", detail: "per hour" },
+  { value: "under-5000", label: "Under ₹5,000", detail: "per day" },
+  { value: "5000-10000", label: "₹5,000 – ₹10,000", detail: "per day" },
+  { value: "10000-20000", label: "₹10,000 – ₹20,000", detail: "per day" },
+  { value: "over-20000", label: "Over ₹20,000", detail: "per day" },
 ];
 
 export const carSortValues = [

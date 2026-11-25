@@ -503,8 +503,16 @@ const carSections: CatalogueSection[] = [
     fields: [
       {
         kind: "number",
-        name: "price_per_hour",
-        label: "Price per hour (₹)",
+        name: "price_per_day",
+        label: "Price per day (₹)",
+        required: true,
+        min: 1,
+        step: 1,
+      },
+      {
+        kind: "number",
+        name: "price_per_week",
+        label: "Price per week (₹)",
         required: true,
         min: 1,
         step: 1,

@@ -83,7 +83,8 @@ const validCar = {
   transmission: "Manual",
   fuel: "Petrol",
   seats: "5",
-  price_per_hour: "149",
+  price_per_day: "3576",
+  price_per_week: "25032",
   km_limit_per_day: "300",
   rating: "4.3",
   review_count: "24",
@@ -369,12 +370,13 @@ describe("catalogue summaries", () => {
       model: "Alto K10",
       variant: "VXI",
       city_code: "BLR",
-      price_per_hour: 149,
+      price_per_day: 3576,
+      price_per_week: 25032,
       seats: 5,
     });
 
     expect(summary?.title).toBe("Maruti Suzuki Alto K10");
-    expect(summary?.meta).toBe("₹149 / hour · 5 seats");
+    expect(summary?.meta).toBe("₹3,576 / day · ₹25,032 / week · 5 seats");
   });
 
   it("keeps offers icon-based when there is no artwork", () => {

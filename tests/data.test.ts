@@ -316,13 +316,14 @@ describe("cars", () => {
     const automatic = await searchCars(carQuery({ transmissions: ["Automatic"] }));
     expect(automatic.every((car) => car.transmission === "Automatic")).toBe(true);
 
-    const cheap = await searchCars(carQuery({ budgets: ["under-300"] }));
-    expect(cheap.every((car) => car.price_per_hour < 300)).toBe(true);
+    const cheap = await searchCars(carQuery({ city: "BLR", budgets: ["under-5000"] }));
+    expect(cheap.length).toBeGreaterThan(0);
+    expect(cheap.every((car) => car.price_per_day < 5000)).toBe(true);
   });
 
   it("sorts by price when asked", async () => {
     const cars = await searchCars(carQuery({ sort: "price-asc" }));
-    const prices = cars.map((car) => car.price_per_hour);
+    const prices = cars.map((car) => car.price_per_day);
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
   });
 

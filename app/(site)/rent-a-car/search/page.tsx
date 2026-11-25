@@ -402,11 +402,11 @@ async function CarSearchExperience({ searchParams }: CarSearchPageProps) {
                           allCars
                             .filter((car) => car.city_code === option.code)
                             .reduce(
-                              (minimum, car) => Math.min(minimum, car.price_per_hour),
+                              (minimum, car) => Math.min(minimum, car.price_per_day),
                               Number.POSITIVE_INFINITY,
                             ),
                         )}
-                        /hr
+                        /day
                       </span>
                     </span>
                     <ArrowRight

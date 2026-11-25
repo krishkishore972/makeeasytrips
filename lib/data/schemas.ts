@@ -156,7 +156,7 @@ export const flightSortSchema = z.enum(flightSortValues);
 export const hotelSortSchema = z.enum(hotelSortValues);
 export const carSortSchema = z.enum(carSortValues);
 
-export const carSchema = z.object({
+const carRecordSchema = z.object({
   id: z.string().trim().min(1),
   brand: z.string().trim().min(1),
   model: z.string().trim().min(1),
@@ -171,7 +171,8 @@ export const carSchema = z.object({
   transmission: z.enum(carTransmissionValues),
   fuel: z.enum(carFuelValues),
   seats: z.coerce.number().int().min(2).max(9),
-  price_per_hour: z.coerce.number().int().positive(),
+  price_per_day: z.coerce.number().int().positive(),
+  price_per_week: z.coerce.number().int().positive(),
   km_limit_per_day: z.coerce.number().int().positive(),
   rating: z.coerce.number().min(0).max(5),
   review_count: z.coerce.number().int().nonnegative(),
@@ -189,6 +190,20 @@ export const carSchema = z.object({
   featured: booleanish,
   guest_favorite: booleanish,
 });
+
+// Read existing catalogue documents without requiring a destructive reseed.
+// New admin submissions must supply both rates; only legacy records are converted.
+export const carSchema = z.preprocess((input) => {
+  if (!input || typeof input !== "object") return input;
+  const record = input as Record<string, unknown>;
+  if (!("price_per_hour" in record)) return input;
+  const daily = record.price_per_day ?? Number(record.price_per_hour) * 24;
+  return {
+    ...record,
+    price_per_day: daily,
+    price_per_week: record.price_per_week ?? Number(daily) * 7,
+  };
+}, carRecordSchema);
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
 

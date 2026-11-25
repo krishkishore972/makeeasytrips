@@ -57,7 +57,10 @@ export type CarFacets = {
 };
 
 export async function getCars(): Promise<Car[]> {
-  return readCollection(CarModel, carSchema);
+  const cars = await readCollection(CarModel, carSchema);
+  // The process-wide cache survives hot reloads and may contain the previous
+  // hourly shape. Normalize cached records as well as fresh database reads.
+  return cars.map((car) => carSchema.parse(car));
 }
 
 export async function getCarById(id: string): Promise<Car | undefined> {
@@ -84,10 +87,10 @@ export async function searchCars(query: CarQuery): Promise<Car[]> {
     }
     if (query.budgets.length > 0) {
       const matches = query.budgets.some((band) => {
-        if (band === "under-300") return car.price_per_hour < 300;
-        if (band === "300-600") return car.price_per_hour >= 300 && car.price_per_hour <= 600;
-        if (band === "600-1000") return car.price_per_hour > 600 && car.price_per_hour <= 1000;
-        return car.price_per_hour > 1000;
+        if (band === "under-5000") return car.price_per_day < 5000;
+        if (band === "5000-10000") return car.price_per_day >= 5000 && car.price_per_day <= 10000;
+        if (band === "10000-20000") return car.price_per_day > 10000 && car.price_per_day <= 20000;
+        return car.price_per_day > 20000;
       });
       if (!matches) return false;
     }
@@ -102,19 +105,19 @@ export async function searchCars(query: CarQuery): Promise<Car[]> {
   results.sort((a, b) => {
     switch (query.sort) {
       case "price-asc":
-        return a.price_per_hour - b.price_per_hour || b.rating - a.rating;
+        return a.price_per_day - b.price_per_day || b.rating - a.rating;
       case "price-desc":
-        return b.price_per_hour - a.price_per_hour || b.rating - a.rating;
+        return b.price_per_day - a.price_per_day || b.rating - a.rating;
       case "rating":
         return b.rating - a.rating || b.review_count - a.review_count;
       case "distance":
-        return a.distance_km - b.distance_km || a.price_per_hour - b.price_per_hour;
+        return a.distance_km - b.distance_km || a.price_per_day - b.price_per_day;
       default:
         return (
           Number(b.featured) - Number(a.featured) ||
           Number(b.guest_favorite) - Number(a.guest_favorite) ||
           b.rating - a.rating ||
-          a.price_per_hour - b.price_per_hour
+          a.price_per_day - b.price_per_day
         );
     }
   });
@@ -174,8 +177,8 @@ export function buildCarFacets(cars: Car[]): CarFacets {
 
     if (car.fastag) fastag += 1;
     if (car.home_delivery) delivery += 1;
-    minPrice = Math.min(minPrice, car.price_per_hour);
-    maxPrice = Math.max(maxPrice, car.price_per_hour);
+    minPrice = Math.min(minPrice, car.price_per_day);
+    maxPrice = Math.max(maxPrice, car.price_per_day);
     minYear = Math.min(minYear, car.year);
     maxYear = Math.max(maxYear, car.year);
     maxDistance = Math.max(maxDistance, car.distance_km);
@@ -222,7 +225,7 @@ export async function getFeaturedCars(limit = 6): Promise<Car[]> {
       (a, b) =>
         Number(b.guest_favorite) - Number(a.guest_favorite) ||
         b.rating - a.rating ||
-        a.price_per_hour - b.price_per_hour,
+        a.price_per_day - b.price_per_day,
     )
     .slice(0, limit);
 }
@@ -231,7 +234,7 @@ export async function getCarsByCity(cityCode: string): Promise<Car[]> {
   const cars = await getCars();
   return cars
     .filter((car) => car.city_code === cityCode)
-    .sort((a, b) => b.rating - a.rating || a.price_per_hour - b.price_per_hour);
+    .sort((a, b) => b.rating - a.rating || a.price_per_day - b.price_per_day);
 }
 
 export async function getSimilarCars(car: Car, limit = 3): Promise<Car[]> {
@@ -242,9 +245,7 @@ export async function getSimilarCars(car: Car, limit = 3): Promise<Car[]> {
       const cityScore =
         Number(b.city_code === car.city_code) - Number(a.city_code === car.city_code);
       const typeScore = Number(b.car_type === car.car_type) - Number(a.car_type === car.car_type);
-      return (
-        cityScore * 2 + typeScore || b.rating - a.rating || a.price_per_hour - b.price_per_hour
-      );
+      return cityScore * 2 + typeScore || b.rating - a.rating || a.price_per_day - b.price_per_day;
     })
     .slice(0, limit);
 }
@@ -263,12 +264,12 @@ export async function getCarCityStats(): Promise<Map<string, CarCityStats>> {
     const existing = stats.get(car.city_code);
     if (existing) {
       existing.count += 1;
-      existing.minPrice = Math.min(existing.minPrice, car.price_per_hour);
+      existing.minPrice = Math.min(existing.minPrice, car.price_per_day);
       existing.maxRating = Math.max(existing.maxRating, car.rating);
     } else {
       stats.set(car.city_code, {
         count: 1,
-        minPrice: car.price_per_hour,
+        minPrice: car.price_per_day,
         maxRating: car.rating,
       });
     }

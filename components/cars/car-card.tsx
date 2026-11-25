@@ -30,7 +30,7 @@ type CarCardProps = {
 };
 
 export function CarCard({ car, query, cityName, priority }: CarCardProps) {
-  const price = carRentalBreakdown(car.price_per_hour, {
+  const price = carRentalBreakdown(car, {
     days: query.days,
     kmPlanExtraPerDay: 0,
     delivery: false,
@@ -144,9 +144,12 @@ export function CarCard({ car, query, cityName, priority }: CarCardProps) {
             <div>
               <p className="flex items-baseline gap-1.5">
                 <span className="text-2xl leading-none font-extrabold text-ink">
-                  {formatCurrency(car.price_per_hour)}
+                  {formatCurrency(car.price_per_day)}
                 </span>
-                <span className="text-[11px] font-semibold text-muted">/ hour</span>
+                <span className="text-[11px] font-semibold text-muted">/ day</span>
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-muted">
+                {formatCurrency(car.price_per_week)} / week
               </p>
               <p className="mt-1 text-[10px] leading-4 text-muted-soft">
                 {formatCurrency(price.total)} for {query.days} {query.days === 1 ? "day" : "days"} ·

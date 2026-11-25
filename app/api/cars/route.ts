@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   return NextResponse.json(
     {
       data: cars.map((car) => {
-        const price = carRentalBreakdown(car.price_per_hour, {
+        const price = carRentalBreakdown(car, {
           days: parsed.query.days,
           kmPlanExtraPerDay: 0,
           delivery: false,
@@ -60,7 +60,8 @@ export async function GET(request: Request) {
           image: car.image,
           tagline: car.tagline,
           guestFavorite: car.guest_favorite,
-          pricePerHour: car.price_per_hour,
+          pricePerDay: car.price_per_day,
+          pricePerWeek: car.price_per_week,
           tripTotal: price.total,
         };
       }),

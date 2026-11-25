@@ -58,7 +58,7 @@ export function CarFilters({ facets, query, className }: CarFiltersProps) {
       </div>
 
       <FilterGroup
-        legend="Budget per hour"
+        legend="Budget per day"
         idPrefix="car-budget"
         options={CAR_BUDGET_OPTIONS.map((option) => ({
           value: option.value,

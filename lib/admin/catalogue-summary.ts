@@ -118,9 +118,11 @@ export function summariseCatalogueRecord(
       id,
       title,
       subtitle: [text(record.variant), text(record.city_code)].filter(Boolean).join(" · "),
-      meta: [`${inr(record.price_per_hour)} / hour`, `${numeric(record.seats) ?? "—"} seats`].join(
-        " · ",
-      ),
+      meta: [
+        `${inr(record.price_per_day)} / day`,
+        `${inr(record.price_per_week)} / week`,
+        `${numeric(record.seats) ?? "—"} seats`,
+      ].join(" · "),
       editHref: editHref(resource, id),
       publicHref: `/rent-a-car/${encodeURIComponent(id)}`,
       image: text(record.image) || undefined,

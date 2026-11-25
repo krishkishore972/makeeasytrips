@@ -22,7 +22,8 @@ const carSchema = new Schema<Ordered<Car>>(
     transmission: { type: String, required: true, enum: carTransmissionValues },
     fuel: { type: String, required: true, enum: carFuelValues },
     seats: { type: Number, required: true, min: 2, max: 9 },
-    price_per_hour: { type: Number, required: true, min: 1 },
+    price_per_day: { type: Number, required: true, min: 1 },
+    price_per_week: { type: Number, required: true, min: 1 },
     km_limit_per_day: { type: Number, required: true, min: 1 },
     rating: { type: Number, required: true, min: 0, max: 5 },
     review_count: { type: Number, required: true, min: 0 },
@@ -49,7 +50,7 @@ const carSchema = new Schema<Ordered<Car>>(
   },
 );
 
-carSchema.index({ city_code: 1, price_per_hour: 1 });
+carSchema.index({ city_code: 1, price_per_day: 1 });
 carSchema.index({ car_type: 1 });
 carSchema.index({ rating: -1 });
 carSchema.index({ featured: 1 });

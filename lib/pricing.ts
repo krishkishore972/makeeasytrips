@@ -54,7 +54,10 @@ export function holidayPriceBreakdown(
 
 export type CarRentalBreakdown = FareBreakdown & {
   perDay: number;
+  perWeek: number;
   days: number;
+  weeks: number;
+  remainingDays: number;
   kmFee: number;
   deliveryFee: number;
   addonFee: number;
@@ -72,16 +75,19 @@ export type CarRentalPricing = {
 };
 
 /**
- * Self-drive rentals are billed in 24-hour blocks. The card rate is hourly, but
- * the trip total uses the derived day rate so a 30-hour booking is two days.
+ * Bill complete weeks at the weekly rate and remaining days at the daily rate.
+ * Partial days round up to a full day; there is no hourly rental rate.
  */
 export function carRentalBreakdown(
-  pricePerHour: number,
+  rates: { price_per_day: number; price_per_week: number },
   pricing: CarRentalPricing,
 ): CarRentalBreakdown {
-  const days = Math.max(1, pricing.days);
-  const perDay = pricePerHour * 24;
-  const base = perDay * days;
+  const days = Math.max(1, Math.ceil(pricing.days));
+  const perDay = rates.price_per_day;
+  const perWeek = rates.price_per_week;
+  const weeks = Math.floor(days / 7);
+  const remainingDays = days % 7;
+  const base = perWeek * weeks + perDay * remainingDays;
   const kmFee = pricing.kmPlanExtraPerDay * days;
   const deliveryFee = pricing.delivery ? pricing.deliveryFee : 0;
   const addonFee = pricing.addons.reduce(
@@ -96,7 +102,10 @@ export function carRentalBreakdown(
     taxes,
     total: taxable + taxes,
     perDay,
+    perWeek,
     days,
+    weeks,
+    remainingDays,
     kmFee,
     deliveryFee,
     addonFee,

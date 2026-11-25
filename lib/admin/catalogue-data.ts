@@ -1,6 +1,7 @@
 import type { Model } from "mongoose";
 import type { CatalogueResource } from "@/lib/admin/catalogue-config";
 import { summariseCatalogueRecord, type CatalogueSummary } from "@/lib/admin/catalogue-summary";
+import { carSchema } from "@/lib/data/schemas";
 import { CarModel, EventModel, HolidayModel, HotelModel, OfferModel } from "@/lib/models";
 import dbConnect from "@/lib/mongodb";
 
@@ -41,7 +42,10 @@ export async function listCatalogueRecords(
     .exec();
 
   return docs.flatMap((doc) => {
-    const summary = summariseCatalogueRecord(resource, doc);
+    const summary = summariseCatalogueRecord(
+      resource,
+      resource === "cars" ? { ...doc, ...carSchema.parse(doc) } : doc,
+    );
     return summary ? [summary] : [];
   });
 }
@@ -52,7 +56,8 @@ export async function getCatalogueRecord(
 ): Promise<AnyDoc | null> {
   await dbConnect();
 
-  return modelFor(resource).findOne({ id }, adminProjection).lean<AnyDoc>().exec();
+  const doc = await modelFor(resource).findOne({ id }, adminProjection).lean<AnyDoc>().exec();
+  return doc && resource === "cars" ? { ...doc, ...carSchema.parse(doc) } : doc;
 }
 
 export async function nextCatalogueSortOrder(resource: CatalogueResource): Promise<number> {

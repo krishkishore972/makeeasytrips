@@ -41,7 +41,7 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
 
   const selectedPlan = CAR_KM_PLAN_OPTIONS.find((option) => option.value === plan);
   const selectedAddons = CAR_ADDON_OPTIONS.filter((option) => addons.includes(option.value));
-  const breakdown = carRentalBreakdown(car.price_per_hour, {
+  const breakdown = carRentalBreakdown(car, {
     days,
     kmPlanExtraPerDay: selectedPlan?.extraPerDay ?? 0,
     delivery: delivery && car.home_delivery,
@@ -55,12 +55,12 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3">
         <p className="flex items-baseline gap-1.5">
           <span className="text-2xl leading-none font-extrabold text-ink">
-            {formatCurrency(car.price_per_hour)}
+            {formatCurrency(car.price_per_day)}
           </span>
-          <span className="text-[11px] font-semibold text-muted">/ hour</span>
+          <span className="text-[11px] font-semibold text-muted">/ day</span>
         </p>
         <p className="text-[11px] font-bold text-muted">
-          {formatCurrency(breakdown.perDay)} per 24-hour day
+          {formatCurrency(car.price_per_week)} / week
         </p>
       </div>
 
@@ -250,12 +250,28 @@ export function CarBookingPanel({ car, initial }: CarBookingPanelProps) {
 
       <div className="mt-4 rounded-xl bg-canvas p-3">
         <dl className="space-y-1.5 text-[11px]">
-          <div className="flex items-center justify-between gap-2">
-            <dt className="text-muted">
-              {formatCurrency(breakdown.perDay)} × {days} {days === 1 ? "day" : "days"}
-            </dt>
-            <dd className="font-bold text-ink">{formatCurrency(breakdown.base)}</dd>
-          </div>
+          {breakdown.weeks > 0 ? (
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-muted">
+                {formatCurrency(breakdown.perWeek)} × {breakdown.weeks}{" "}
+                {breakdown.weeks === 1 ? "week" : "weeks"}
+              </dt>
+              <dd className="font-bold text-ink">
+                {formatCurrency(breakdown.perWeek * breakdown.weeks)}
+              </dd>
+            </div>
+          ) : null}
+          {breakdown.remainingDays > 0 ? (
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-muted">
+                {formatCurrency(breakdown.perDay)} × {breakdown.remainingDays}{" "}
+                {breakdown.remainingDays === 1 ? "day" : "days"}
+              </dt>
+              <dd className="font-bold text-ink">
+                {formatCurrency(breakdown.perDay * breakdown.remainingDays)}
+              </dd>
+            </div>
+          ) : null}
           {breakdown.kmFee > 0 ? (
             <div className="flex items-center justify-between gap-2">
               <dt className="text-muted">Unlimited kilometres</dt>

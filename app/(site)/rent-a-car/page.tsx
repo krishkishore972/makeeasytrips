@@ -53,7 +53,7 @@ const HOW_IT_WORKS = [
     icon: MapPin,
     title: "Pick a city and a window",
     detail:
-      "Choose where you are driving and the exact pick-up and drop-off times. The demo prices in 24-hour blocks.",
+      "Choose where you are driving and the exact pick-up and drop-off times. Rentals use daily and weekly rates.",
   },
   {
     icon: CarFront,
@@ -84,7 +84,7 @@ const RENTAL_FAQS: HomeFaq[] = [
   {
     question: "How is the trip total calculated?",
     answer:
-      "The hourly rate is converted to a 24-hour day rate. A 30-hour rental is billed as two days. The total adds the kilometre plan, home delivery if chosen, add-ons, and 18% GST. The refundable security deposit is shown separately.",
+      "Rentals are priced per day or per week. Each full week uses the weekly rate, with any remaining days charged at the daily rate. Partial days round up to a full day. The total adds the kilometre plan, home delivery if chosen, add-ons, and 18% GST. The refundable security deposit is shown separately.",
   },
   {
     question: "What is the difference between the plans?",
@@ -171,7 +171,7 @@ async function RentACarContent() {
   }
 
   const startingPrice = cars.reduce(
-    (minimum, car) => Math.min(minimum, car.price_per_hour),
+    (minimum, car) => Math.min(minimum, car.price_per_day),
     Number.POSITIVE_INFINITY,
   );
   const averageRating =
@@ -180,7 +180,7 @@ async function RentACarContent() {
   const stats = [
     { value: formatCompactNumber(cars.length), label: "cars in the demo fleet" },
     { value: formatCompactNumber(cities.length), label: "pick-up cities" },
-    { value: formatCurrency(startingPrice), label: "from, per hour" },
+    { value: formatCurrency(startingPrice), label: "from, per day" },
     { value: averageRating.toFixed(1), label: "average guest rating" },
   ];
 
@@ -202,7 +202,7 @@ async function RentACarContent() {
                 Take the car. Leave the itinerary open.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-7 text-white/75">
-                Choose a specific car in a specific city, pick the hours you need, and see the whole
+                Choose a specific car in a specific city, pick the days you need, and see the whole
                 trip total before you decide. Every car, host, and price is fictional demo
                 inventory.
               </p>
@@ -218,7 +218,7 @@ async function RentACarContent() {
                 </li>
                 <li className="inline-flex items-center gap-1.5">
                   <Clock3 aria-hidden="true" className="size-4 text-brand-300" />
-                  Hourly search, 24-hour billing
+                  Daily and weekly rentals
                 </li>
               </ul>
             </div>
@@ -308,7 +308,7 @@ async function RentACarContent() {
           <SectionHeading
             eyebrow="Guest favourites"
             title="Cars the demo guests keep coming back to."
-            description="A mix of city hatchbacks, comfortable sedans, and SUVs for the long way round. Prices are hourly; the card shows the two-day trip total."
+            description="A mix of city hatchbacks, comfortable sedans, and SUVs for the long way round. Choose daily or weekly rates; each card also shows the two-day trip total."
             action={{ label: "See all cars", href: "/rent-a-car/search" }}
             titleClassName="text-[clamp(1.75rem,3.2vw,2.5rem)]"
           />
@@ -403,7 +403,7 @@ async function RentACarContent() {
                       </p>
                       <p className="text-sm font-extrabold text-ink">
                         {formatCurrency(cityStat?.minPrice ?? 0)}
-                        <span className="text-[10px] font-semibold text-muted-soft">/hr</span>
+                        <span className="text-[10px] font-semibold text-muted-soft">/day</span>
                       </p>
                     </div>
                     <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-brand-700">

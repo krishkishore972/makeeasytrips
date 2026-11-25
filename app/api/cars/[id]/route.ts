@@ -21,7 +21,7 @@ export async function GET(request: Request, { params }: RouteContext) {
     rentalParams[key] = value;
   });
   const rental = parseRentalParams(rentalParams);
-  const price = carRentalBreakdown(car.price_per_hour, {
+  const price = carRentalBreakdown(car, {
     days: rental.days,
     kmPlanExtraPerDay: 0,
     delivery: false,
@@ -56,7 +56,8 @@ export async function GET(request: Request, { params }: RouteContext) {
         tagline: car.tagline,
         description: car.description,
         kmLimitPerDay: car.km_limit_per_day,
-        pricePerHour: car.price_per_hour,
+        pricePerDay: car.price_per_day,
+        pricePerWeek: car.price_per_week,
         rental: {
           start: rental.start,
           end: rental.end,

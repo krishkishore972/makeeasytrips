@@ -141,7 +141,7 @@ async function HomeContent() {
         title: `${car.brand} ${car.model}`,
         image: car.image,
         href: `/rent-a-car/${car.id}`,
-        detail: `${carCities.find((city) => city.code === car.city_code)?.name ?? car.city_code} · from ${formatCurrency(car.price_per_hour)} / hour`,
+        detail: `${carCities.find((city) => city.code === car.city_code)?.name ?? car.city_code} · from ${formatCurrency(car.price_per_day)} / day`,
       });
   }
 
@@ -401,12 +401,17 @@ async function HomeContent() {
                       </ul>
 
                       <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-3">
-                        <p className="flex items-baseline gap-1.5">
-                          <span className="text-xl leading-none font-extrabold text-ink">
-                            {formatCurrency(car.price_per_hour)}
-                          </span>
-                          <span className="text-[10px] font-semibold text-muted">/ hour</span>
-                        </p>
+                        <div>
+                          <p className="flex items-baseline gap-1.5">
+                            <span className="text-xl leading-none font-extrabold text-ink">
+                              {formatCurrency(car.price_per_day)}
+                            </span>
+                            <span className="text-[10px] font-semibold text-muted">/ day</span>
+                          </p>
+                          <p className="mt-1 text-[10px] font-semibold text-muted">
+                            {formatCurrency(car.price_per_week)} / week
+                          </p>
+                        </div>
                         <Link
                           href={`/rent-a-car/${car.id}`}
                           className="inline-flex items-center gap-1 text-[11px] font-extrabold text-brand-700"

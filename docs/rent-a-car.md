@@ -32,7 +32,7 @@ pages are canonical to `/rent-a-car/[id]`.
 | `start`, `end` | `YYYY-MM-DDTHH:MM` local India time                                    | 14 days out, 48 h  |
 | `mode`         | `daily`, `subscription`, `weekday`                                     | `daily`            |
 | `sort`         | `recommended`, `price-asc`, `price-desc`, `rating`, `distance`         | `recommended`      |
-| `budget`       | `under-300`, `300-600`, `600-1000`, `over-1000` (₹ per hour)           | none               |
+| `budget`       | `under-5000`, `5000-10000`, `10000-20000`, `over-20000` (₹ per day) | none               |
 | `type`         | `Hatchback`, `Compact SUV`, `MUV/MPV`, `SUV`, `Compact Sedan`, `Sedan` | none               |
 | `transmission` | `Manual`, `Automatic`                                                  | none               |
 | `fuel`         | `Petrol`, `Diesel`, `Electric`                                         | none               |
@@ -64,14 +64,14 @@ day count.
 
 ## Data
 
-`data/cars.csv` holds 62 rows:
+`data/cars.json` holds 62 seed records:
 
 | Column                                                          | Notes                                                                             |
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `id`, `brand`, `model`, `variant`, `year`                       | One row per specific car, not a category                                          |
 | `city_code`                                                     | One of 12 car cities (BLR, BOM, CCU, COK, DEL, GOI, HYD, IXL, JAI, MAA, PNQ, UDR) |
 | `car_type`, `transmission`, `fuel`, `seats`                     | Six body styles, manual/automatic, petrol/diesel/electric                         |
-| `price_per_hour`                                                | ₹149–₹2,499 in the demo fleet                                                     |
+| `price_per_day`, `price_per_week`                               | Explicit daily and weekly rates, independently editable in admin |
 | `km_limit_per_day`                                              | 300 on every row                                                                  |
 | `rating`, `review_count`, `distance_km`                         | Fictional guest signals and handover distance                                     |
 | `host_name`, `host_type`                                        | Fictional individual or professional host                                         |
@@ -86,10 +86,10 @@ ids.
 
 ## Pricing
 
-`carRentalBreakdown(pricePerHour, options)` in `lib/pricing.ts`:
+`carRentalBreakdown({ price_per_day, price_per_week }, options)` in `lib/pricing.ts`:
 
-1. `perDay = pricePerHour × 24`
-2. `base = perDay × days`
+1. Round partial days up to a full day, minimum one.
+2. `base = price_per_week × floor(days / 7) + price_per_day × (days % 7)`
 3. add the kilometre plan (`₹399/day` for unlimited, `₹0` for the included 300 km/day)
 4. add home delivery when selected (per-car fee, `₹0` when the host does not deliver)
 5. add extras: FASTag `₹149` once, child seat `₹199/day`, additional driver `₹249/day`
@@ -101,8 +101,17 @@ enquiry dialog attaches the selected window, kilometre plan, and delivery choice
 so the saved enquiry and the WhatsApp message describe the same rental. Card totals on search
 results use the selected window with the included plan and no extras.
 
-Example from the test fixture (`car-maruti-suzuki-swift`, ₹219/hour, two days, included km, no
+Example from the test fixture (`car-maruti-suzuki-swift`, ₹5,256/day or ₹36,792/week, two days, included km, no
 delivery): base ₹10,512 + GST ₹1,892 = ₹12,404, deposit ₹4,000 shown separately.
+
+The API exposes `pricePerDay` and `pricePerWeek`, not hourly prices. Budget filters and
+price sorting use the daily rate. Full weeks automatically use the weekly rate in
+cards, the detail panel, and API totals.
+
+Existing MongoDB records with the old hourly field are converted on read to preserve
+their previous day totals; they do not require a destructive reseed. New seed records
+and admin submissions use only daily and weekly rates. Initial weekly prices equal
+seven daily rates, with no assumed discount.
 
 ## Components
 

@@ -55,8 +55,8 @@ export async function generateMetadata({ params }: CarDetailPageProps): Promise<
   return {
     title: `${car.brand} ${car.model} · Rent a car`,
     description: `${car.tagline} ${car.year} ${car.model} ${car.variant} in ${car.city_code}, from ${formatCurrency(
-      car.price_per_hour,
-    )} per hour. Fictional self-drive demo listing.`,
+      car.price_per_day,
+    )} per day or ${formatCurrency(car.price_per_week)} per week. Fictional self-drive demo listing.`,
     alternates: {
       canonical: `/rent-a-car/${car.id}`,
     },
@@ -133,7 +133,7 @@ async function CarDetailExperience({ params, searchParams }: CarDetailPageProps)
   const similar = await getSimilarCars(car, 3);
   const cityName = city?.name ?? car.city_code;
 
-  const price = carRentalBreakdown(car.price_per_hour, {
+  const price = carRentalBreakdown(car, {
     days: rental.days,
     kmPlanExtraPerDay: 0,
     delivery: false,
